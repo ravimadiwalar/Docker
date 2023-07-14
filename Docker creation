@@ -7,4 +7,13 @@ Maven-web-application
 Dockerfile   Jenkinsfile ........
 [ec2-user]$rm Dockerfile
 
-baoe we have Docker file but lets remove and create our own.  this project is java based appliaction so we need Java and Tomcat/Jboss/wildfly as a application server to run that project.
+Above we have Docker file but lets remove and create our own.  this project is java based appliaction so we need Java and Tomcat/Jboss/wildfly as a application server to run that project.
+[ec2-user...]$ vi Dockerfile
+
+FROM tomcat:7-Jdk8-correctto
+COPY target/maven-web-application.war/usr/local/tomcat/webapps/java-web-appliaction.war
+:wq
+
+AboveTomcat is a repo and 7-Jdk8-correctto is a version and next we have to copy our application.
+target/maven-web-application.war- is where our appliaction is
+usr/local/tomcat/webapps/java-web-appliaction.war- is whwere it has to get copied
