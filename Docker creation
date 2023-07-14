@@ -1,0 +1,10 @@
+lets create one instance in aws with Ubuntu server and set server name as Build-Server. now go nad connect to this ssh with linux.
+go to git hub of mithun technologies and take " Maven web application" project. here we have docker file already, if not we have to create it. now copy that link code and clone to our linux.
+[ec2-user....]$git clone https://github.com/MithunTechnologiesDevOps/maven-web-application.git
+[ec2-user...]$ ls
+Maven-web-application
+[ec2-user] ls maven-web-appliaction
+Dockerfile   Jenkinsfile ........
+[ec2-user]$rm Dockerfile
+
+baoe we have Docker file but lets remove and create our own.  this project is java based appliaction so we need Java and Tomcat/Jboss/wildfly as a application server to run that project.
