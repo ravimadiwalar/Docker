@@ -3,17 +3,35 @@ go to git hub of mithun technologies and take " Maven web application" project. 
 [ec2-user....]$git clone https://github.com/MithunTechnologiesDevOps/maven-web-application.git
 [ec2-user...]$ ls
 Maven-web-application
-[ec2-user] ls maven-web-appliaction
+[ec2-user] cd maven-web-appliaction
+[ec2-user ...maven-web-application] ls maven-web-appliaction
 Dockerfile   Jenkinsfile ........
 [ec2-user]$rm Dockerfile
 
 Above we have Docker file but lets remove and create our own.  this project is java based appliaction so we need Java and Tomcat/Jboss/wildfly as a application server to run that project.
+we get this in DockerHub and always we should refer Official Images.  bcoz we dont get any hacking code here and these are not vulnerable.
 [ec2-user...]$ vi Dockerfile
 
 FROM tomcat:7-Jdk8-correctto
-COPY target/maven-web-application.war/usr/local/tomcat/webapps/java-web-appliaction.war
+COPY target/java-web-application*.war/usr/local/tomcat/webapps/java-web-appliaction.war
 :wq
 
 AboveTomcat is a repo and 7-Jdk8-correctto is a version and next we have to copy our application.
 target/maven-web-application.war- is where our appliaction is
-usr/local/tomcat/webapps/java-web-appliaction.war- is whwere it has to get copied
+usr/local/tomcat/webapps/java-web-appliaction.war- is whwere it has to get copied. 
+/usr/local/tomcat- for this part . go to that tomact image in dockerhub and come down, there we can see 
+CATALINA HOME- /usr/local/tomcat    Tomcat home directory. 
+
+now we have to create a docker image. we need to install docker here
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io
+.
+.
+.
+. 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt update -y
+.
+.
+.
+.
+above we have installed docker in Ubuntu - sudo apt docker.io and for updation sudo apt update -y
+
