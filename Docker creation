@@ -13,7 +13,7 @@ we get this in DockerHub and always we should refer Official Images.  bcoz we do
 [ec2-user...]$ vi Dockerfile
 
 FROM tomcat:7-Jdk8-correctto
-COPY target/java-web-application*.war/usr/local/tomcat/webapps/java-web-appliaction.war
+COPY target/maven-web-application*.war/usr/local/tomcat/webapps/maven-web-appliaction.war
 :wq
 
 AboveTomcat is a repo and 7-Jdk8-correctto is a version and next we have to copy our application.
@@ -23,7 +23,7 @@ usr/local/tomcat/webapps/java-web-appliaction.war- is whwere it has to get copie
 CATALINA HOME- /usr/local/tomcat    Tomcat home directory. 
 
 now we have to create a docker image. we need to install docker here
-ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io -y
 .
 .
 .
@@ -35,3 +35,40 @@ ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt update -y
 .
 above we have installed docker in Ubuntu - sudo apt docker.io and for updation sudo apt update -y
 
+now we have to create a docker image. so we need to create our won account in Docker Hub and take that Username ( its a Registry). for building docker image
+docker build -t  <registry/repo>:<version> . 
+-t means we are tagging that built image to some registry and dot at the end presents that current dir.
+then we have to move that image to public registry in Dockerhub. and create one repo. then 
+EX: 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/java-web-appliaction:1 .
+
+above we are going to buold an image in our maven-web-appliaction bcoz we have our dockerfile inside. but we would face permission deny. so craete one user in docker 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker ubuntu
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 .
+
+first it will download the base softwares and then build the image but here we get an error like no source file were specified bcoz we dont have appilicationpackeg here we just have its source code. so for creating a package
+ubuntu@ip172-12-23-12:~maven-web-appliaction$sude apt install maven -y
+
+now it will install maven and its depedency software like java and all. now go ahead and craete a package and we can see this in target folder. 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$mvn clean packge
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ls targer/
+then craete one more ubuntu instance to deploy the image. name of that instance is Docker_Dev_Server  it works as a container now. and it should have docker installed. so open its ssh and install docker. 
+
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt update
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io -y
+
+now go to first linux and build the image
+ ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 . 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker image
+dockerhandson/maven-web-appliaction 1  2crafskfi23   6 sec ago    380MB
+tomcat                              7-jdk8-correcto 47-3dif736  30 hrs ago  374MB
+
+baove we have image with 380mb but tomcat with 374mb. why bcoz we image contain dependency software.
+now we have to push that image to container. but before we have to give authentocation to our server ( dockerhandson is username of dockerhub)
+
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker login -u dockerhandson
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker push dockerhandson/maven-web-appliaction:1
+
+now go and check the image in hub. we can see.
+
+open the linux of Docker_dev_Server and create a container of our maven image. in this server give a permission to the 8080. 
