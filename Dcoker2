@@ -1,0 +1,50 @@
+Docker repo- Where you can store one or more versions of a specific docker image.
+Docker registry- Registry is a collection of one or more docker repo
+docker hub is a public registry 
+private registries (we can store our own repo and access to our company only) are Nexus/Jfrog. in aws ECR(elastic cobntainer registry). in google GCR and in Azure ACR.
+
+docker images or docker image ls - using these commands we can how many images are there in our server.
+image fallows the layared architecture. it contains multiple layers.docker is maintaining all layers.
+
+docker working directory - /var/lib/docker
+ubuntu@172.23.42.212:~maven-web-apliacation$sudo ls /var/lib/docker
+builder  buidkit  containers  image  network  overlay2 plugins  voluemes....... 
+
+above in working dir we can files like container, images.    image conatin all images and conatiner conatin all containers in server.
+ubuntu@172.23.42.212:~maven-web-apliacation$sudo ls /var/lib/docker/image/overlay2
+it conatisn all image info
+
+ubuntu@172.23.42.212:~maven-web-apliacation$docker images
+REPOSITORY                                 TAG    IMAGESID     CREATED   SIZE 
+dockerhandson/maven-web-application         1                             380MB
+dockerhandson/maven-web-application        none                           380MB
+tomcat                              7-jdk-corretto                      374MB
+
+above we have image details but we didnt create any image in the name of tomact. 
+why its showing under image bcoz we used this as a base image.  on top if this we cretaed our own image.if we run the container we wont this tomcat there. 
+
+now we have to push that iamge to container but we have to authenticate it first.  
+
+docker login -u <username> -p <password> <URL>
+
+for dockerhub we dont need to give URL. for private registry we have to 
+
+[ for biulding an image in private registry 
+for Nexus - docker build -t 172.67.180.120:8083/maven-web-appliaction:1 .
+                            (nexus server ip adress:port)
+
+for ECR-   docker image -t amazon.ecr.1265.com/maven-web-application:1 .
+                           ( ECR URL)
+]
+
+if we want to authenticate with private registry we have to fallow below ones
+for Nexus - docker login -u admin -p admin123 172.67.180.120:808
+for ECR  -  docker login -u admin -p admin123 amazon.ecr.1265.com
+
+now we have to push that imahe to registry
+ubuntu@172.23.42.212:~maven-web-apliacation$docker push dockerhandson/maven-web-application:1
+
+it pushes all layers of that image to registry. go to docker hub and refresh your registry there we can get this in 1 (version). 
+
+if we want to oull the image to another container
+docker pull dockerhandson/maven-web-appliaction:1 .
