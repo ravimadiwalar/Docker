@@ -46,5 +46,23 @@ ubuntu@172.23.42.212:~maven-web-apliacation$docker push dockerhandson/maven-web-
 
 it pushes all layers of that image to registry. go to docker hub and refresh your registry there we can get this in 1 (version). 
 
-if we want to oull the image to another container
-docker pull dockerhandson/maven-web-appliaction:1 .
+if we want to pull the image to any server and if its a public registry no need to authenticate but for private we have to authenticate where you are pulling.
+ubuntu@172.23.42.212:~docker pull dockerhandson/maven-web-appliaction:1 . 
+
+we can pull images without giving the version also. bcoz it will consider the version as "latest" by default. it as same as in build and pushing an image also.
+ubuntu@172.23.42.212:~docker pull dockerhandson/nodejsapp
+using defalut tag: latest
+
+but we get an error why bocz we dont have that tag in that image
+
+Basic Commands: docker info    docker version or docker --version
+
+we can exicute docker image from anywhere
+
+ubuntu@172.23.42.212:~maven-web-apliacation$cd..
+ubuntu@172.23.42.212:~docker info   -->we can see images, server name, cpu, storage, etc
+ubuntu@172.23.42.212:~docker version   --> here we can see client and server. we can install client only and we can connect to another server remotly.
+ubuntu@172.23.42.212:~docker --version
+
+if we want to see more details about image 
+ubuntu@172.23.42.212: docker image inspect <imageID/Name>   or   ubuntu@172.23.42.212: docke inspect <imageID/Name> 
