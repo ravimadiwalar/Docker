@@ -40,13 +40,14 @@ docker build -t  <registry/repo>:<version> .
 -t means we are tagging that built image to some registry and dot at the end presents that current dir.
 then we have to move that image to public registry in Dockerhub. and create one repo. then 
 EX: 
-ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/java-web-appliaction:1 .
+ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 .
 
-above we are going to buold an image in our maven-web-appliaction bcoz we have our dockerfile inside. but we would face permission deny. so craete one user in docker 
+above we are going to build an image in our maven-web-appliaction bcoz we have our dockerfile inside. but we would face permission deny. so craete one user in docker 
 ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker ubuntu
 ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 .
 
-first it will download the base softwares and then build the image but here we get an error like no source file were specified bcoz we dont have appilicationpackeg here we just have its source code. so for creating a package
+first it will download the base softwares and then build the image but here we get an error like no source file were specified bcoz we dont have appilication package
+here we just have its source code. so for creating a package
 ubuntu@ip172-12-23-12:~maven-web-appliaction$sude apt install maven -y
 
 now it will install maven and its depedency software like java and all. now go ahead and craete a package and we can see this in target folder. 
