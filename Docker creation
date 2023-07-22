@@ -23,7 +23,7 @@ usr/local/tomcat/webapps/java-web-appliaction.war- is whwere it has to get copie
 CATALINA HOME- /usr/local/tomcat    Tomcat home directory. 
 
 now we have to create a docker image. we need to install docker here
-ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io -y
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt install docker.io -y
 .
 .
 .
