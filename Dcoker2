@@ -15,10 +15,10 @@ ubuntu@172.23.42.212:~maven-web-apliacation$sudo ls /var/lib/docker/image/overla
 it conatisn all image info
 
 ubuntu@172.23.42.212:~maven-web-apliacation$docker images
-REPOSITORY                                 TAG    IMAGESID     CREATED   SIZE 
-dockerhandson/maven-web-application         1                             380MB
-dockerhandson/maven-web-application        none                           380MB
-tomcat                              7-jdk-corretto                      374MB
+REPOSITORY                                 TAG    IMAGESID             CREATED      SIZE 
+dockerhandson/maven-web-application         1     8frgsf2724ss                        380MB
+dockerhandson/maven-web-application        none                                       380MB
+tomcat                              7-jdk-corretto                                    374MB
 
 above we have image details but we didnt create any image in the name of tomact. 
 why its showing under image bcoz we used this as a base image.  on top if this we cretaed our own image.if we run the container we wont this tomcat there. 
@@ -66,3 +66,122 @@ ubuntu@172.23.42.212:~docker --version
 
 if we want to see more details about image 
 ubuntu@172.23.42.212: docker image inspect <imageID/Name>   or   ubuntu@172.23.42.212: docke inspect <imageID/Name> 
+
+ubuntu@172.23.42.212:~maven-web-apliacation$docker images
+REPOSITORY                                 TAG    IMAGESID             CREATED      SIZE 
+dockerhandson/maven-web-application         1     8frgsf2724ss                        380MB
+dockerhandson/maven-web-application        none                                       380MB
+tomcat                              7-jdk-corretto                                    374MB
+
+ubuntu@172.23.42.212:~docker image inspect dockerhandson/maven-web-application:1
+
+here we will get all details about layers of that image and some environment variables. these were set by tomcat itself.
+
+if we want to see the layers of the image :- docker history <imageID/Name>
+ubuntu@172.23.42.212:~docker history 8frgsf2724ss
+
+where these layers have been maintained?
+ubuntu@172.23.42.212:~sudo ls /var/lib/docker/overlay2
+
+ How to delete the image?
+docker rmi <imageID/Name> or docker rmi -f <imageID/Name>
+
+ubuntu@172.23.42.212:~docker rmi 8frgsf2724ss
+
+we can delete multi images in single command: docker rmi <imageID/Name> <imageID/Name> <imageID/Name> ...
+or 
+
+ubuntu@172.23.42.212:~docker images -q
+8frgsf2724ss
+gd73737bsjhj
+
+docker images -q    will display all image ID's and for deleting all images at a time we use like below
+
+ubuntu@172.23.42.212:~docker rmi $(docker images -q)
+or ubuntu@172.23.42.212:~docker rmi -f $(docker images -q)
+
+
+Can we delete the image if there is running conatiner?
+NO
+
+Now go and build an image one more time
+
+ubuntu@172.23.42.212:~docker build -t dockerhandson/maven-web-application .
+ here will get an error bcoz we dont have that docker file in current directory. so we have to go in and execute 
+
+ubuntu@172.23.42.212:~cd maven-web-application
+ubuntu@172.23.42.212:~maven-web-application$docker build -t dockerhandson/maven-web-application .
+.
+.
+.
+successufully tagger dockerhandson/maven-web-appliaction:latest
+
+since we didn't mention the version. it chiose latest one by default.
+
+lets take scenario like we have multiple file. so we need to mention specific one
+
+ubuntu@172.23.42.212:~maven-web-application$ls
+dockerfile   ...   ...   ...   ...
+ubuntu@172.23.42.212:~maven-web-application$mv dockerfile dockerfile_mavenwebapp
+ubuntu@172.23.42.212:~maven-web-application$ls
+dockerfile_mavenwebapp  ..  ... ...
+ubuntu@172.23.42.212:~maven-web-application$docker build -t dockerhandson/maven-web-application .
+
+Above we have chnaged the name of dockerfile to dockerfile_mavenwebapp and execute the build but i got an error bcoz by defalut it will look for only dockerfile name not any other.
+for customised name we have one option to build an image
+
+ubuntu@172.23.42.212:~maven-web-application$docker build -t dockerhandson/maven-web-application -f dockerfile_mavenwebapp 
+
+
+==> How to move the image from one server to another without registry?
+using tar file out if that image we can move the image.tar file contain all layers of that image.
+
+docker save <imageid/name>  -o <filename>.tar
+
+<filename>.tar  - here we have to give the path where we want to move that image.
+~/- user home dir
+
+ubuntu@172.23.42.212:~maven-web-application$docker save dockerhandson/maven-web-application:latest -o ~/mavenwebapp.tar
+ubuntu@172.23.42.212:~maven-web-application$cd ..
+ubuntu@172.23.42.212:~maven-web-application$ls
+maven-web-application   mavenwebapp.tar
+
+then we have to apply scp command and copy that tar file. then in that new server execute "docker load -i <file>.tar"   it will extract that image from the tar file.
+
+==> How to pus images to private registry?
+lets demonistarte ECR (Elastic contaioner registry) in AWS.  lets create a ECR registry. search for ECR and click on Create repository in the name of maven-web-application. and selcet Private on top side and create registry.
+now we have to push that image here. so select the URI of that ECR new repo. and tag that image to registry.  
+
+ubuntu@172.23.42.212:~maven-web-application$docker build -t 5652827fdhdh.dkr.ecr.ap-south-1.amazonaws.com/mavn-web-applaication -f dockerfile_mavenwebapp
+ubuntu@172.23.42.212:~maven-web-application$docker images
+
+we we can see that new ecr image here. 
+now push the image  
+ubuntu@172.23.42.212:~maven-web-application$docker push 5652827fdhdh.dkr.ecr.ap-south-1.amazonaws.com/mavn-web-applaication:1
+
+but will get an error. bcoz we need username and passowrd of that ECR. how to get credentials of ECR? select ECR repo -->View push commands--> here we can see the user name is AWS
+and dont get the password but we get instaruction to find out. copy that and select only "aws ecr get-login-password --region ap-south-1". so install aws CLI first.
+
+ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1
+Commnad aws  not found , but can be istalled with
+
+sudo snap install  aws-cli # version 1.15.23.12
+sudo apt install awscli   # 1.18.79.-unbutua,20.200.1
+
+Above we got an wrror bocz we didnt install the CLI. so for installing CLI just copy that aboce one "sudo apt install awscli"
+
+ubuntu@172.23.42.212:~maven-web-application$ sudo apt install awscli
+
+now
+ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1
+Unable to locate credentials. you can configure credentials by  running  "aws configure".
+
+we got an error. bcoz since it has only AWS ECR access we have to give an AWS access to this server.so lets go with IAM role. 
+but role should have permission to this ECR. 
+
+Go to AWS and srach for IAM and Role and Create Role and select EC2 --> permission--> search for Elastic Container and selcet AmazonElastic ConationerRegistryPublicFull Acess
+-->Next:tags--> Role Name:ECR_fullAcess-->Create Role
+
+next go to our EC2 server(build server) and select-->action-->Security-->Modify IAM Role-->attache thsi role and save.
+
+ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1
