@@ -44,6 +44,9 @@ ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven
 
 above we are going to build an image in our maven-web-appliaction bcoz we have our dockerfile inside. but we would face permission deny. so craete one user in docker 
 ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker ubuntu
+
+our server would face permission issue so we created one user and gave permission to ubuntu directly. then restart the server again.
+
 ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 .
 
 first it will download the base softwares and then build the image but here we get an error like no source file were specified bcoz we dont have appilication package
@@ -64,7 +67,7 @@ ubuntu@ip172-12-23-12:~maven-web-appliaction$docker image
 dockerhandson/maven-web-appliaction 1  2crafskfi23   6 sec ago    380MB
 tomcat                              7-jdk8-correcto 47-3dif736  30 hrs ago  374MB
 
-baove we have image with 380mb but tomcat with 374mb. why bcoz we image contain dependency software.
+above we have image with 380mb but tomcat with 374mb. why bcoz we image contain dependency software.
 now we have to push that image to container. but before we have to give authentocation to our server ( dockerhandson is username of dockerhub)
 
 ubuntu@ip172-12-23-12:~maven-web-appliaction$docker login -u dockerhandson
