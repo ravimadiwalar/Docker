@@ -150,7 +150,7 @@ then we have to apply scp command and copy that tar file. then in that new serve
 
 ==> How to pus images to private registry?
 lets demonistarte ECR (Elastic contaioner registry) in AWS.  lets create a ECR registry. search for ECR and click on Create repository in the name of maven-web-application. and selcet Private on top side and create registry.
-now we have to push that image here. so select the URI of that ECR new repo. and tag that image to registry.  
+now we have to push that image here. so select the URL of that ECR new repo. and tag that image to registry.  
 
 ubuntu@172.23.42.212:~maven-web-application$docker build -t 5652827fdhdh.dkr.ecr.ap-south-1.amazonaws.com/mavn-web-applaication -f dockerfile_mavenwebapp
 ubuntu@172.23.42.212:~maven-web-application$docker images
@@ -160,7 +160,8 @@ now push the image
 ubuntu@172.23.42.212:~maven-web-application$docker push 5652827fdhdh.dkr.ecr.ap-south-1.amazonaws.com/mavn-web-applaication:1
 
 but will get an error. bcoz we need username and passowrd of that ECR. how to get credentials of ECR? select ECR repo -->View push commands--> here we can see the user name is AWS
-and dont get the password but we get instaruction to find out. copy that and select only "aws ecr get-login-password --region ap-south-1". so install aws CLI first.
+and dont get the password but we get instaruction to find out. copy that (aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 56772246.dkr.ecr.ap-south-1.amazon.com) 
+and select only "aws ecr get-login-password --region ap-south-1". so install aws CLI first.
 
 ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1
 Commnad aws  not found , but can be istalled with
@@ -179,9 +180,21 @@ Unable to locate credentials. you can configure credentials by  running  "aws co
 we got an error. bcoz since it has only AWS ECR access we have to give an AWS access to this server.so lets go with IAM role. 
 but role should have permission to this ECR. 
 
-Go to AWS and srach for IAM and Role and Create Role and select EC2 --> permission--> search for Elastic Container and selcet AmazonElastic ConationerRegistryPublicFull Acess
+Go to AWS and search for IAM and Role and Create Role and select EC2 --> permission--> search for EC2container registry and selcet AmazonEC2ContainerRegistryFullAccess
 -->Next:tags--> Role Name:ECR_fullAcess-->Create Role
 
-next go to our EC2 server(build server) and select-->action-->Security-->Modify IAM Role-->attache thsi role and save.
+next go to our EC2 server(build server) and select-->action-->Security-->Modify IAM Role-->attache this role and save.
 
 ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1
+
+Now we will get the tokon password and then we have to give authentication to this
+
+ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 56772246.dkr.ecr.ap-south-1.amazon.com
+.
+.
+Login Succeeded
+ubuntu@172.23.42.212:~maven-web-application$docker push 56772246.dkr.ecr.ap-south-1.amazon.com/maven-web-application:1
+now we can find out this image in ECR. but we have another Docker_Dev_Server. there we have to pull that image. lets connect to this server.
+ubuntu@173.43.42.212:~docker pull 56772246.dkr.ecr.ap-south-1.amazon.com/maven-web-application:1
+
+here we an error. so we need to authenticate with ECR
