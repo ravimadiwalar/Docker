@@ -197,4 +197,38 @@ ubuntu@172.23.42.212:~maven-web-application$docker push 56772246.dkr.ecr.ap-sout
 now we can find out this image in ECR. but we have another Docker_Dev_Server. there we have to pull that image. lets connect to this server.
 ubuntu@173.43.42.212:~docker pull 56772246.dkr.ecr.ap-south-1.amazon.com/maven-web-application:1
 
-here we an error. so we need to authenticate with ECR
+here we have an error. so we need to authenticate with ECR
+install AWS CLI ( serach in gogle in the name of installing aws cli)  and select Linux and copy that script.
+
+ubuntu@173.43.42.212:~curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+ now we have installed CLI- we are trying to get password to connect with ECR
+ubuntu@173.43.42.212:~sudo apt install unzip
+ubuntu@173.43.42.212:~unzip awscliv2.zip
+
+then create AWS IAM role_create role-AmazonEC2ContainerRegistryReadonly -->next--> role name [EC2-Read only] and create role.
+
+  now go to Docker_Dev_Server and -->Action-->security-->modify IAM Role-->select EC2readonly( just now craeted one) and save.
+ubuntu@173.43.42.212:~aws ecr get-login-password --region ap-south-1
+
+now will get password and then login using same thingas we used
+
+ubuntu@172.23.42.212:~maven-web-application$aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 56772246.dkr.ecr.ap-south-1.amazon.com
+ubuntu@173.43.42.212:~docker pull 56772246.dkr.ecr.ap-south-1.amazon.com/maven-web-application:1
+
+now we can pull the image and here we can only pullthe images. bcoz we have given readonly in IAM role.
+
+DOCKER CONTAINER
+====================
+
+to delete all images at a time
+
+docker rmi -f $(docker images -a)
+
+to check all imformation about images use " docker info "
+
+To create a conatiner we have 2 commands
+1) docker create --name <conatinername> -p <hostposrt:containerport> <imagename>   --> using this we can only craete a conatiner but it will not start.
+
+2)docker run -d --name <containername> -p <hostport:containerport> <imagename>  --> it will do both.
+
+without giving --name <containername>  also is fine bcoz docker will give one name to that conatiner.
