@@ -222,13 +222,21 @@ DOCKER CONTAINER
 
 to delete all images at a time
 
-docker rmi -f $(docker images -a)
+docker rmi -f $docker start <conatinerID/Name>(docker images -a)
 
 to check all imformation about images use " docker info "
 
 To create a conatiner we have 2 commands
 1) docker create --name <conatinername> -p <hostposrt:containerport> <imagename>   --> using this we can only craete a conatiner but it will not start.
+docker start <conatinerID/Name>
+docker restart <conatinerID/Name>
+docker stop <conatinerID/Name>
 
-2)docker run -d --name <containername> -p <hostport:containerport> <imagename>  --> it will do both.
-
+2)docker run -d --name <containername> -p <hostport:containerport> <imagename>  --> it will do both. -p= port publish
+host port- whatever host port is availbel in our system
+conatiner port- it depends on image what image your using
+ 
 without giving --name <containername>  also is fine bcoz docker will give one name to that conatiner.
+
+Each conatiner will have own IP address but we cant access container from outside using conatiner IP. 
+
