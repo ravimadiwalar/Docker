@@ -233,10 +233,43 @@ docker restart <conatinerID/Name>
 docker stop <conatinerID/Name>
 
 2)docker run -d --name <containername> -p <hostport:containerport> <imagename>  --> it will do both. -p= port publish
+
 host port- whatever host port is availbel in our system
 conatiner port- it depends on image what image your using
  
-without giving --name <containername>  also is fine bcoz docker will give one name to that conatiner.
+without giving --name <containername>  also is fine bcoz docker will give one name to that container.
 
-Each conatiner will have own IP address but we cant access container from outside using conatiner IP. 
+Each conatiner will have own IP address but we cant access container from outside using conatiner IP. we can access by host system IP. host port will 
+be anyone but conatiner port should always be what we used for container.
 
+IMP:~ if you dont have any images in your console also we can run the container. bcoz it will pull the image directly from that conatiner where we pushed it 
+and create and run the conatiner. but we have to give the exact name of that pushed image.
+
+just delete all images using- 
+ubuntu@173.43.42.212:~docker rmi -f $(docker iamges -a)
+ubuntu@173.43.42.212:~ docker images
+ we cant see any images here. the create/run the conatiner it will pulll and run the container.
+
+ubuntu@173.43.42.212:~docker create --name mavenwebapplicationcontainer -p 7000:8000 56772246.dkr.ecr.ap-south-1.amazon.com/maven-web-application:1
+
+to find out the list of all running container use "docker ps or docker conatiner ls"
+for all running+stopped  " docker ps -a or docker container ls -a"
+we cant have same named conatiners. they always uniq and host posrt should be uniq.
+
+ubuntu@173.43.42.212:~docker start mavenwebapplicationcontainer
+ubuntu@173.43.42.212:~docker ps
+CONATINER ID      IMAGES     
+STATUS              PORTS  NAMES      COMMAND      CRAETED
+3735892261272      
+up 5 sec            0.0.0.0:7000->8000/tcp  mavenwebapplicationconatiner
+
+0.0.0.0:7000   -->we mapped one host port with this container and that request go to 8000 if some is using this machine IP address and 8000 port.
+
+To check the running/listening ports: sudo netstat -tunlp
+
+ubuntu@173.43.42.212:~sudo apt install net-tools
+ubuntu@173.43.42.212:~ sudo netstat -tunlp
+
+now go to server and give inbound access to the port 7000 and copy that server public IP and browse along with host port number
+
+152.74.14.53:7000  --> now we can access that appliaction from outside.
