@@ -268,8 +268,96 @@ up 5 sec            0.0.0.0:7000->8000/tcp  mavenwebapplicationconatiner
 To check the running/listening ports: sudo netstat -tunlp
 
 ubuntu@173.43.42.212:~sudo apt install net-tools
-ubuntu@173.43.42.212:~ sudo netstat -tunlp
+ubuntu@173.43.42.212:~sudo netstat -tulnp
 
 now go to server and give inbound access to the port 7000 and copy that server public IP and browse along with host port number
 
 152.74.14.53:7000  --> now we can access that appliaction from outside.
+
+New One
+========
+imagine now we have created new image and pushed to public repository. 
+
+docker push dockerhandson/jav-web-applaication:1
+docker images
+
+We can tag this to pricate repository as well. if we have image already we just need to tag that where you want
+ubuntu@173.43.42.212:~docker tag imageID/name <ECR URI>:1
+ubuntu@173.43.42.212:~docker images
+
+now we can see two images. but image is same but tagged with two diff repo's
+
+ubuntu@173.43.42.212:~docker push 567677898.dkr.ecr.ap-south-1.amazon.com/java-web-applaication:1
+
+ubuntu@173.43.42.212:~docker run -d --name javawebapp -p  8080:8080 567677898.dkr.ecr.ap-south-1.amazon.com/java-web-applaication:1
+ubuntu@173.43.42.212:~docker ps
+
+here we can see two conatiners witrh diff ports and both are isolated. if anyhthing happened to one container it will not impact on other. 
+now browse with public IP address : 15.206.147.240:8080/java-web-application 
+
+We can create a applicatiuon without port also
+(-d --> detached mode)
+docker run -d --name nginxcontainer  nginx
+
+nginx is the image hwichis alredy in public docker hub. go to docker hub. there you can see that with official image. using this image i am creating a container.
+here we are doing/applying any port. means not doing any port mapping.port mapping/port forwaring is not mandotory. we cant access it from putside/public but
+conatiner will create.
+
+ubuntu@173.43.42.212:~docker run -d --name nginxcontainer  nginx
+ubuntu@173.43.42.212:~docker ps
+conatiner ID 
+IMAGES        COMMAND      CREATED      STATUS       PORTS 
+adtsjvjs        
+nginxcontainer  nginx                                 up 6 sec      80/tcp
+
+
+it will craete a conatiner with port 80 and running on default port 80.each container will have its own IP address. 
+
+docker inspect nginxcontainer
+.
+.
+.
+.
+"IP Adress": 172.17.0.1
+.
+.
+we will find its IP address.
+
+How many conatiners we can run in a machine?
+That depends on the resources, capacity, cpu, memory.
+
+
+ubuntu@173.43.42.212:~docker ps
+ubuntu@173.43.42.212:~docker stop iamgeID/Name
+ubuntu@173.43.42.212:~docker ps -a
+
+now we have stopped our conatiner. so we van access it from outside as well. if you wanna start we have to use docker start/restart command
+ubuntu@173.43.42.212:~docker start imageID/name
+
+if we want to delete the conatiner: ubuntu@173.43.42.212:~docker rm <conatinerID/Name>
+if conatiner is in running status but we force to delete that: ubuntu@173.43.42.212:~docker rm -f <conatinerID/Name>
+OR we have to stop the container using docker stop and delete the conatiner later.
+
+ubuntu@173.43.42.212:~docker ps -a  ==> to check the container is deleted or not.
+
+Can we remove the image if its running container?
+NO
+
+ubuntu@173.43.42.212:~docker images
+ubuntu@173.43.42.212:~docker rmi 567677898.dkr.ecr.ap-south-1.amazon.com/java-web-applaication:1
+
+it will throw an error and give instruction to use -f
+ubuntu@173.43.42.212:~docker rmi -f 567677898.dkr.ecr.ap-south-1.amazon.com/java-web-applaication:1
+Untagged:
+untagged:
+ubuntu@173.43.42.212:~docker images
+REPOSIOTORY    TAG      IMAGE ID      CREATED      SIZE
+<none>         <none>     2FAGSCGSG          
+
+above we cant delte the image. we can just remove that reference <none>
+
+what is dangling images?
+the images doesn't have any repository tag or imae whcih is not tagged.
+
+if we want to tag it
+ubuntu@173.43.42.212:~docker tag 2FAGSCGSG 567677898.dkr.ecr.ap-south-1.amazon.com/java-web-applaication:1
