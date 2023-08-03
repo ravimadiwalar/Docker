@@ -1,0 +1,66 @@
+Dangling Image:- Image nit tagged with any repo.  
+
+if you wanna delete all dongling images
+docker image prune:- it will remove all dangling images
+docker system prune:- it will delete all dangling images, stopped containers and unused docker networks.
+docker conatiner prune:- it will delete all stopper conatiners. 
+
+ubuntu@ip-172-31-2-98:~$docker prune
+
+we have dangling image but cant delete after applying docker prune also. why bcoz it is running in one container. To check the running conatiners. 
+here we can see our dangling image under one running container ID.
+
+ubuntu@ip-172-31-2-98:~$docker ps
+
+
+if we wanna delete the conatiner: docker rm <conatiner name/ID>
+                                  docker rm -f <conatiner name/ID>
+
+
+ubuntu@ip-172-31-2-98:~$docker ps -q
+6ss28gsj
+2fsrhav9
+
+here it will display all running conatiner ID's. if we wanna delete all running conatiners.
+
+ubuntu@ip-172-31-2-98:~$docker rm -f $(docker ps -q)
+
+if we wanna delete all containers(running+stopped): ubuntu@ip-172-31-2-98:~$docker rm -f $(docker -aq)
+
+if we want to see only stopped containers
+
+docker ps -f "status=Exited" OR docker ps -a -f "status=Exited"
+
+if we wanna delete only stopped conatiners 
+
+docker conatiner prune   OR    docker rm $(docker ps -aq -f "status=Exited")
+
+if we wanna delete only running conatiners 
+
+docker rm $(docker ps -aq -f "status=Running")
+
+if we want to see only dangling images:-  docker images -f dangling=true
+
+*we cant do port binding or port mapping or volume mapping for running containers. we can only do all these mapping whiel creating a container.
+
+#some commands we are not going to use
+docker pause <conatinername/ID>  --> it will pause the conatiner for browsing. we cant access it untill you unpause.
+docker ps  --> it will display paused status to that container.
+
+docker unpause <conatinername/ID> --> it will unpause and browse the conatiner.
+
+
+*docker stop <conatinername/ID>  --> it will stop the conatiner gracefully. whaetver process running inside the conatiner for pricess termination signla.
+
+*docker kill <conatinername/ID> --> it will also stop the conatiner. but forcefully. it will forcefully terminate the process.
+*after doing both we can restart also using: docker start <conatinername/ID>
+
+ubuntu@ip-172-31-2-98:~$docker kill 6ss28gsj
+ubuntu@ip-172-31-2-98:~$docker ps 
+ubuntu@ip-172-31-2-98:~$docker ps -a
+ubuntu@ip-172-31-2-98:~$docker start 6ss28gsj
+
+  
+RENAMING
+=========
+docker rename <oldname>  <newname>
