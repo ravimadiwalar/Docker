@@ -5,7 +5,7 @@ docker image prune:- it will remove all dangling images
 docker system prune:- it will delete all dangling images, stopped containers and unused docker networks.
 docker conatiner prune:- it will delete all stopper conatiners. 
 
-ubuntu@ip-172-31-2-98:~$docker prune
+ubuntu@ip-172-31-2-98:~$docker image prune
 
 we have dangling image but cant delete after applying docker prune also. why bcoz it is running in one container. To check the running conatiners. 
 here we can see our dangling image under one running container ID.
@@ -64,3 +64,5 @@ ubuntu@ip-172-31-2-98:~$docker start 6ss28gsj
 RENAMING
 =========
 docker rename <oldname>  <newname>
+
+
