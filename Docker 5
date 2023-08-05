@@ -178,4 +178,47 @@ and create new conatiner.
 
 All requiered confirguarationwill do while creating an image. it will not recommned any images while in conatiner. 
 
+==> Dokcer commit <containername/ID> <imagename>
+
+this commit command will be used to save the changes we have done in our container. it will create one more image in conatiner with new name that you give 
+with chnages that we have done. and it will consuem more space.
+
+ubuntu@ip-172-31-39-160:~$ docker commit f48997b1391 containerregistry/maven-web-application-from-conatiner:1
+
+we will not do this thing in real time. whatever you want in conatiner we should do in dockerfile itself while creating.
+
+==> Docker attach 
+It will attach container process(shell) ti the current system process (shell).
+
+ubuntu@ip-172-31-39-160:~$ docker attached f48997b1391
+
+go and browse the application with public IP address. here in our console we can see those chnages happening in that browser in live. using this we can find out 
+errors, some exceptions and debug the process. if i press CTRL+C it will stops/kill that process. 
+
+==> docker cp 
+Using this command we will copy any file from container to our local system or sytem to container.
+
+docker cp <source> <destination>
+
+#Conatiner to system:
+docker cp <containername/ID>:/<file/folder path of the conatiner> <systempath>
+
+#system to container:
+docker cp <systempath> <containername/ID>:/<file/folder path of the conatiner>
+
+ubuntu@ip-172-31-39-160:~$ docker ps 
+
+here we can  see NAME in the end of that line. copy that (mavenapp)
+ubuntu@ip-172-31-39-160:~$ docker exec mavenapp ls logs
+.
+.
+.
+here will get some file. i want to copy this file to our local system. it will copy to the current directory.
+ubuntu@ip-172-31-39-160:~$ docker cp mavenapp:/usr/local/tomcat/logs/catalina.2021.23.21.log mavenappconatiner.log
+ubuntu@ip-172-31-39-160:~$ docker ls
+.....     ....       ......      mavenappconatiner.log
+
+
+
+
 
