@@ -65,4 +65,117 @@ RENAMING
 =========
 docker rename <oldname>  <newname>
 
+ubuntu@ip-172-31-2-98:~$docker ps
+3gsfu5ihj121
+ubuntu@ip-172-31-2-98:~$docker logs 3gsfu5ihj121
+
+above we can get all logs relatd to the conatiner. docker logs <conatinerID/name>
+as part of your conatiner you are running some program /some application. whateve send to system.out and system.err will be displayed in console.
+here we can see tomcat logs
+
+if youwant to display onl last 10 lines: docker logs <containerID/Name> --tail 10
+if we want 20. we can put 20 and will get the 20 lines.
+
+docker logs 3gsfu5ihj121 -f  --> it will display all floating logs contineously. running logs. if you wanna come out just type CTRL+C
+
+if you want to move that all logs to one txt file if development team asks for details of logs.
+ubuntu@ip-172-31-2-98:~$docker logs 3gsfu5ihj121 >> mavenwevbapplication.txt
+
+==>
+docker top <containerID/Name> 
+
+it will disply what processes are running in that container. below tomcat is running. 
+ubuntu@ip-172-31-2-98:~$docker top 3gsfu5ihj121
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                2720                2698                0                   02:42               ?                   00:00:09            /usr/bin/java -Djava.util.logging.config.file=/usr/local/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/usr/local/tomcat/endorsed -classpath /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar -Dcatalina.base=/usr/local/tomcat -Dcatalina.home=/usr/local/tomcat -Djava.io.tmpdir=/usr/local/tomcat/temp org.apache.catalina.startup.Bootstrap start
+
+
+*Can we have/run more than one processin single container?
+-> technically yes, but its not recommended to run more than one process in single conatiner. bcoz we have to isolate each conatiner.
+
+==> To check the CPU utilization/Memory(RAM) usage
+docker stat <containerID/Name> 
+
+ubuntu@ip-172-31-39-160:~$ docker stats f48997b1391c
+CONTAINER ID   NAME                  CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+f48997b1391c   mavenwebapplication   0.32%     150.7MiB / 965.7MiB   15.61%    8.18kB / 74.5kB   65.4MB / 7.59MB   28
+CONTAINER ID   NAME                  CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O         PIDS
+f48997b1391c   mavenwebapplication   0.11%     150.7MiB / 965.7MiB   15.61%    8.18kB / 74.5kB   65.4MB / 7.59MB   28
+
+above we can see the cpu and memory(RAM) utilization to that container 150. 7 mb out of 965 mb and pecentage also we can see.
+965mb is our t2.micro memory. 
+
+Can we limit to my containers? i dont want to take my conatiner more than some limit usage of memory/CPU utilization?
+Yes, we can find out those commands in docker documentation to set a limit. Runtime options with Memory, CPUs, and GPUs browse in google. we have to
+set this limit while running the conatiner.
+
+docker run -d --name <conatinername> -p <hostport:containerport> <imagename> --cpu="1.5" -m=500m
+Specify how much of the available CPU resources a container can use. For instance, if the host machine has two CPUs and you set --cpus="1.5", the container 
+is guaranteed at most one and a half of the CPUs.
+
+
+*What happens if the conatiner is running out fo memory?
+We wont get quick response and process will be very slow. it will kill the application/process. 
+
+
+==> We can execute commands on conatiner. 
+    docker exec <containerID/Name> <command>
+
+ubuntu@ip-172-31-39-160:~$ docker exec f48997b1391c ls
+LICENSE
+NOTICE
+RELEASE-NOTES
+RUNNING.txt
+bin
+conf
+lib
+logs
+temp
+webapps
+work
+
+ubuntu@ip-172-31-39-160:~$ docker exec f48997b1391c pwd
+/usr/local/tomcat
+
+ubuntu@ip-172-31-39-160:~$ docker exec f48997b1391c ls webapps
+ROOT
+docs
+examples
+host-manager
+manager
+maven-web-application
+maven-web-application.war
+
+==>
+We can go inside the conatiner and work. it-> interactive. inside we can execute any command. 
+
+docker exec -it <containerID/Name> /bin/bash
+
+ubuntu@ip-172-31-39-160:~$ docker exec -it f48997b1391 /bin/bash
+root@f48997b1391c:/usr/local/tomcat# ls
+LICENSE  NOTICE  RELEASE-NOTES  RUNNING.txt  bin  conf  lib  logs  temp  webapps  work
+root@f48997b1391c:/usr/local/tomcat# pwd
+/usr/local/tomcat
+root@f48997b1391c:/usr/local/tomcat# ls webapps/
+ROOT  docs  examples  host-manager  manager  maven-web-application  maven-web-application.war
+
+Above we can execute any command and we can check all dependency soaftwares inside (tomcat, java). but we cannot see some commands which are not necessery to run docker
+and container. like vi command. conatiner should have minimul software and it is light weight. so it deletes all unneccessry packages, modules, commands, mvnetc. 
+
+we can do some changes inside the container. i m installing some softwares inside the conatiners. 
+
+root@f48997b1391c:/usr/local/tomcat#apt install vim
+.
+.
+.
+root@f48997b1391c:/usr/local/tomcat#vi /confu/server.xml
+
+here we can get edir option. 
+
+root@f48997b1391c:/usr/local/tomcat#exit
+will come out and then stop the conatiner and start the conatiner again. there also we will get that vi editor comment. but we wont get that command when we delete
+and create new conatiner. 
+
+All requiered confirguarationwill do while creating an image. it will not recommned any images while in conatiner. 
+
 
