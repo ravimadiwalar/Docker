@@ -1,3 +1,6 @@
+Dokcer file--> Dokcer images(Package which contains everything  to run a piece of siftware/application) --> Docker conatiner(Process where 
+app is running . ots a run time instace of an image)
+
 Dangling Image:- Image nit tagged with any repo.  
 
 if you wanna delete all dongling images
@@ -217,6 +220,71 @@ here will get some file. i want to copy this file to our local system. it will c
 ubuntu@ip-172-31-39-160:~$ docker cp mavenapp:/usr/local/tomcat/logs/catalina.2021.23.21.log mavenappconatiner.log
 ubuntu@ip-172-31-39-160:~$ docker ls
 .....     ....       ......      mavenappconatiner.log
+
+
+Docker File
+============
+Its a file which contains docker DSL keywords/Instructons  using  which we can create an image quickly. Docker will 
+process these instructions from top to bottom in the order.
+
+Docker DSL- Dokcer Domain Specific language 
+
+Instructions:
+--------------
+==>FROM  ->From indicates the base image using which we are craeting our own image.
+         if we dont give any version name after base image name. it will consider latest version. 
+
+Syntax: FROM <registry/repo>:<version>
+ EX: FROM tomcat:8.0.j re8
+     FROM node
+
+Every app/software have multiple layers. so tomcat have (conatiner run time(libersies to talk host kernel)+java+Tomcat)
+
+==>MAINATINER -> its deprecated. its like a documentation. its author and it maintains this docker file.
+
+MAINATINER Mithun Tech <devopstraining@gamil.com>
+
+==>COPY
+We can copy files/folders  to the image  from local  system  (the system where we are creating  images). COPY will copy files/folders while creating an image. 
+
+Syntax:
+      <local sytem path>  <Image file system path>
+COPY       <source>           <Destination>
+
+EX: COPY target/jave-web-app*.war /usr/local/tomcat/webapps/java-web-app.war
+
+COPY . .   --> First dot represents where we are building our image and second dot its a working directory of the image. 
+
+*Diff btw docker cp and COPY?
+Dokcer CP:- we copy file from conatiner to local system or vice versa
+COPY:- Copy file to the image while creating an image.
+
+==>ADD
+ADD can also copy files to image. we can copy local files and we can download files from remote http(s) endpoints.  
+
+Syntax:
+ADD <sourcepath> <destinationpath>
+EX: ADD target/jave-web-app*.war /usr/local/tomcat/webapps/java-web-app.war
+
+ADD <sourceURL>  <destinationpath>
+
+EX: ADD https://downloads.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.zip.asc /usr/local/tomcat/webapps/java-web-app.war
+
+above we have copyed tomcat8 version zip file and copying/adding to local system.
+*if we are adding from tar file. it must have .tar extension. it will extract automatically. if its other than that also weill not accept.
+for ex: .tar.gz also doesnt workout.
+
+==> We can execute commands using RUN,CMD,ECTRYPOINT instructions.
+
+=>RUN--> RUN instruction or command will be executed while creating an image. we can have n-number of RUN instructions in a dockerfile all these RUN instructions   
+will be executed in top to bottom order.
+
+Syntax: RUN <command>
+Ex: RUN mkdir -p /usr/local/tomcat  -->These instrctions will be executed on top of base image. if base image doesn't have any package/command in it. it will not
+exected in RUN command. but we can instakl using below 
+
+RUN apt update -y && apt install unzip
+RUN unzip tomcat.zip
 
 
 
