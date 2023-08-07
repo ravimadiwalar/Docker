@@ -276,17 +276,45 @@ for ex: .tar.gz also doesnt workout.
 
 ==> We can execute commands using RUN,CMD,ECTRYPOINT instructions.
 
-=>RUN--> RUN instruction or command will be executed while creating an image. we can have n-number of RUN instructions in a dockerfile all these RUN instructions   
-will be executed in top to bottom order.
+=>RUN--> RUN instruction or command will be executed while creating an image. we can have n-number of RUN instructions in a dockerfile all these RUN 
+instructions will be executed in top to bottom order.
 
 Syntax: RUN <command>
-Ex: RUN mkdir -p /usr/local/tomcat  -->These instrctions will be executed on top of base image. if base image doesn't have any package/command in it. it will not
-exected in RUN command. but we can instakl using below 
+Ex: RUN mkdir -p /usr/local/tomcat  -->These instrctions will be executed on top of base image. if base image doesn't have any package/command in it.
+it will not exected in RUN command. but we can instakl using below 
 
 RUN apt update -y && apt install unzip
 RUN unzip tomcat.zip
 
+Usecase: Using RUN we can install and configure required softwares in the image while creating an image.
 
+==> CMD
+CMD instruction or command will be  excecuted while craeting a container.
 
+EX: we have created one conatiner using Tomcat. but we cant start that tomcat manually. we should give some CMD to start that tomcat.
 
+ubuntu@ip-172-31-39-160:~$ docker ps
+conatiner ID   IMAGE                             COMMAND          CREATED  ..    ..  ..
+7GSJSS67       dockerhandson/java-web-app:1      "catalina.sh"      2 min ago
 
+above we can see catalina.sh command. but we didnt add that CMD while craeting a dockerfile. then how did it come? 
+its already there in tomcat in docker hub.
+
+Can we have more than one CMD for docker image?
+Yes we can have more than one CMD in dockerfile/image but it will execute one. But only (lat/recent CMD in the order ) will be executed. 
+
+Diff btw RUN and CMD?
+RUN instructins will be executed while creating an image(building docker image). CMD instrctions will be used while we are startng the container.
+
+Syntax:
+CMD <command>
+CMD date
+CMD ls
+
+==>ENTRYPOINT
+ENTRYPOINT instrctions will be executed whil careting a conatiner.
+
+Syntax:
+ENTRYPOINT <command>
+CMD date
+CMD ls
