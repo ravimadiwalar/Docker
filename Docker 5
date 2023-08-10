@@ -316,5 +316,69 @@ ENTRYPOINT instrctions will be executed whil careting a conatiner.
 
 Syntax:
 ENTRYPOINT <command>
-CMD date
-CMD ls
+ENTRYPOINT date
+ENTRYPOINT ls
+
+There are two type of forms: We can define RUN, CMD,ENTRYPOINT either in shell form or executable form.
+1) Shell form: 
+
+Syntax:
+RUN <command>
+CMD <command>
+ENTRYPOINT <command>
+
+EX:
+ RUN mkdir -p /usr/local/tomcat
+CMD sh catalina.sh run
+ENTRYPOINT sh catalina.sh run
+
+Internally above commands will be executed as below.
+/bin/<shell> -c <command>   ( Shell can be either bash or sh)
+
+RUN mkdir -p /usr/local/tomcat
+/bin/bash -c mkdir -p /usr/local/tomcat
+
+CMD sh catalina.sh run
+/bin/bash -c sh catalina.sh run
+
+ENTRYPOINT sh catalina.sh run
+/bin/bash -c sh catalina.sh run
+
+2)Executable form
+
+Syntax:
+RUN ["command", "Arg1" "Arg2"]
+CMD ["command", "Arg1" "Arg2"]
+ENTRYPOINT ["command", "Arg1" "Arg2"]
+
+EX:
+RUN ["mkdir", "-p", "/usr/local/tomcat"]
+CMD ["sh", "catalina.sh", "run"]
+ENTRYPOINT ["sh", "catalina.sh", "run"]
+
+Internally above commands will be executed as below.
+/bin/<excecutabel> <Arguments>
+
+RUN ["mkdir", "-p", "/usr/local/tomcat"]
+/bin/mkdir -p  /usr/local/tomcat
+
+CMD ["sh", "catalina.sh", "run"]
+/bin/sh catalina.sh run
+
+ENTRYPOINT ["sh", "catalina.sh", "run"]
+/bin/sh catalina.sh run
+
+
+==> What is the mail diff for using both?
+When i am using Shell form.our command will not be execuated as a main process. it will be used as a child process under bash. but if we consider the
+Executable form our commands will be used as a main process. Why it matters?  especially CMD and entrypoint when we killed the container the child process
+will not be aware that conatiner is about to be killed but executable form will get notified and act accordigly bcoz it acts as a root process. the Executable
+form will be recommonded on dockerfile.
+
+*We can explain that y we are using executable form while giving interviews (watch youtube).
+
+*Always mention RUN command in shell form and CMD ENTRYPOINT will be in executable form.
+
+*Diff btw CMD and ENTRYPOINT? 
+Both are used while creating a container.
+CMD command/instrctions can be overriden while creating a container where as  ENTRYPOINT cannot be.
