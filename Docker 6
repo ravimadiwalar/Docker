@@ -49,8 +49,79 @@ give one uniqe name.
 ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker run imageone date
 Sun Aug 13 03:47:59 UTC 2023
 
-abovee we have added one more command date (pass date command) whle creating a conatiner. but it exected that date 
+above we have added one more command date (pass date command) whle creating a conatiner. but it executed that date 
 command in console. here we have override the CMD.
+
+If we give one more CMD. while running the container it will consider last one and display accordingly.
+
+*How can we see the layers of the image?
+docker history <image name/ID>
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker history 5d82d9263afc
+IMAGE          CREATED        CREATED BY                                      SIZE      COMMENT
+5d82d9263afc   13 hours ago   /bin/sh -c #(nop)  CMD ["echo" "Welcome to C…   0B
+cdca12f39691   13 hours ago   /bin/sh -c apt update -y && apt install git …   118MB
+d6fe66971192   13 hours ago   /bin/sh -c echo RUNTWO                          0B
+943dd35665eb   13 hours ago   /bin/sh -c mkdir -p /opt/test                   0B
+5be5d61ad9dd   13 hours ago   echo Welcome from RUNONE                        0B
+c3b511654159   13 hours ago   /bin/sh -c #(nop)  MAINTAINER Mithun Tech <m…   0B
+5a81c4b8502e   6 weeks ago    /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>      6 weeks ago    /bin/sh -c #(nop) ADD file:140fb5108b4a2861b…   77.8MB
+<missing>      6 weeks ago    /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      6 weeks ago    /bin/sh -c #(nop)  LABEL org.opencontainers.…   0B
+<missing>      6 weeks ago    /bin/sh -c #(nop)  ARG LAUNCHPAD_BUILD_ARCH     0B
+<missing>      6 weeks ago    /bin/sh -c #(nop)  ARG RELEASE                  0B
+
+ last 5 missing layers are from base image and top ones are from our created image.
+
+*If we are building a image again it will take that from cache but we dint want that to take it from cache. so that time 
+==> docker build -t imageone --no-cache
+
+==> ENTRYPOINT
+ENTRYPOINT also executes while running a container. 
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ vi dockerfile_ENT
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ cat dockerfile_ENT
+FROM centos
+RUN ["echo", "RUNONE"]
+ENTRYPOINT ["echo", "welcometoentrypoint]"
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker build -t imagetwo -f /home/ubuntu/Dockerfile_lab/dockerfile_ENT .
+Sending build context to Docker daemon  3.072kB
+Step 1/3 : FROM centos
+latest: Pulling from library/centos
+a1d0c7532777: Pull complete
+Digest: sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177
+Status: Downloaded newer image for centos:latest
+ ---> 5d0da3dc9764
+Step 2/3 : RUN ["echo", "RUNONE"]
+ ---> Running in b23f0f891eb3
+RUNONE
+Removing intermediate container b23f0f891eb3
+ ---> 0527f3528feb
+Step 3/3 : ENTRYPOINT ["echo", "welcometoentrypoint]"
+ ---> Running in 299026270ff8
+Removing intermediate container 299026270ff8
+ ---> 292dd08fb3c4
+Successfully built 292dd08fb3c4
+Successfully tagged imagetwo:latest
+
+Above we have given a path to that new file. bcoz it will not identify if its in other name than just dockerfile and it
+has two dockerfiles there. so we should give path while building an image.
+But ENTRYPOINT hasn't executed yet. it will execute while running a conatiner.
+
+if we give date command at the end. it wil display that only not todays date. bcoz ENTRYPOINT will consider that as an argument.
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker run imagetwo date
+welcometoentrypoint date
+
+*What if CMD and ENTRYPOINT in single dockerfile?
+it will consider ENTRYPOINT and CMD instructions as a argumnets to that ENTRYPOINT(display at the end). if we give date command 
+at the end while running the container. it will override and consider date not CMD instructins.
+
+
+
+
 
 
 
