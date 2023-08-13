@@ -1,0 +1,59 @@
+if we get an error  While creating an image and it has already created an half image. then we correct that error and 
+and build the image again it will consider it from that error point. and after building also if you run that also if you biuld 
+it doesn't take much time bcoz it will take that all from cache.
+
+Below i have just created an image without tagging to any repo. 
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ cat Dockerfile
+FROM ubuntu
+MAINTAINER Mithun Tech <mithuntechtarining@gmail.com>
+RUN ["echo",  "Welcome from RUNONE"]
+RUN mkdir -p /opt/test
+RUN echo RUNTWO
+RUN apt update -y && apt install git -y
+CMD ["echo", "Welcome to CMD"]
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker build -t imageone .
+Sending build context to Docker daemon  2.048kB
+Step 1/7 : FROM ubuntu
+ ---> 5a81c4b8502e
+Step 2/7 : MAINTAINER Mithun Tech <mithuntechtarining@gmail.com>
+ ---> Using cache
+ ---> c3b511654159
+Step 3/7 : RUN ["echo",  "Welcome from RUNONE"]
+ ---> Using cache
+ ---> 5be5d61ad9dd
+Step 4/7 : RUN mkdir -p /opt/test
+ ---> Using cache
+ ---> 943dd35665eb
+Step 5/7 : RUN echo RUNTWO
+ ---> Using cache
+ ---> d6fe66971192
+Step 6/7 : RUN apt update -y && apt install git -y
+ ---> Using cache
+ ---> cdca12f39691
+Step 7/7 : CMD ["echo", "Welcome to CMD"]
+ ---> Using cache
+ ---> 5d82d9263afc
+Successfully built 5d82d9263afc
+Successfully tagged imageone:latest
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker run imageone
+Welcome to CMD
+
+Above we have created a container with no ports bcoz i dont have any application here. that CMD command has 
+this much instructions "Welcome to CMD" so it has got executed. and chek the conatiner docker ps -a --> it would
+give one uniqe name.
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker run imageone date
+Sun Aug 13 03:47:59 UTC 2023
+
+abovee we have added one more command date (pass date command) whle creating a conatiner. but it exected that date 
+command in console. here we have override the CMD.
+
+
+
+
+
+
