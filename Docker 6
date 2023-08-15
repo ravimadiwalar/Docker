@@ -74,7 +74,7 @@ c3b511654159   13 hours ago   /bin/sh -c #(nop)  MAINTAINER Mithun Tech <m…   
 
  last 5 missing layers are from base image and top ones are from our created image.
 
-*If we are building a image again it will take that from cache but we dint want that to take it from cache. so that time 
+*If we are building a image again it will take that from cache but we dont want that to take it from cache. so that time 
 ==> docker build -t imageone --no-cache
 
 ==> ENTRYPOINT
@@ -116,7 +116,7 @@ ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker run imagetwo date
 welcometoentrypoint date
 
 *What if CMD and ENTRYPOINT in single dockerfile?
-it will consider ENTRYPOINT and CMD instructions as a argumnets to that ENTRYPOINT(display at the end). if we give date command 
+it will consider ENTRYPOINT and CMD instructions as an argumnets to that ENTRYPOINT(display at the end). if we give date command 
 at the end while running the container. it will override and consider date not CMD instructins.
 
 
