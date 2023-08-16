@@ -119,11 +119,103 @@ welcometoentrypoint date
 it will consider ENTRYPOINT and CMD instructions as an argumnets to that ENTRYPOINT(display at the end). if we give date command 
 at the end while running the container. it will override and consider date not CMD instructins.
 
+==>WORKDIR- Change/Switch Directory
+
+Usig this will set a working directory of the container. Whatever instructions are after this WORKDIR will execute 
+under set directory.
+
+Sometimes if we dont mention that workdir also it will take one work directory. bcoz it was set in our base image.
+
+ubuntu@ip-172-31-0-166:~$ docker run imageone pwd
+/
+ubuntu@ip-172-31-0-166:~$ docker exec 32a4fc8f848d pwd
+/app
+ubuntu@ip-172-31-0-166:~$ docker exec -it 32a4fc8f848d bash
+root@32a4fc8f848d:/app#
+
+abovee we can see the container is running under root and i entered inside the container bash and there also we 
+can see root. it means they set root for all. we may not find out in our docker file but it might be in base image.
 
 
+==>USER- We can set user for a container as a which user we want to execute commands in a container. Switching the user
+within the conatiner.
+
+To find out the USER- docker top <containerName/ID>
+
+ubuntu@ip-172-31-0-166:~$ docker top 32a4fc8f848d
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                1529                1506                1                   12:48               ?                   00:00:00            python manage.py runserver 0.0.0.0:8001
+root                1556                1529                7                   12:48               ?                   00:00:01            /usr/local/bin/python manage.py runserver 0.0.0.0:8001
+
+Above we can see root user. we can find out this root inside the base file/anywhere. 
+USER - we can set however we want. in stagewise also we can change. based on that the user will change. we cant see any 
+useradd command in that file. then where it is? it might in our base image dockerfile.
+
+==> ENV - We can set/Export environment variables for an image and container.
+If we want we can set our own ENV.
+
+ENV <key> <value>
+EX: ENV CATALINA_HOME /usr/local/tomcat
+
+We can find out the ENV in both images and containers if we set. in images if we want to see we use command
+--> docker inspect <imagename/ID>
+
+*We can pass ENV while running the container also==> docker run --env <key>=<value>
+                                                 OR    docker run -e <key>=<value>
+
+Sometimes we need diff variables for each environment(staging/QA/Prod). so that time we need this ENV while running a container.
+
+Based on these we can check also
+
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+ubuntu@ip-172-31-0-166:~/Dockerfile_lab$ docker exec -it 32a4fc8f848d  bash
+root@32a4fc8f848d:/app# echo $PATH
+/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+We could see all these ENV's in every dockerfile. EX: check the java any version . there we will get that all ENV they set.
+
+==> ARG - We can define variables like ENV in dokcerfile. These are normal variables.
+
+ARG <key>=<value>
+
+*What is the diff btw ENV and ARG in docker?
+=>These argumnets (ARG) will be accessible only within the docker file and will be used only while creating an image. 
+but ENv will be used within the dockerfile and after creating an Image and container also.
+
+*Can we pass an arguments to docker while creatimg an image?
+Yes
+
+EX: idont want to hardcore the file name in COPY.
+FROM centos
+ARG filename=java-web-app.war
+COPY target/$filename /usr/local/tomcat
+
+above it will conisder java-web-app.war as a filename while creating an image. 
+if we want we can pass that ARG while building an image.
+--> docker build -t imagefour --build-arg filename=abc.war .
+For above one it will take file name as a abc.war
 
 
+==>LABEL- LABELS are key value pairs we can set/add labels to image. its a kind of meta data(Its data about data).
 
+To know the branch name of the created image. Below we can see the barnch name that we have mentioned is develop. if we clone
+the code from other than develop branch the label will always be develop. but thats wrong. to do that we have to add ARG.
+
+FROM openjdk
+ARG branchname=develop
+LABEL branch $branchname
+COPY target/userprofile.jar  /app/userprofile.jar
+WORKDIR /app
+ENTRYPOINT ['java' , '-jar' , 'userprofile.jar']
+
+Now go and execute "docker inspect"   here we can see the branch name.
+If we dont pass any arguments while creating an image. the branch name will always be develop. so we need to pass ARG.
+
+docker build -t containerregistry/userprofile:1 --build-arg branchname=feature
+docker inspect containerregistry/userprofile:1
+
+now it will display feature as a brnachname. 
 
 
 
