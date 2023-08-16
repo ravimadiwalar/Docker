@@ -215,7 +215,30 @@ If we dont pass any arguments while creating an image. the branch name will alwa
 docker build -t containerregistry/userprofile:1 --build-arg branchname=feature
 docker inspect containerregistry/userprofile:1
 
-now it will display feature as a brnachname. 
+now it will display feature as a branchname. 
+
+
+==> EXPOSE <port#>
+Its a kind of documnetation to indicate  on which  port container is listening/running. 
+EX: EXPOSE 8080
+EXPOSE 8000
+
+Using this we can just indicate/expose the port no that we have used. if we give different port No here it will not 
+change any port that we have already set. its just to understand while deplying the image.
+
+docker inspect <imagename/ID>
+
+using this command we can find out the port no. 
+
+
+==> VOLUME <dir>
+Whatever data in the conatiner will be deleted once we delete the conatiner.if we need to retain some dir even after deleting
+also will use VOLUME
+
+
+
+
+
 
 
 
