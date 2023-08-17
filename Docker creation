@@ -35,7 +35,7 @@ ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt update -y
 .
 above we have installed docker in Ubuntu - sudo apt docker.io and for updation sudo apt update -y
 
-now we have to create a docker image. so we need to create our won account in Docker Hub and take that Username ( its a Registry). for building docker image
+now we have to create a docker image. so we need to create our own account in Docker Hub and take that Username ( its a Registry). for building docker image
 docker build -t  <registry/repo>:<version> . 
 -t means we are tagging that built image to some registry and dot at the end presents that current dir.
 then we have to move that image to public registry in Dockerhub. and create one repo. then 
@@ -43,7 +43,8 @@ EX:
 ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 .
 
 above we are going to build an image in our maven-web-appliaction bcoz we have our dockerfile inside. but we would face permission deny. so craete one user in docker 
-ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker ubuntu
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker ubuntu  OR 
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo usermod -aG docker $USER  --> It will consider all users not only ubuntu. 
 
 our server would face permission issue so we created one user and gave permission to ubuntu directly. then restart the server again.
 
@@ -56,10 +57,11 @@ ubuntu@ip172-12-23-12:~maven-web-appliaction$sude apt install maven -y
 now it will install maven and its depedency software like java and all. now go ahead and craete a package and we can see this in target folder. 
 ubuntu@ip172-12-23-12:~maven-web-appliaction$mvn clean packge
 ubuntu@ip172-12-23-12:~maven-web-appliaction$ls targer/
+
 then craete one more ubuntu instance to deploy the image. name of that instance is Docker_Dev_Server  it works as a container now. and it should have docker installed. so open its ssh and install docker. 
 
 ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt update
-ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt docker.io -y
+ubuntu@ip172-12-23-12:~maven-web-appliaction$ sudo apt install docker.io -y
 
 now go to first linux and build the image
  ubuntu@ip172-12-23-12:~maven-web-appliaction$docker build -t dockerhandson/maven-web-appliaction:1 . 
