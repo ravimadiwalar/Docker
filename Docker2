@@ -33,7 +33,7 @@ for dockerhub we dont need to give URL. for private registry we have to
 for Nexus - docker build -t 172.67.180.120:8083/maven-web-appliaction:1 .
                             (nexus server ip adress:port)
 
-for ECR-   docker image -t amazon.ecr.1265.com/maven-web-application:1 .
+for ECR-   docker build -t amazon.ecr.1265.com/maven-web-application:1 .
                            ( ECR URL)
 ]
 
@@ -41,7 +41,7 @@ if we want to authenticate with private registry we have to fallow below ones
 for Nexus - docker login -u admin -p admin123 172.67.180.120:808
 for ECR  -  docker login -u admin -p admin123 amazon.ecr.1265.com
 
-now we have to push that imahe to registry
+now we have to push that image to registry
 ubuntu@172.23.42.212:~maven-web-apliacation$docker push dockerhandson/maven-web-application:1
 
 it pushes all layers of that image to registry. go to docker hub and refresh your registry there we can get this in 1 (version). 
@@ -57,7 +57,7 @@ but we get an error why bocz we dont have that tag in that image
 
 Basic Commands: docker info    docker version or docker --version
 
-we can exicute docker image from anywhere
+we can execute docker image from anywhere
 
 ubuntu@172.23.42.212:~maven-web-apliacation$cd..
 ubuntu@172.23.42.212:~docker info   -->we can see images, server name, cpu, storage, etc
@@ -114,7 +114,7 @@ ubuntu@172.23.42.212:~maven-web-application$docker build -t dockerhandson/maven-
 .
 .
 .
-successufully tagger dockerhandson/maven-web-appliaction:latest
+successufully tagged dockerhandson/maven-web-appliaction:latest
 
 since we didn't mention the version. it chiose latest one by default.
 
@@ -148,7 +148,7 @@ maven-web-application   mavenwebapp.tar
 
 then we have to apply scp command and copy that tar file. then in that new server execute "docker load -i <file>.tar"   it will extract that image from the tar file.
 
-==> How to pus images to private registry?
+==> How to push images to private registry?
 lets demonistarte ECR (Elastic contaioner registry) in AWS.  lets create a ECR registry. search for ECR and click on Create repository in the name of maven-web-application. and selcet Private on top side and create registry.
 now we have to push that image here. so select the URL of that ECR new repo. and tag that image to registry.  
 
