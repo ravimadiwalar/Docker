@@ -235,6 +235,31 @@ using this command we can find out the port no.
 Whatever data in the conatiner will be deleted once we delete the conatiner.if we need to retain some dir even after deleting
 also will use VOLUME
 
+==>EXAMPLE:
+
+If its a node.js application. first clone this project and then write a Dockerfile.inside we can see package.json. its like
+pem file in nodejs.it contains all dependenciies. 
+
+FROM node:10 (If we dont give any version it will consider latest one).
+MAINTAINER Mithun Tech <emailID>
+RUN mkdir -p /usr/app  ( we have created one path)
+WORKDIR /usr/app  (set current directory to run the application)
+COPY . .  (copying the application in current dir of the system to current dir of image)
+RUN npm install  (it will install all required dependencies while creating an image)
+EXPOSE 9981
+CMD ["node" , "app.js"]  (node is to start the nodejs application. we can use "npm start"also. app.js is nodejs main scrpit)
+
+
+If we dont want copy some files in the image. so that time we have to craete one file with the name of ".dockeignore" and
+mention the file names which i dont want to copy.
+
+docker build -t containerregistry/node-js-app:1 .
+docker login -u containerregistry 
+docker push containerregistry/node-js-app:1
+docker run -d --name nodejsapp -p 9090:9981 containerregistry/node-js-app:1
+
+Now goto aws and open the port# 9090 in firewall and then copy that public IP and browse with PublicIP:9090. 
+we can see the application.
 
 
 
