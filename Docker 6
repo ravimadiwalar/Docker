@@ -253,6 +253,10 @@ CMD ["node" , "app.js"]  (node is to start the nodejs application. we can use "n
 If we dont want copy some files in the image. so that time we have to craete one file with the name of ".dockeignore" and
 mention the file names which i dont want to copy.
 
+Git clone http:
+sudo apt update -y
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER (Restart the linux)
 docker build -t containerregistry/node-js-app:1 .
 docker login -u containerregistry 
 docker push containerregistry/node-js-app:1
@@ -261,7 +265,11 @@ docker run -d --name nodejsapp -p 9090:9981 containerregistry/node-js-app:1
 Now goto aws and open the port# 9090 in firewall and then copy that public IP and browse with PublicIP:9090. 
 we can see the application.
 
-
+NOTE:
+1) Try to use alphine base images wherever its possible.
+2) Dont install unneccessery packages which is not requiredto run the application.
+3) Try to reduce the layers as much as possible.
+4)Use only official images from dockerhub.
 
 
 
