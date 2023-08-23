@@ -271,6 +271,29 @@ NOTE:
 3) Try to reduce the layers as much as possible.
 4)Use only official images from dockerhub.
 
+To check the networks- docker network ls
+
+==>DOCKER VOLUME: If the container deletes our data will get lost/vanished. but we need that data after deleting the conatiner
+also. so in that case we use docker volume,
+
+1)Stateless application: Here we are not maintaining any data. if its crashes we have to create one more application.
+
+2)Stateful application: Here we can store our container data and we can retrive that data after deleting the container also.
+
+ Databases(MySQL,Mongo etc)
+cache applications (redis)
+Jenkins.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
