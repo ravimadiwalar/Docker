@@ -276,28 +276,60 @@ To check the networks- docker network ls
 ==>DOCKER VOLUME: If the container deletes our data will get lost/vanished. but we need that data after deleting the conatiner
 also. so in that case we use docker volume,
 
-1)Stateless application: Here we are not maintaining any data. if its crashes we have to create one more application.
+1)Stateless application: Here we are not maintaining any data. if its crashes we have to create one more application. just to run the application we use this. 
 
-2)Stateful application: Here we can store our container data and we can retrive that data after deleting the container also.
+2)Stateful application: Here we can store our container data and we can retrive that data after deleting the container also. database is also running as a container.
+Wheteher it is a container or server one apllication access another application via IP address and port no. but here we cant connect with IP address bcoz it 
+will change everytime. Developer also should not hardcode something (Username, password,IP address) which is going to be changed for each and every environment.
+if he set hardcodes also we cxan set enviornment varibales using -e. 
 
  Databases(MySQL,Mongo etc)
 cache applications (redis)
 Jenkins.
 
 
+ EX:
+First clone spring-boot-mango from mithun githib and build and push an image.
+Then we have to create an mango date base container . we have to create enviornment(Username and password) to protect. then run the conatiner with -e
+if we rae installing database in a normal server we may have option to set username and passowrd interactivaly.since i m installing data base as a container
+we are passing those values as a envirnment variables. here we rae not doing post mapping bcoz its database container. it will interact internally.
+
+docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 mongo
+
+we can see these variables in MONGO official image and we have to just ask developer for username and passowrd and attache them while running a database container.
+
+ubuntu@ip-172-31-43-93:~/spring-boot-mongo-docker$ docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 mongo
+ubuntu@ip-172-31-43-93:~/spring-boot-mongo-docker$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS       NAMES
+9e86fc51d06c   mongo     "docker-entrypoint.s…"   7 seconds ago   Up 5 seconds   27017/tcp   mongo
+
+now our database container is ready. its running port is 27017. 
+
+Now we have to run/deploy my springboot image(front end appication). we have to add database container username and password(credentials) here. bcoz they will interact with 
+each other using those only. it will connect with database container. 
+
+our application will refer different variables (for variables name we may find them in .yml file. if not check with developer)
+"-e MONGO_DB_HOSTNAME=mongo"  ==> hostname we can use IP adrress but it will change everytime(dynamic). so better we use 
+conatiner name "mongo"
+
+-e MONGO_DB_USERNAME=devdb (same value as we given for database)
+-e MONGO_DB_PASSWORD=devdb@123 
+
+docker run -d --name springapp -p 8080:8080 -e MONGO_DB_HOSTNAME=mongo -e MONGO_DB_USERNAME=devdb -e MONGO_DB_PASSWORD=devdb@123 containerregistry/spring-boot-mango:1
+
+now we have both application container nad database container. now go and browse this pubilc ip with 8080.  fill all fields amd submit. we will get an error.
+we can heck that error in docker longs <containername/ID>
+
+here we didnt mention the network name while running the application conntainer. first delete all conatiners and create a network and attach that network to
+both containers.
 
 
+ubuntu@ip-172-31-43-93:~/spring-boot-mongo-docker$ docker network create springappnetwork
+d56d68a57c42cafcd2863c84830fc5de31cb6ae59668540b9d2c97338b1e709a
+
+Run the both containers again. 
+docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 --network springappnetwork mongo
+docker run -d --name springapp -p 8080:8080 -e MONGO_DB_HOSTNAME=mongo -e MONGO_DB_USERNAME=devdb -e MONGO_DB_PASSWORD=devdb@123 --network springappnetwork containerregistry/spring-boot-mango:1
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+Now go and browse and fill the data again. it will give result. 
