@@ -332,4 +332,92 @@ docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_R
 docker run -d --name springapp -p 8080:8080 -e MONGO_DB_HOSTNAME=mongo -e MONGO_DB_USERNAME=devdb -e MONGO_DB_PASSWORD=devdb@123 --network springappnetwork containerregistry/spring-boot-mango:1
 
 
-Now go and browse and fill the data again. it will give result. 
+Now go and browse and fill the data again. it will give result. here the mongo is stateful application and other one is stateless appliacation.
+
+* soemetimes we face an issue like no space left in device. that time check "df -kh" it will show utilization of the storage. and delete all unused images
+"docker rmi -f $(docker images -q)"
+and unused containers --> docker container prune
+
+if the stateless apllication deleted. we can create one more aplication by database with same commands.
+"docker run -d --name springapp -p 8080:8080 -e MONGO_DB_HOSTNAME=mongo -e MONGO_DB_USERNAME=devdb -e MONGO_DB_PASSWORD=devdb@123 --network springappnetwork containerregistry/spring-boot-mango:1"
+
+Each and every container will have its own file system. "docker exec mongo ls" --> Directory structure. 
+
+"docker exec mongo ls /data/db" --> here it is maintianing all its datbase related files. 
+
+If we stop the container will face an issue browsing the container(database process is down and application is not able to talk to database).
+but we cant loss the container data. if we start the container again we will access it. 
+
+docker stop mongo
+docker start mongo
+
+==> If the database container is deleted and its file system also get deleted. if we recreate a new container we will get container but without that 
+prevoius stste. if we want to maintain the same state of the container there is concept called "volumes". 
+
+VOLUMES(Storage):Volume is nothing but piece of storage. which can be mounted with our container file syste (directory/fiel) .
+
+Each and every container will have its own file system. when container is deleted the file system also gets deleted. in case of stateful application
+we will loss the state(data). using volumes we can maintain the state(data) of the conatiner. 
+
+Volume is not a backup. here we will mount(external storage:like disk) the staorage to the container. now the data will be actually maintaineed in the volumes.
+
+2 Types:
+1)Bindmounts: Bind mount is nothing but a piece of dir/file from  host system(Docker server/docker deamon) which is mounted with the container dir/file. Host is nothing but our server.
+from our "ls /". from here any file/dir we van choose and mount that to container. if we want we can create our won dir/file and mount that too.  
+
+mkdir mongodbdata
+
+now mongodbdata is part of our server/host. will mount this with container. but we dont need to mount this with root of our container. we just mount with mail folder/dir.
+
+*how should we come to know that is this the main folder/dir?
+-> EX: search with mongo in docker hub. go to where to store the data section and data/db inside the container, whwere mongodb by default will writes its data file.
+ this is a main folder then its our volume. if ww consider MYSQL also we can see /var/lib/mysql as a main folder.
+
+alredy we have mongo container. but we didnt mount with volumes. so delete that container "docker rm -f mongo" and run the container again with -v (volume)
+syntax: -v <Bindmonutpath/volumeName:containerpath>
+
+docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v /home/ubuntu/mongodbdata:/data/db --network springappnetwork mongo
+docker exec mongo /data/db --> now we can see these all dir/file in mongodbdata dir (ls mongodbdata)
+
+now container is gone. we dont need to worry about state. 
+docker rm -f mongo --> Deleted the container
+
+Now create a mongo container once. it will restore the all data and its state. but we should do -v (volume mapping) again.
+docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v /home/ubuntu/mongodbdata:/data/db --network springappnetwork mongo
+
+*Can i do volume mapping/mounting for a runnig container?
+No, we have to do this while creating a container. 
+
+2)PersistentVolume: docker will maintain docker information also. abovee we have just mounte a volume. to chekc the total volumes
+"docker volume ls" These are persistent volumes. 
+
+we can find all details about the volume --> docker inpsect <containername>
+OR sudo ls /var/lib/docker/volumes
+
+Here we have two types of volumes: 1)Local Volumes (driver) 2) External volumes(driver)
+
+Syntax: docker  volume create  -d <driver> <volumeName>
+        docker volume create -d local mongodb
+
+we have created a local volume(inside the server). and to check the detials --> docker inspect mongodb
+here we can mount point and will see the path and new folder name for that volumename mongo (_data) 
+
+Now craete a container with this new volume --> -v mongodb:/data/db ( here we gave direct name of that volume instead of path). 
+
+docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v mongodb:/data/db --network springappnetwork mongo
+
+docker volume ls
+local   mongodb
+
+again its new volume.now go and work on that aplication. it will add to this volume. if we delete also we can recreate/restore that same container data using 
+this:  
+"docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v mongodb:/data/db --network springappnetwork mongo
+
+
+
+
+
+
+
+
+
