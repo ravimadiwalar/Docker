@@ -409,10 +409,29 @@ docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_R
 docker volume ls
 local   mongodb
 
+* The main usage  of using the PersistentVolume is to protect from other user to corrupt the data. bcoz in bindmount if user has an access there is chance that 
+he can corrupt. but in PersistentVolume he cant.
+
 again its new volume.now go and work on that aplication. it will add to this volume. if we delete also we can recreate/restore that same container data using 
 this:  
-"docker run -d --name mongo -e MoNGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v mongodb:/data/db --network springappnetwork mongo
+"docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v mongodb:/data/db --network springappnetwork mongo
 
+
+2) External volumes(Driver): here we will not maintian our data in external storage like EBS, EFS, S3, NFS etc. in local driver if we loss the server we will loss that
+data also. so External volumes is good to use. 
+
+If we are creating volume with EBS we need EBS volume first (docker volume driver). we can find thta installation of the EBS plugin in "docker volume plugin list"
+i google will get a documentataion. come to Volume Plugins here we can see diff types of plugin volume drivers. driver is ntng but piece of code
+
+REX-RAY plugin: we first need driver is intalled in the docker. to do that come down a little bit from browser and  there we can see the Runtime-Docker Plugin
+if we want EBS volumes we use below one for installing the EBS driver. 
+"docker plugin install rexray/ebs EBS_ACCESSKEY=access_key EBS_SECRETKEY=secret_key 
+
+Here we need acccess key and secret key. we can create these keys by creating a new IAM user and take those keys. if not take our  root key. 
+AWS-Devops learnins-My Security Credentails-Access keys-Crete new Access key. and then install the plugin.
+
+
+The driver installation is only one time activity. dont need to install the driver evrytime when we create a EBS volume. 
 
 
 
