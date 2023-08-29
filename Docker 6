@@ -414,10 +414,10 @@ he can corrupt. but in PersistentVolume he cant.
 
 again its new volume.now go and work on that aplication. it will add to this volume. if we delete also we can recreate/restore that same container data using 
 this:  
-"docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 -v mongodb:/data/db --network springappnetwork mongo
+"docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 --network springappnetwork -v mongodb:/data/db  mongo
 
 
-2) External volumes(Driver): here we will not maintian our data in external storage like EBS, EFS, S3, NFS etc. in local driver if we loss the server we will loss that
+2) External volumes(Driver): here we will maintian our data in external storage like EBS, EFS, S3, NFS etc. in local driver if we loss the server we will loss that
 data also. so External volumes is good to use. 
 
 If we are creating volume with EBS we need EBS volume first (docker volume driver). we can find thta installation of the EBS plugin in "docker volume plugin list"
@@ -430,13 +430,33 @@ if we want EBS volumes we use below one for installing the EBS driver.
 Here we need acccess key and secret key. we can create these keys by creating a new IAM user and take those keys. if not take our  root key. 
 AWS-Devops learnins-My Security Credentails-Access keys-Crete new Access key. and then install the plugin.
 
-
 The driver installation is only one time activity. dont need to install the driver evrytime when we create a EBS volume. 
 
+To check the plugins --> docker plugin ls
+
+Now we will create  a volume using this plugin.--> docker volume create -d rexray/ebs:latest mongodbebs
+and check "docker plugin ls"  here will find that plugin in the name of rexray/ebs:latest
+
+Now go to aws and click on volumes and there we will get this "mongodbebs" name EBS volume with 16 GB(default). 
+
+docker inspect mongodbebs--> here we can see that the mountpoint is blank"". it means its not a local volume.
+docker plugin help --> it is used to know all diff commands.
 
 
+if you want to delete the plugin --> docker plugin disable rexray/ebs
+                                     docker plugin rm rexray/ebs
 
 
+Now create the container using external driver:
 
+"docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 --network springappnetwork -v mongodbebs:/data/db  mongo
+
+ Now go nad copy that ebs volume link and browse. will get that applicataion. 
+
+* Can we mount volume as a Readonly volume?
+Yes, while creating the container just add :ro . here container will read the data whatever we have that in the storage dont write anything. 
+but just now what we have craeted they have both read and write access to the data. 
+
+docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 --network springappnetwork -v mongodbebs:/data/db:ro  mongo
 
 
