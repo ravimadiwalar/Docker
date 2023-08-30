@@ -1,9 +1,9 @@
-Dokcer file--> Dokcer images(Package which contains everything  to run a piece of siftware/application) --> Docker conatiner(Process where 
-app is running . ots a run time instace of an image)
+Dokcer file--> Docker images(Package which contains everything  to run a piece of software/application) --> Docker conatiner(Process where 
+app is running . its a run time instace of an image)
 
-Dangling Image:- Image nit tagged with any repo.  
+Dangling Image:- Image not tagged with any repo.  
 
-if you wanna delete all dongling images
+if you wanna delete all dangling images
 docker image prune:- it will remove all dangling images
 docker system prune:- it will delete all dangling images, stopped containers and unused docker networks.
 docker conatiner prune:- it will delete all stopper conatiners. 
@@ -44,7 +44,7 @@ docker rm $(docker ps -aq -f "status=Running")
 
 if we want to see only dangling images:-  docker images -f dangling=true
 
-*we cant do port binding or port mapping or volume mapping for running containers. we can only do all these mapping whiel creating a container.
+*we cant do port binding or port mapping or volume mapping for running containers. we can only do all these mapping while creating a container.
 
 #some commands we are not going to use
 docker pause <conatinername/ID>  --> it will pause the conatiner for browsing. we cant access it untill you unpause.
@@ -73,10 +73,10 @@ ubuntu@ip-172-31-2-98:~$docker ps
 ubuntu@ip-172-31-2-98:~$docker logs 3gsfu5ihj121
 
 above we can get all logs relatd to the conatiner. docker logs <conatinerID/name>
-as part of your conatiner you are running some program /some application. whateve send to system.out and system.err will be displayed in console.
+as part of your conatiner you are running some program /some application. whatever send to system.out and system.err will be displayed in console.
 here we can see tomcat logs
 
-if youwant to display onl last 10 lines: docker logs <containerID/Name> --tail 10
+if youwant to display only last 10 lines: docker logs <containerID/Name> --tail 10
 if we want 20. we can put 20 and will get the 20 lines.
 
 docker logs 3gsfu5ihj121 -f  --> it will display all floating logs contineously. running logs. if you wanna come out just type CTRL+C
@@ -93,7 +93,7 @@ UID                 PID                 PPID                C                   
 root                2720                2698                0                   02:42               ?                   00:00:09            /usr/bin/java -Djava.util.logging.config.file=/usr/local/tomcat/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/usr/local/tomcat/endorsed -classpath /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar -Dcatalina.base=/usr/local/tomcat -Dcatalina.home=/usr/local/tomcat -Djava.io.tmpdir=/usr/local/tomcat/temp org.apache.catalina.startup.Bootstrap start
 
 
-*Can we have/run more than one processin single container?
+*Can we have/run more than one processing in single container?
 -> technically yes, but its not recommended to run more than one process in single conatiner. bcoz we have to isolate each conatiner.
 
 ==> To check the CPU utilization/Memory(RAM) usage
@@ -112,7 +112,7 @@ Can we limit to my containers? i dont want to take my conatiner more than some l
 Yes, we can find out those commands in docker documentation to set a limit. Runtime options with Memory, CPUs, and GPUs browse in google. we have to
 set this limit while running the conatiner.
 
-docker run -d --name <conatinername> -p <hostport:containerport> <imagename> --cpu="1.5" -m=500m
+docker run -d --name <conatinername> -p <hostport:containerport> <imagename> --cpus="1.5" -m=500m
 Specify how much of the available CPU resources a container can use. For instance, if the host machine has two CPUs and you set --cpus="1.5", the container 
 is guaranteed at most one and a half of the CPUs.
 
@@ -173,7 +173,7 @@ root@f48997b1391c:/usr/local/tomcat#apt install vim
 .
 root@f48997b1391c:/usr/local/tomcat#vi /confu/server.xml
 
-here we can get edir option. 
+here we can get edit option. 
 
 root@f48997b1391c:/usr/local/tomcat#exit
 will come out and then stop the conatiner and start the conatiner again. there also we will get that vi editor comment. but we wont get that command when we delete
