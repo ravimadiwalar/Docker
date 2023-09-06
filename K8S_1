@@ -1,0 +1,63 @@
+Kubernates or K8s it is called and its a replacement of Docker Swarm. K8s will manage the containers. 
+k8s is widely used one. why bcoz a) Open source b) Huge community Support c) Brand 
+@ K8s is an orchestration engine and open source plantform for managing containerized appliacation. 
+@ The container orchestration responsibilities are container deployment, scaling and Descaling of containers and container load balancing. 
+@ it was built by google and it is running on Go/Golang language. then donated to CNCF(clound native computing foundation) in 2014.
+@ K8s v1.0 was released on July 21 2015. 
+
+Kubernetes Features:
+1) Automated Scheduling: K8s provides advanced scheduler to launch container on cluster nodes based on their resource requirements and other constraints, while not sacrificing  availability.
+2) Self Healing capabilities: k8s allows  to replace and reschedules conytainer when nodes die. it also kills container don't respond to user-defined health check and doesn't advertise
+them to clients until they are ready to serve. if the container goes dowm it will recreate ans reschedule it. 
+3) Automated rollouts and rollbacks:  K8s rollout changes to the appliacation or its configuration while monitoring application helath to ensure it doesn't kill our all instances
+at the time. if something goes wrong , with kubernetes you can rollback the changes. it means we can roll back to our previous version of the application. 
+4) Scaling and load balanacing: k8s can scale up and sclae down the application as per the requirements with a simple commands, using a UI or automatically based on CPU usage. 
+5)Service discovery and Load balancing: in k8s will schedule pods and pods will have containers. We no need to worry about networking and communications. bcoz our application will be
+running in diff diff nodes. K8s will assign IP to containers and a single DNS name for a set of containers.   that can load-balance the tracffic inside the cluster.
+Containers get their own IP  so you can put a set of containers behind a single DNS name for load balancing. 
+
+6)   Storage Orchestration: In k8s also we have concept like volume strage for database. here we can use local/external driver to store the database and we can use EBS, EFS, S3 to stoare 
+our database to recreate the conatiner. 
+
+kubernetes Architecture:
+-------------------------
+K8s implements a cluster(group of servers) background , everything works from inside a Kubernetes Cluster. This cluster is hosted by one node acting as the "master" of the cluster. and the other nodes
+as'nodes' which do the actual 'containerization'. 
+
+we have diff conatinerization softwares: Docker, conatier-d, rocket(rkt) and coreOS.  
+
+conatiner orchestration softwares: Docker swarm, Kubernetes and Open shift.
+open shift is implemented on top of kubernetes. but it has some addtional security features from Redhat products. its Enterprise(not an open source). 
+
+Kubernetes can manage all type of containerizations. 
+
+* in k8s cluster each and every node(machine)should have container runtime software. this container runtime can be either docker or any other containerization software. 
+*In master m/c we have some components after settig up the cluster. a) API Server b) Scheduler c) Control manager d) ETCD . These are called as "control plane". 
+* In other m/c are worker m/c's.  they have the components like a)kubelet b) kubeproxy
+
+a)API Server: Here we will do all adimisrational functions. API(application programming interface). its a front end of the kubernetes control plane. communication center for developer, systemadmin and other 
+kubernetes componetes. if we want do any activity in the cluster i mean deploy some application, update or delete some application etc work will contact Master. within the master 
+API Server component will do all activity. 
+
+How can we interact with API server?
+--> There are two components we can connect with API server. CLI(command line interface)-kubectl  and GUI(Graphical user interface)- here we can set up a dashboard to connect with API.
+
+Once we start working in CLI to execute any commands the request goes to API server and API server will process that request that information will persist in the ETCD. 
+
++==>ETCD: is key value data store. kind of database. it will have cluster state/info. it has hw many pods we have, node info, deployment info etc. 
+==> Schedulers: it will schedule the unassigned pods on the nodes (m/c). it also talks to ETCD to check on unscheduled pods.
+                if the node has lot of pods and there is no enough CPU and memory. in that case the schduler will scedue the pods on the other node. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
