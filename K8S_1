@@ -33,7 +33,7 @@ Kubernetes can manage all type of containerizations.
 
 * in k8s cluster each and every node(machine)should have container runtime software. this container runtime can be either docker or any other containerization software. 
 *In master m/c we have some components after settig up the cluster. a) API Server b) Scheduler c) Control manager d) ETCD . These are called as "control plane". 
-* In other m/c are worker m/c's.  they have the components like a)kubelet b) kubeproxy
+* In other m/c are worker m/c's.  they have the components like a)kubelet b) kubeproxy --> yhese are work/slave nodes.
 
 a)API Server: Here we will do all adimisrational functions. API(application programming interface). its a front end of the kubernetes control plane. communication center for developer, systemadmin and other 
 kubernetes componetes. if we want do any activity in the cluster i mean deploy some application, update or delete some application etc work will contact Master. within the master 
@@ -44,14 +44,22 @@ How can we interact with API server?
 
 Once we start working in CLI to execute any commands the request goes to API server and API server will process that request that information will persist in the ETCD. 
 
-+==>ETCD: is key value data store. kind of database. it will have cluster state/info. it has hw many pods we have, node info, deployment info etc. 
+==>ETCD: is key value data store. kind of database. it will have cluster state/info. it has hw many pods we have, node info, deployment info etc. 
 ==> Schedulers: it will schedule the unassigned pods on the nodes (m/c). it also talks to ETCD to check on unscheduled pods.
                 if the node has lot of pods and there is no enough CPU and memory. in that case the schduler will scedue the pods on the other node. 
 
 
+@ K8s will not create new node if one node goes down. it doesn't manage the nodes. K8s is just a containerization orchestaration software. 
 
+1) Kubelet: The scheduler will schedule the pods with the help of Kubelet. Its a node componenet and its a kind of an agent software for control plane. it runs on each and every node.
+the master m/c talk to kubelet to amanage the pods.   
 
+==> Control manager: here we can manay control manager EX: Replication controlmanager, Replica set controlmanager,node controlmanager etc. This control manager controls lot of 
+process in the cluster. out of 3 one node goes down the Replication controlmanager or Replica set controlmanager will do desired state reconolation. it will interact with kubelet and 
+see hiw many pods are running and manage. if node goes down the node control manager will control/take some actions.
 
+2)Kubeproxy: Its network proxy. it anables the k8s service abstraction by maintaining network rules on the host and performing connection forwarding. it will maintain newtwok proxy 
+on nodes. These network rules allow network communication to your pods from inside or outside the cluster. it will do load balancing withing the cluster. 
 
 
 
