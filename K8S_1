@@ -61,6 +61,32 @@ see hiw many pods are running and manage. if node goes down the node control man
 2)Kubeproxy: Its network proxy. it anables the k8s service abstraction by maintaining network rules on the host and performing connection forwarding. it will maintain newtwok proxy 
 on nodes. These network rules allow network communication to your pods from inside or outside the cluster. it will do load balancing withing the cluster. 
 
+If we want to access the application from the outside(end user). the request will first goes to Kubeproxy and it will rediret that to requsted pod. we can see these kubelet and 
+kubeproxy in matser node also. 
+
+
+Installation of K8s:
+====================
+These are penty of ways to install the K8s. but primarily there rae 2 type of k8s clusters 
+1)Self managed K8s clusters: we have to manage the cluster. we have some siftwares like Minikube, Kubeadm,kubespray ways to set up the k8s.
+will apply this cluster when our client is not ata all ready to host any servoices in clouds and he wants to set up everything in his own data center (on premise infrastructure). 
+
+2) managed k8s cluster (PAAS-Platform as a service): we have 
+EKS-Elastic K8s service--> AWS cloud
+AKS- Azure k8s service --> Azure cloud
+GKE -Google k8s engine --> google cloud
+IKE -IBM k8s engine --> IBM cloud  
+
+Here the cloud provider will manage everuything if someting goes wrong. we can use/integrate with other cloud services like loadbalancer, cloud storage,IAM etc.. 
+if any worker goes down it will set up another worker.
+*in cloud also we can set up a self managed cluster usning cloud features but if anything goes wrong we have to manage. 
+
+
+==> Minikube: its sinle node K8s cluster. it means here we can see only one server and that will work as both master and worker/slave. 
+==>kebeadm: using this software we can set up multinode selfmanaged k8s clusters. we are installing using selfmanaged cloud based cluster. 
+
+
+
 
 
 
