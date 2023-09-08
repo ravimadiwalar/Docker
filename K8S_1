@@ -139,7 +139,7 @@ systemctl enable docker.service
 swapoff -a
 sed -i '/ swap / s/^\(.*\)$\1/g' /etc/fstab 
 
-# Istall  required packages  and apt keys: 
+# Install  required packages  and apt keys: 
 
 apt-get install -y apt-trnsport-https curl
 
@@ -148,6 +148,47 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 cat << EOF | tee /etc/apt/sources.lists.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+
+apt-get update -y
+
+# Install kubeadm, kubelet and kubectl
+apt-get update -y kubeadm kubelet kubectl  --> This is for master node only bcoz we need kubectl in matser node only. if required also no need to install in the mayster also. 
+o can take seperate mc. here i can install only CLI. once execute this kubectl command it will talk to API server directly. 
+Here kubeconfig file will have API server info. IP adress, which port it is running. whenever we execute kubectl command in this mc. it will use kubeconfig file and request goes to API server.
+     -----------
+
+apt-get update -y kubeadm kubelet --> for worker nodes/mc's  
+
+#Enable and start the kubelet service. 
+systemctl daemon-reload
+systemctl start kubelet
+systemctl enable kubelet.service 
+
+Now all required softwares have been installed. whatever mc we want to use that as a matser mc, execute below commands
+
+======In Master Node Start=====
+
+Sudo su -
+
+#Initialize K8s  matser by  executing below command. this will setup control plane softwares in master mc. in the background it will download/pull the imges of all control 
+plane components to create the pod. 
+
+kubeadm init
+
+#exit as root user and execute as a normal ubuntu user.
+exit
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
