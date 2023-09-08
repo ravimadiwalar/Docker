@@ -82,13 +82,72 @@ if any worker goes down it will set up another worker.
 *in cloud also we can set up a self managed cluster usning cloud features but if anything goes wrong we have to manage. 
 
 
-==> Minikube: its sinle node K8s cluster. it means here we can see only one server and that will work as both master and worker/slave. 
+==> Minikube: its single node K8s cluster. it means here we can see only one server and that will work as both master and worker/slave. 
 ==>kebeadm: using this software we can set up multinode selfmanaged k8s clusters. we are installing using selfmanaged cloud based cluster. 
 
+Control plane nodes:
+======================
+Protocol    Derections     port range     purpose                     Usedby 
+TCP          Inbound        6443*         K8s API server               All
+TCP          Inbound        2739-2380     ETCD server client API       Kube API server, ETCD 
+TCP          Inbound        10250         Kubelet API                  Self, Control plane
+TCP          Inbound        10251         kube-Scheduler               self
+TCP          Inbound        10252         Kube-control manager         self
+
+Work nodes:
+Protocol    Derections     port range     purpose           Usedby
+TCP          Inbound        10250         Kubelet API       Self, Control plane
 
 
+*Why we need Kube proxy in master? 
+Suppose we have pods in master node and i want access from the master itself. that time outside user cam also access it.
+
+kubelet: It will manage all control plane. control plane itself running as a pod. kubelet will maintain that. 
 
 
+@ master node- Needs t2.medium and 2 core cpu and 4GB RAM
+@ Worker node- Need t2.micro
+
+So create one EC2 instace with t2. medium and select Ubuntu and open all traffic and set a range 172.31.0.0/16. bcoz all ports open but will be accessible only in that vpc range.
+in same VPC i am creating my matsers and workers to communicate with eac other. 
+
+similarly craete 2 more mc's with t2. micro. with same Ubuntu and all trafiic and that same vpc range. 
+
+In real time we host these servers in private subnets. bcoz of security. suppose if we are hosting in private subnet will i able to install required softwares from the internet
+(docker, kebeadm, kebelet). NO.. so that time we can use NAT gate if we have in on premise. if we dont have NAT in on premise (company) we need to downlaod required softwares 
+as a zip.tar, rpm, apt etc file  wherever you have an access to internet and from that server you can copy to the private server and install the required software. 
+
+We can see the installation of K8s in youtube. 
+
+
+====COMMAON FOR MASTER AND SLAVE START=======
+some softwares are common in both matser and slave. we have to install them one by one.
+
+#First login as a root user 
+sudo su -
+
+#Update package manage
+apt-get update -y 
+
+#Install and enable docker
+apt install docker.io -y
+usermod -aG docker ubuntu
+systemctl restart  docker
+systemctl enable docker.service
+
+#Turnoff the swap memory/space: as per k8s documenatation we have disble swap memeory. 
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$\1/g' /etc/fstab 
+
+# Istall  required packages  and apt keys: 
+
+apt-get install -y apt-trnsport-https curl
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+cat << EOF | tee /etc/apt/sources.lists.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
 
 
 
