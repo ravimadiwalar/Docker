@@ -141,11 +141,11 @@ sed -i '/ swap / s/^\(.*\)$\1/g' /etc/fstab
 
 # Install  required packages  and apt keys: 
 
-apt-get install -y apt-trnsport-https curl
+apt-get install -y apt-transport-https curl
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 
-cat << EOF | tee /etc/apt/sources.lists.d/kubernetes.list
+cat <<EOF >| tee /etc/apt/sources.lists.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
@@ -157,7 +157,7 @@ o can take seperate mc. here i can install only CLI. once execute this kubectl c
 Here kubeconfig file will have API server info. IP adress, which port it is running. whenever we execute kubectl command in this mc. it will use kubeconfig file and request goes to API server.
      -----------
 
-apt-get update -y kubeadm kubelet --> for worker nodes/mc's  
+apt-get install -y kubeadm kubelet --> for worker nodes/mc's  
 
 #Enable and start the kubelet service. 
 systemctl daemon-reload
@@ -178,7 +178,7 @@ kubeadm init
 
 Now we initialized the control plane . scroll down at the end we can see 
 
-'kubeadm join 172.12.188.12:6443........ '  ==> 172.12.188.12- master mc IP address and 6443- API server port
+'kubeadm join 172.31.43.204:6443........ '  ==> 172.31.43.204- master mc IP address and 6443- API server port
 
 it measn using we can conncet with other worker mc's (execute them in worker mc). they can interract with each other once we done this. 
 
@@ -188,9 +188,9 @@ but kubectl will not be matser/worker mc. once the installation done it will tal
 #exit as root user and execute as a normal ubuntu user.
 exit
 
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 To check the kubectl version==> kubectl version
 This will work once we install the kubeconfig file only. 
@@ -220,7 +220,7 @@ coredns-527537ddje                  0/1      Pending      0         9m
 we can see corednc. Within the k8s there is a DNS (domain name service). one applicataion want to talk to another will use DNS.   
 but these dns are in pending status bcoz required network is not there. now apply weave network. 
 
-ubuntu@ip-172-31-188-19:~kubect apply -f "htpps://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+ubuntu@ip-172-31-188-19:~kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 .
 .
 .
