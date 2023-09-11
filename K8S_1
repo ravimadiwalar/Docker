@@ -210,11 +210,14 @@ weave network
 etc
 
 ubuntu@ip-172-31-188-19:~kubectl get pods -n kube-system
-NAME                               READY      STATUS     RESATRTS   AGE
-coredns-527537ddje                  0/1      Pending      0         9m
-.
-.
-.
+NAME                                       READY   STATUS    RESTARTS   AGE
+coredns-74ff55c5b-9jmdj                    0/1     Pending   0          112s
+coredns-74ff55c5b-j9ktx                    0/1     Pending   0          112s
+etcd-ip-172-31-33-243                      1/1     Running   0          117s
+kube-apiserver-ip-172-31-33-243            1/1     Running   0          117s
+kube-controller-manager-ip-172-31-33-243   1/1     Running   0          117s
+kube-proxy-zfxrk                           1/1     Running   0          113s
+kube-scheduler-ip-172-31-33-243            1/1     Running   0          117s
 
 
 we can see corednc. Within the k8s there is a DNS (domain name service). one applicataion want to talk to another will use DNS.   
@@ -227,11 +230,15 @@ ubuntu@ip-172-31-188-19:~kubectl apply -f "https://cloud.weave.works/k8s/net?k8s
 now it has craeted weave network. 
 
 ubuntu@ip-172-31-188-19:~kubectl get pods -n kube-system
-NAME                               READY      STATUS     RESATRTS   AGE
-coredns-527537ddje                  0/1      Running      0         9m
-.
-.
-weave-net-6dg2y                      0/2    Running       1         2m
+NAME                                       READY   STATUS            RESTARTS   AGE
+coredns-74ff55c5b-9jmdj                    0/1     Pending           0          2m34s
+coredns-74ff55c5b-j9ktx                    0/1     Pending           0          2m34s
+etcd-ip-172-31-33-243                      1/1     Running           0          2m39s
+kube-apiserver-ip-172-31-33-243            1/1     Running           0          2m39s
+kube-controller-manager-ip-172-31-33-243   1/1     Running           0          2m39s
+kube-proxy-zfxrk                           1/1     Running           0          2m35s
+kube-scheduler-ip-172-31-33-243            1/1     Running           0          2m39s
+weave-net-bkldg                            0/2     PodInitializing   0          11s
 
 above we can see the dns is in running status and we can see weave network also. 
 
@@ -252,11 +259,50 @@ ubuntu@ip-172-31-188-19:~ kubectl get nodes
 here we can see other mc IP adress also and see whether they rae ready or not. 
 
 
+======step by step======
 
+sudo su -
+apt update -y
+apt install docker.io -y
 
+#Install and enable docker
+apt install docker.io -y
+usermod -aG docker ubuntu
+systemctl restart  docker
+systemctl enable docker.service
 
+#Turnoff the swap memory/space: as per k8s documenatation we have disble swap memeory. 
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$\1/g' /etc/fstab 
 
+# Install  required packages  and apt keys:
 
+sudo apt-get install -y apt-transport-https ca-certificates curl
+curl -fsSL https://dl.k8s.io/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+apt update -y
+
+# Install kubeadm, kubelet and kubectl
+sudo apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
+
+systemctl daemon-reload
+systemctl start kubelet
+systemctl enable kubelet.service 
+
+kubeadm init
+
+#exit as root user and execute as a normal ubuntu user.
+exit
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl get nodes
+
+#weave network
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 
 
 
