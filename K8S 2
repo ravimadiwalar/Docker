@@ -1,0 +1,36 @@
+kubectl version  
+
+cat ~/.kube/config  --> here we have our cluster info. kubectl will use that config file to intercat with API server (Cluster).
+
+kubectl get pods -o wide -n kube-system  --> herw we can see all our cluster componenets and they have diff nodes. control plane have same IP and kube-proxy also we can 
+in diff IP and same IP as well. bocz here kube-proxy works in both nodes. these are all part of pod.
+
+kubelet is not a pod. its a process. and its a part of every node. 
+
+sudo service kubelet status
+.
+.Active:active(running)
+
+
+NOTE: diff btw kind and kubeadm? 
+==> kind is one software using which we can set up a cluster in our windows mc. but here our nodes will be running as a container. 
+==> Kube-spray is also a software. another way of installing the cluster. kube-sparay and kubeadm are ways of installing the cluster. kube-spray use ansible playbook in the background. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
