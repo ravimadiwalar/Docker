@@ -18,13 +18,91 @@ NOTE: diff btw kind and kubeadm?
 
 
 
+--> Name Space: We can islolate K8s clusters using namespaces. Name space is like a virtual cluster within the cluster. 
+                assume we have dev1, dev2, dev3 apllications. instead of creating a 3 diff clusters we can create them in sigle cluster with diff name spaces. same cluster but 
+                logically isolated. they can help you and your teams with organization,security, and even performanace. the 1st 4 names spaces created in a cluster are always Default,
+         kube-system and kube-public and Kube-node-lease. 
+
+for finding the name spaces: kubectl get namespace
+ubuntu@ip-172-31-33-243:~$ kubectl get namespace
+NAME              STATUS   AGE
+default           Active   7d21h
+kube-node-lease   Active   7d21h
+kube-public       Active   7d21h
+kube-system       Active   7d21h
+
+here we have 4 name spaces. within these name spaces we create some K8s resources/objects. those are
+
+POD
+ReplicationContraoler (rs)
+Replicaset (rs)
+Deamonset
+Deployment
+StatefullSet
+Service
+ConfigMap
+Secrete
+PersistentVolume
+PersistentVolume Claim
+Role
+Role Binding
+ClusterRole
+ClusterRole Binding
 
 
 
+ubuntu@ip-172-31-33-243:~$ kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   7d21h
+
+Above its pointing to Default name space by default and it will show all resource status. if we try to find pods it will show nothing bocz we havent created any pods yet in any
+name space. like this we havent created any resources here. so will the same thing. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods
+No resources found in default namespace.
+
+below we are checking the resources in Kube-system name space. here is the result. we can see resources but these are related to k8s system resources. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get all -n kube-system
+NAME                                           READY   STATUS    RESTARTS   AGE
+pod/coredns-74ff55c5b-9jmdj                    1/1     Running   1          7d21h
+pod/coredns-74ff55c5b-j9ktx                    1/1     Running   1          7d21h
+pod/etcd-ip-172-31-33-243                      1/1     Running   1          7d21h
+pod/kube-apiserver-ip-172-31-33-243            1/1     Running   1          7d21h
+pod/kube-controller-manager-ip-172-31-33-243   1/1     Running   1          7d21h
+pod/kube-proxy-zfxrk                           1/1     Running   1          7d21h
+pod/kube-scheduler-ip-172-31-33-243            1/1     Running   1          7d21h
+pod/weave-net-bkldg                            2/2     Running   3          7d21h
+
+NAME               TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+service/kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   7d21h
+
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/kube-proxy   1         1         1       1            1           kubernetes.io/os=linux   7d21h
+daemonset.apps/weave-net    1         1         1       1            1           <none>                   7d21h
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/coredns   2/2     2            2           7d21h
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/coredns-74ff55c5b   2         2         2       7d21h
 
 
 
+==> POD: 
+* A POD always runs on a Node (master/worker). 
+*A POD is the smallest building block or basic unit of scheduling in k8s.
+*In a k8s cluster , a pod represents a running process (In docker conatiner is the running process). 
+*inside a pod, you can have one or more conatiners. Thoss containers all share a unique(same) network IP, Storage, Network and any other specificationapplied to the Pod. 
+ * each and every pod will have IP address in cluster. these will be mainatianed by k8s CNI(containe networking interface). Weave new we installed. that will control IP's.  
+* Pod is  group of one or more containers which will be running on some nodes. but we cant set two conatiners with same port #. 
+* if the two conatiners in same POD they communicate with each other isung localhost<container port>. 
+* any data saved inside the pod will disappear without peding.
 
+==>Two ways to execute kubectl:
+1) imperative Approach: its a command. 
+
+2) Declarative approach: we can decalre what we need in k8s yaml form. this is called k8s manifesrt file. will prefer more this approach. 
 
 
 
