@@ -186,8 +186,37 @@ javawebapppod   0/1     Pending   0          11m   10.47.0.1   ip-172-31-44-167 
 for aboce one will get more details about that pod. additional columns. that IP is pod IP. using this pod IP we can access inside the cluster.
 ubuntu@ip-172-31-33-243:~$ curl 10.47.0.1:8080
 
-we are getting the response from this POD IP. 
+we are getting the response from this POD IP. but in real time we will have multiple pods for one image. 
 
+==> How to access it from outside? 
+  = using Service. here we will not use pod IP.
+
+Service
+=========
+K8s service is responsible for making our pods discoverable(accessible) within the cluster or outside the cluster. 
+
+Types: clusterIP service
+      Node IP service
+      loadbalancer service (external laod balanacer)
+      Headless service
+
+
+*What is the diff btw Docker service and K8s service?
+-> docker serive: is kind of process and communication
+    k8s service: is only for communication. 
+
+*When we create a service will get one "cluster IP (Virtual IP)".  This IP will be mapped with service name(Kube-DNS). Using this other PODS can find  and talk the PODS of this 
+service using  service name. 
+
+*Service is just a logical concepts. the real work is being done by "Kube-Proxy" pod that is running on each node.
+* It redirects from cluster IP to POD IP. 
+
+Syntax:
+
+apiVersion: v1
+kind: Service
+metadata:
+namespace: 
 
 
 
