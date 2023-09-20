@@ -7,7 +7,7 @@ in diff IP and same IP as well. bocz here kube-proxy works in both nodes. these 
 
 kubelet is not a pod. its a process. and its a part of every node. 
 
-sudo service kubelet status
+ubuntu@ip-172-31-33-243:~$ sudo service kubelet status
 .
 .Active:active(running)
 
@@ -102,7 +102,68 @@ replicaset.apps/coredns-74ff55c5b   2         2         2       7d21h
 ==>Two ways to execute kubectl:
 1) imperative Approach: its a command. 
 
-2) Declarative approach: we can decalre what we need in k8s yaml form. this is called k8s manifesrt file. will prefer more this approach. 
+2) Declarative approach: we can decalre what we need in k8s yml file. this is called k8s manifesrt file. will prefer more this approach. 
+ Here also we have some root attributes are
+
+Apiversion: each and every k8s will have its own Apiversion. 
+
+Kind          apiversion
+Pod             v1
+rc              v1
+Service         v1
+rs             apps/v1
+Deployment     apps/v1
+daemonset      apps/v1
+Job            batch/v1
+
+
+kind: here we will mention which resource we are doing
+metadata:we will mention pod name and labels
+spec: specifications. 
+
+for pod creation:
+-----------------
+apiversion: v1
+kind: Pod
+metedata: 
+  name: <PODName>
+  labels: 
+    <key>: <value>
+spec:
+  containers: 
+  - name: <containername>
+    image: <imagename>
+    ports:
+    - containerPort: <containerport#>
+
+
+ubuntu@ip-172-31-33-243:~$ vi javawebapppod.yml
+apiversion: v1
+kind: Pod
+metadata: 
+  name: javawebapppod
+  labels: 
+    app: javawebapp
+spec: 
+  containers: 
+  - name: javawebappcontainers
+    image: dockerregistry/java-web-app:1
+    ports:
+    - containerPort: 8080
+
+:wq
+
+now we have created on pod yml file. if i want validate that file. we do dry run. if w have done something wrong in console it will through an error. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebapppod.yml --dry-run=client
+pod/javawebapppod created (dry run)
+
+
+
+
+
+
+
 
 
 
