@@ -127,6 +127,7 @@ apiversion: v1
 kind: Pod
 metedata: 
   name: <PODName>
+  namespace: <namespaceName>
   labels: 
     <key>: <value>
 spec:
@@ -138,7 +139,7 @@ spec:
 
 
 ubuntu@ip-172-31-33-243:~$ vi javawebapppod.yml
-apiversion: v1
+apiVersion: v1
 kind: Pod
 metadata: 
   name: javawebapppod
@@ -154,16 +155,38 @@ spec:
 :wq
 
 now we have created on pod yml file. if i want validate that file. we do dry run. if w have done something wrong in console it will through an error. 
+here i didnt mention the namespace name. the pod will craeted under default namespace. while appying also we can mention it. 
+
+kubectl apply -f javawebapppod.yml -n <namespaceName>
+
+*K8s supports both Json and yml format. 
 
 ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebapppod.yml --dry-run=client
 pod/javawebapppod created (dry run)
 
+  
+now go and apply this pod 
+
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebapppod.yml
+pod/javawebapppod created
+
+Now check the container is created or not:
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods
+NAME            READY   STATUS    RESTARTS   AGE
+javawebapppod   0/1     Pending   0          3m50s
+
+its still pending. and 0/1 is out one conatiner we have 0 got created. of two containers are pooending it shows 0/2. if one cretaed 1/2. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods -o wide
+NAME            READY   STATUS    RESTARTS   AGE   IP              NODE          NOMINATED NODE   READINESS GATES
+javawebapppod   0/1     Pending   0          11m   10.47.0.1   ip-172-31-44-167   <none>           <none>
 
 
+for aboce one will get more details about that pod. additional columns. that IP is pod IP. using this pod IP we can access inside the cluster.
+ubuntu@ip-172-31-33-243:~$ curl 10.47.0.1:8080
 
-
-
-
+we are getting the response from this POD IP. 
 
 
 
