@@ -214,9 +214,119 @@ service using  service name.
 Syntax:
 
 apiVersion: v1
-kind: Service
+kind: service
 metadata:
-namespace: 
+  name: <serviceName>
+  namespace: <namespacename>  --> this name should be same as we used in pod. if dont gice also it will consider automatically.
+spec: 
+  type: <ClusterIP/NodePort/LoadBalancer>   --> use any one type of service
+  selector: 
+    <PodLabelkey>: <Podlabelvalue>         --> Wiil find in pod. use this to connect with labels and services.
+  ports:   
+  - port: 80                                --> Default port of service
+    targetPort: <ContainerPort>             --> use the port what we use in POD as a container port.
+
+
+Now how service will idenfy the pod out of many pods. using labels and selectors concept. we alraedy have labels in pod. we can use that labels as a selectors. 
+so it can identify the pod. to find out that use the fallowing
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods --show-labels
+NAME            READY   STATUS    RESTARTS   AGE      LABELS
+javawebapppod   1/1     Running   0          3m50s    app=javawebapp
+
+
+aboce we can see labels app=javawebapp. use them as selectors 
+
+EX:
+apiVersion: v1
+kind: service
+metadata:
+  name: javawebappsvc
+spec: 
+  type: ClusterIP  
+  selector: 
+    app: javawebapp         
+  ports:   
+  - port: 80 
+    targetPort: 8080
+
+if any request comes to Kube-proxy through 80 port. it will redirect that to 8080 conatiner port. 
+
+lets craete a service now. in existing yml file we can add this also. but both should be divided by --- (3 hypens) this is yml standard. we can craete new yml file for service also fine. 
+
+ubuntu@ip-172-31-33-243:~$ vi javawebapppod.yml
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: javawebapppod
+  labels: 
+    app: javawebapp
+spec: 
+  containers: 
+  - name: javawebappcontainers
+    image: dockerregistry/java-web-app:1
+    ports:
+    - containerPort: 8080
+---
+ apiVersion: v1
+kind: service
+metadata:
+  name: javawebappsvc
+spec: 
+  type: ClusterIP  
+  selector: 
+    app: javawebapp         
+  ports:   
+  - port: 80 
+    targetPort: 8080
+
+:wq
+
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebapppod.yml
+pod/javawebapppod unchanged
+service/javawebappsvc created
+
+Now we have careted a service and pod has no change. these all info will be stored in ETCD. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get svc
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGE
+javawebappsvc      ClusterIP    10.106.146.40    <none>       80/TCP    46S
+kubernetes         ClusterIP     10.96.0.1       <none>       443/TCP    23h
+
+above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. 
+
+if we want to see all details about service. decribe it.
+
+ubuntu@ip-172-31-33-243:~$ kubectl describe svc javawebappsvc
+.
+.
+.
+Endpoint: 10.47.0.1:8080
+.
+
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods -o wide
+NAME            READY   STATUS    RESTARTS   AGE   IP              NODE          NOMINATED NODE   READINESS GATES
+javawebapppod   0/1     Pending   0          11m   10.47.0.1   ip-172-31-44-167   <none>           <none>
+
+Above we can see the POD IP as a EndPoint and 8080 port is a target port (container port). 
+
+ubuntu@ip-172-31-33-243:~$ curl 10.106.146.40
+
+herw we come to know that the IP is working. here i didnt mention 80 port. bcoz its default one. it will redirect that request to container port. 
+
+ubuntu@ip-172-31-33-243:~$ curl javawebappsvc
+curl: (6) Could not resolve host: javawebappsvc
+
+Why bocz i am using this service from the server (ubuntu@ip-172-31-33-243). but it will not work. we have DNS. that DNS resolution will work only from the pod. 
+
+
+
+
+
+
+
+
 
 
 
