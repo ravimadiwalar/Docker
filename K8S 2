@@ -269,7 +269,7 @@ spec:
     - containerPort: 8080
 ---
 apiVersion: v1
-kind: service
+kind: Service
 metadata:
   name: javawebappsvc
 spec: 
@@ -295,7 +295,7 @@ kubernetes         ClusterIP     10.96.0.1       <none>       443/TCP    23h
 
 above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. 
 
-if we want to see all details about service. decribe it.
+if we want to see all details about service. decribe it.  => kubectl describe svc <serviceName>
 
 ubuntu@ip-172-31-33-243:~$ kubectl describe svc javawebappsvc
 .
@@ -306,9 +306,11 @@ Endpoint: 10.47.0.1:8080
 
 
 ubuntu@ip-172-31-33-243:~$ kubectl get pods -o wide
-NAME            READY   STATUS    RESTARTS   AGE   IP              NODE          NOMINATED NODE   READINESS GATES
-javawebapppod   0/1     Pending   0          11m   10.47.0.1   ip-172-31-44-167   <none>           <none>
+NAME            READY   STATUS    RESTARTS   AGE   IP          NODE              NOMINATED NODE   READINESS GATES
+javawebapppod   1/1     Running   0          14m   10.44.0.2   ip-172-31-5-240   <none>           <none>
+mavenwebapp     1/1     Running   0          17m   10.44.0.1   ip-172-31-5-240   <none>           <none>
 
+cur
 Above we can see the POD IP as a EndPoint and 8080 port is a target port (container port). 
 
 ubuntu@ip-172-31-33-243:~$ curl 10.106.146.40
@@ -356,11 +358,82 @@ ubuntu@ip-172-31-33-243:~$ kubectl exec -it mavenwebapp bash
 bash-4.2# curl javawebappsvs
 
 From inside the pod our dns service is working fine. then we dont need to depend on the IP's. 
-Now we can access it from inside the pod. if we want to access it outside(browser). we need to apply NodePort Service. 
+Now we can access it from inside the pod. if we want to access it outside(browser). we need to apply "NodePort Service". Node is nothing but server port. 
+
+Now we have to go to javawebapppod.yml file and change Type from clusterIp to Nodeport IP. and nodeport range. The range is 30000 to 32767. what port we want to map for the server.
+in btw we can take any one. if i dont mention the node port range also k8s will assign one range. we can directly create a nodePort also. the node can be Master or worker node. 
+
+now iam just changing the port inside the file. 
+
+if we want to access it from inside we can use service name but from outside we need NodeIp and Node Port. 
+
+ubuntu@ip-172-31-33-243:~$ vi javawebapppod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: javawebapppod
+  labels:
+    app: javawebapp
+spec:
+  containers:
+  - name: javawebappcontainers
+    image: dockerhandson/java-web-app:1
+    ports:
+    - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebappsvc
+spec:
+  type: NodePort
+  selector:
+    app: javawebapp
+  ports:
+  - port: 80
+    targetPort: 8080
+    nodePort: 30032
+
+:wq
+
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebapppod.yml
+pod/javawebapppod unchanged
+service/javawebappsvc configured
+ubuntu@ip-172-31-33-243:~$ kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+javawebappsvc   NodePort    10.106.238.159   <none>        80:30032/TCP   134m
+kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        10d
+
+In port column we can  see that port range 30032. 
+
+To check how many port are open. using "sudo netstat -tunlp". if we dont have install it as per fallwoing and check the port open.
+
+ubuntu@ip-172-31-33-243:~$ netstat
+Command 'netstat' not found, but can be installed with:
+sudo apt install net-tools
+ubuntu@ip-172-31-33-243:~$
+ubuntu@ip-172-31-33-243:~$ sudo apt install net-tools
+.
+.
+ubuntu@ip-172-31-33-243:~$ sudo netstat -tunlp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 172.31.33.243:2380      0.0.0.0:*               LISTEN      2272/etcd
+tcp        0      0 172.31.33.243:2379      0.0.0.0:*               LISTEN      2272/etcd
+tcp        0      0 0.0.0.0:30032           0.0.0.0:*               LISTEN      3044/kube-proxy
 
 
 
 
+above we can see our port 30032. it is running by Kube-Proxy. if service goes to 30032. it will be processed by kube=proxy in the background. 
+
+ubuntu@ip-172-31-33-243:~$ curl 172-31-33-243:30032
+
+here we will get the responses from the POD. using private ip also we can access. 
+
+this 30032 port is assigned in worker node. if we want we can check using "sudo netstat -tunlp"
+
+now open this 30032 in security group and the take that server public ip and browse in google. "13.233.250.204:30032". we cann see the application. 
 
 
 
