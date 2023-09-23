@@ -293,7 +293,7 @@ NAME                TYPE        CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGE
 javawebappsvc      ClusterIP    10.106.146.40    <none>       80/TCP    46S
 kubernetes         ClusterIP     10.96.0.1       <none>       443/TCP    23h
 
-above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. 
+above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. we have to mention the selectors. the only will get end points. 
 
 if we want to see all details about service. decribe it.  => kubectl describe svc <serviceName>
 
@@ -310,7 +310,7 @@ NAME            READY   STATUS    RESTARTS   AGE   IP          NODE             
 javawebapppod   1/1     Running   0          14m   10.44.0.2   ip-172-31-5-240   <none>           <none>
 mavenwebapp     1/1     Running   0          17m   10.44.0.1   ip-172-31-5-240   <none>           <none>
 
-cur
+
 Above we can see the POD IP as a EndPoint and 8080 port is a target port (container port). 
 
 ubuntu@ip-172-31-33-243:~$ curl 10.106.146.40
