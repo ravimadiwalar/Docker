@@ -1,0 +1,46 @@
+Name Space: suppose if we have two projcets. i can host/deploy project 1 in one name space and other diff namespace. logically they are separated by namespace. 
+Name space is like a Cluster inside the Cluster for isolation of k8s resources. 
+
+Two containers in single pod will communicate with other by localHost. but one pod connect with other pod inside the cluster (they may in single mc or different mc)
+by Service resource. we will not use Pod IP. pod may go down. so we use service name. 
+
+One microservice pod communicate with other microservice pod withing the cluster(they may in single mc or different mc). we use ClusterIP service type. 
+         <ServiecName>:<ServicePort>
+
+From outside we use Node IP. <NodeIP>:<NodePort>
+
+Pod Lifecycle:
+*make a Pod to API server using a local pod definition file(Manifest file).
+*The API Server saves the info for the pod in ETCD.
+*The scheduler finds the unscheduled pods and schedules it to node.
+*Kubelet running on the node. sees the pod scheduled and fires up docker (To pull the images and create the container).
+*docker runs the container.
+*The entire lifecycle state of the pod is stored in ETCD.
+
+Pod Concepts:
+*Pod is ephemeral(lasting for a very short time) and wont be rescheduled to a new node onec dies. (Pod acn go down for any reason/any time)
+*You should not directly create/use pod for deployment, k8s have controllers like Replication controller,Replica Set,Deployment and Deamon sets to keep pod alive.
+
+
+Pod Model Types:
+Most often , when we deploy a pod to a k8s cluster, it will contain  a single container.but there are instaces when you might need to deploy a pod withe mupltiple containers. 
+
+1)One-container-per-pod: This kodel is the most popular. POD is the Wrapper for a single container. 
+1)Multi-container-pod or Sidecar Containers: in this model, a pod holds multiple co-located containers primary  container and utility container that helps or enhance how an application
+functions (example of sidecar containers are log shippers/watchers and monitoring agents). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
