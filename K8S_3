@@ -154,9 +154,108 @@ template:                 --> under template we are filling pod details. RC will
       - containerPort: 8080
 
 
+Now we have created in flipkartns name space and pods will be created in that name only. and create a service in flipkartns name space. 
+
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: javawebapprc
+  namespace: flipkartns   
+spec:
+  replicas: 2     
+  selectors: 
+    app: javawebapp
+template:                  
+  metadata: 
+    name: javawebapppod   
+    labels: 
+      app: javawebapp
+  spec: 
+    containers: 
+    - name: javawebappcontainer
+      image: dockerhandson/java-web-app:1    
+      ports: 
+      - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: javawebappsvc
+  namespace: flipkartns  --> if we dont mention also it will craete in the same name space.
+spec: 
+  type: NodePort
+  selectors: 
+    app: Javawebapp
+  ports:
+  - port: 80
+    targetPort: 8080   --> targetPort depends on your container port. 
+
+:wq
+
+before applying this check do we have any namespaces already. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get ns   --> here will get default namspaces
+
+we can create our own namespaces also 
+
+ubuntu@ip-172-31-33-243:~$ kubectl create ns flikartns
+namespace/flipkartns created
+ubuntu@ip-172-31-33-243:~$kubectl get ns  --> now we can see flipkartns
+
+Under manifest file we have alaredy mantioned the namespace.
+
+To check any resources in flipkart namespace: 
+ubuntu@ip-172-31-33-243:~$kubectl get all -n flipkartns
+No resource found in flipkartns namespace
+
+Now apply this : ubuntu@ip-172-31-33-243:~$kubectl apply -f javawebapprc.yml 
+replicationcontroller/javawebapprc created
+service/javawebapprc created 
+
+* in the yml file itself we can create a namespace (on the top side).  
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flipkartns
+---
+
+ubuntu@ip-172-31-33-243:~$kubectl get rc
+No resource found
+
+we cant see our replication controller here. why bcoz this is pointing to default namespace. so 
+
+ubuntu@ip-172-31-33-243:~$kubectl get all -n flipkartns
+
+now we cann see our replication controller with 2 pods. if we observe the pod names. both are unique. here we cann service port as well which was assigned by k8s.
+
+lets go to aws and open that port first. and take that public IP: 13.233.343.8:30555/jav-web-app and browse this from outside. 
+
+To check pods under flipkartns: kubectl get pods -n flipkartns 
+
+*Delete one pod and browse outside "13.233.343.8:30555/jav-web-app". we can see its opened. but we have deleted. how? RC has auomatically created one more pod. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get pods -n flipkartns 
 
 
-  
+now we can see new pod which was created recently(check the age). 
+
+#i dont want to give contect at the end of every command "-n flipkartns". so we need to set flipkart as a fixed namespace. to do that
+
+ubuntu@ip-172-31-33-243:~$ kubectl config set-context --current --namespace=flipkartns
+
+now we have set the fixed namspace. whatever you do now it will execute under flipkartns namespace. 
+
+to chek that: ubuntu@ip-172-31-33-243:~$ kebectl config get-context 
+
+we can change also : ubuntu@ip-172-31-33-243:~$ kubectl config set-context --current --namespace=default 
+
+
+
+
+
+
+
 
 
 
