@@ -27,7 +27,7 @@ Pod Concepts:
 Pod Model Types:
 Most often , when we deploy a pod to a k8s cluster, it will contain  a single container.but there are instaces when you might need to deploy a pod withe mupltiple containers. 
 
-1)One-container-per-pod: This kodel is the most popular. POD is the Wrapper for a single container. 
+1)One-container-per-pod: This Model is the most popular one. POD is the Wrapper for a single container. 
 1)Multi-container-pod or Sidecar Containers: in this model, a pod holds multiple co-located containers primary  container and utility container that helps or enhance how an application
 functions (example of sidecar containers are log shippers/watchers and monitoring agents). 
 
@@ -44,7 +44,7 @@ will start. its one time acativity to load some files before starting the main c
 
 4) Static Pods: 
                 Static pods are directly managed by the Kubelet. and the API server doesn't have any control over these pods. The kubelet is responsible to watach each static Pod
-and restart itit if it crashes. The static pods running on a node are visible on the API server. static pods doesn't have any associated replication controller. kubelet service 
+and restart it if it crashes. The static pods running on a node are visible on the API server. static pods doesn't have any associated replication controller. kubelet service 
 itself watches it and restart it when it crahses. There is no health check for static pod. 
 
 
@@ -78,10 +78,10 @@ replicaset.apps/coredns-74ff55c5b   2         2         2       12d
 Above we can see kube-proxy and weave-net. they will be managed by daemonset.apps. its not managed by kubelet. if some pods go down . these Daemonset will recrete and manage the pods. 
 and there are pod/coredns-74ff55c5b-9jmdj and pod/coredns-74ff55c5b-j9ktx. these Coredns will be managed by deployment.apps (deployment.apps/coredns). 
 
-Now we can se these will be managed by control Plane. for kube-proxy, weave-net and coredn we can see controllers. but for ETCD,kube-apiserver, kube-controller-manager and kube-scheduler
+Now we can see these will be managed by control Plane. for kube-proxy, weave-net and coredn we can see controllers. but for ETCD,kube-apiserver, kube-controller-manager and kube-scheduler
 we cant see any controllers. these will be managed by kubelet process directly. 
 
-The main Use for static pod is to Run Self-hosted control plane. we can also create our own static pods. in verey node (master/worker) we can see one folder called 
+The main Use for static pod is to Run Self-hosted control plane. we can also create our own static pods. in every node (master/worker) we can see one folder called 
 "sudo ls /etc/kubernetes/manifests/" if we keep our yml file inside this manifest folder. it will create a static pod. if any pod goes down it will create its own. kubelet will
 manage that. 
 
@@ -141,7 +141,7 @@ spec:
   replicas: 2     --> 2 pods will create.
   selectors: 
     app: javawebapp
-template:                 --> under template we are filling pod details. RC will be used to create a pod only. thats why we dont mention apiversionand kind under template again. 
+template:                 --> under template we are filling pod details. RC will be used to create a pod only. thats why we dont mention apiversion and kind under template again. 
   metadata: 
     name: javawebapppod   --> eventhough i m giving name our pod will not create in this name.
     labels: 
@@ -163,7 +163,7 @@ metadata:
   namespace: flipkartns   
 spec:
   replicas: 2     
-  selectors: 
+  selector: 
     app: javawebapp
 template:                  
   metadata: 
@@ -174,7 +174,7 @@ template:
     containers: 
     - name: javawebappcontainer
       image: dockerhandson/java-web-app:1    
-      ports: 
+      ports:          
       - containerPort: 8080
 ---
 apiVersion: v1
@@ -184,7 +184,7 @@ metadata:
   namespace: flipkartns  --> if we dont mention also it will craete in the same name space.
 spec: 
   type: NodePort
-  selectors: 
+  selector: 
     app: Javawebapp
   ports:
   - port: 80
@@ -195,12 +195,23 @@ spec:
 before applying this check do we have any namespaces already. 
 
 ubuntu@ip-172-31-33-243:~$ kubectl get ns   --> here will get default namspaces
+NAME              STATUS   AGE
+default           Active   16d
+kube-node-lease   Active   16d
+kube-public       Active   16d
+kube-system       Active   16d
 
 we can create our own namespaces also 
 
 ubuntu@ip-172-31-33-243:~$ kubectl create ns flikartns
 namespace/flipkartns created
 ubuntu@ip-172-31-33-243:~$kubectl get ns  --> now we can see flipkartns
+NAME              STATUS   AGE
+default           Active   16d
+flipkartns        Active   4s
+kube-node-lease   Active   16d
+kube-public       Active   16d
+kube-system       Active   16d
 
 Under manifest file we have alaredy mantioned the namespace.
 
@@ -225,13 +236,24 @@ No resource found
 
 we cant see our replication controller here. why bcoz this is pointing to default namespace. so 
 
-ubuntu@ip-172-31-33-243:~$kubectl get all -n flipkartns
+ubuntu@ip-172-31-33-243:~$ kubectl get rc -n flipkartns
+NAME           DESIRED   CURRENT   READY   AGE
+javawebapprc   2         2         0       71s
 
 now we cann see our replication controller with 2 pods. if we observe the pod names. both are unique. here we cann service port as well which was assigned by k8s.
 
-lets go to aws and open that port first. and take that public IP: 13.233.343.8:30555/jav-web-app and browse this from outside. 
+To know the Nodeport:
+ubuntu@ip-172-31-33-243:~$ kubectl get svc -n flipkartns
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+javawebappsvc   NodePort   10.98.218.30   <none>        80:31140/TCP   7m9s
+
+lets go to aws and open that port first. and take that public IP: 13.233.343.8:31140/jav-web-app and browse this from outside. 
 
 To check pods under flipkartns: kubectl get pods -n flipkartns 
+ubuntu@ip-172-31-33-243:~$ kubectl get pods -n flipkartns
+NAME                 READY   STATUS    RESTARTS   AGE
+javawebapprc-p2hjd   0/1     Pending   0          4m40s
+javawebapprc-r5bsp   0/1     Pending   0          4m40s
 
 *Delete one pod and browse outside "13.233.343.8:30555/jav-web-app". we can see its opened. but we have deleted. how? RC has auomatically created one more pod. 
 
