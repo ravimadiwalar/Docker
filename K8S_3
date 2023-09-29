@@ -265,6 +265,7 @@ now we can see new pod which was created recently(check the age).
 #i dont want to give contect at the end of every command "-n flipkartns". so we need to set flipkart as a fixed namespace. to do that
 
 ubuntu@ip-172-31-33-243:~$ kubectl config set-context --current --namespace=flipkartns
+Context "kubernetes-admin@kubernetes" modified.
 
 now we have set the fixed namspace. whatever you do now it will execute under flipkartns namespace. 
 
@@ -272,11 +273,39 @@ to chek that: ubuntu@ip-172-31-33-243:~$ kebectl config get-context
 
 we can change also : ubuntu@ip-172-31-33-243:~$ kubectl config set-context --current --namespace=default 
 
+Just change the context to Flipkartns again and see the pods. we have two pods. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl config set-context --current --namespace=flipkartns
+Context "kubernetes-admin@kubernetes" modified.
+ubuntu@ip-172-31-33-243:~$ kubectl get all
+NAME                     READY   STATUS    RESTARTS   AGE
+pod/javawebapprc-p2hjd   0/1     Pending   0          23h
+pod/javawebapprc-r5bsp   0/1     Pending   0          23h
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicationcontroller/javawebapprc   2         2         0       23h
+
+NAME                    TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/javawebappsvc   NodePort   10.98.218.30   <none>        80:31140/TCP   23h
 
 
+Here we can scale the pods count. ==> kubectl scale rc <rcname> --replicas=<count>
 
+ubuntu@ip-172-31-33-243:~$ kubectl scale rc javawebapprc --replicas=3
+replicationcontroller/javawebapprc scaled
+ubuntu@ip-172-31-33-243:~$ kubectl get all
+NAME                     READY   STATUS    RESTARTS   AGE
+pod/javawebapprc-dvcbk   0/1     Pending   0          4s             --> why am i getting 0/1 instead of 1/1?
+pod/javawebapprc-p2hjd   0/1     Pending   0          23h
+pod/javawebapprc-r5bsp   0/1     Pending   0          23h
 
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicationcontroller/javawebapprc   3         3         0       23h
 
+NAME                    TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/javawebappsvc   NodePort   10.98.218.30   <none>        80:31140/TCP   23h
+
+now we can see 3 pods and desired and current its showing 3. 
 
 
 
