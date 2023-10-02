@@ -435,6 +435,14 @@ this 30032 port is assigned in worker node. if we want we can check using "sudo 
 
 now open this 30032 in security group and the take that server public ip and browse in google. "13.233.250.204:30032". we cann see the application. 
 
+IMPORTANT:
+-----------
+POD- All applications will run here. in K8s background CRI (Container Run time interface)will run contineously. it will call Container-D internally. in POD will have all the 
+helping things to run the application. 
+
+why it is called smallest unit--> pod will run under deployment and deployment contains multi-pods. and this deploymnet will run under Service. service will be used to connect 
+with outside users to use the application. 
+
 
 
 
