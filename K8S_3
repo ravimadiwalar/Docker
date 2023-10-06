@@ -409,3 +409,15 @@ replicaset.apps/mavenwebapprs   2         2         0       6s
 
 Now go and browse using publickey and svc port(32421)--> http://3.108.221.207:32421/maven-web-app
 
+
+If we want to scale up/down the replicas using: kubectl scale rs <RSname> --replicas=3
+This is a manual scaling. we can do autoscaling also. 
+
+
+
+
+
+
+
+
+ 
