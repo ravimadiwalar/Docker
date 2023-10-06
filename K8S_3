@@ -307,17 +307,105 @@ service/javawebappsvc   NodePort   10.98.218.30   <none>        80:31140/TCP   2
 
 now we can see 3 pods and desired and current its showing 3. 
 
+Now execute --> kubectl describe svc javawebappsvc 
+here we see 3 endpoints with 8080 port. Kubeproxy will route the user request to any one end point. act as a load balancer. 
+
+Now to delete thr RC --> kubectl delete rc <RCName>
+                       " kubectl delete rc javawebapprc "
+
+Now we have deleted the RC but i didnt delete the service. suppose our pods are getting deleted, recreted, ou pod IP's are are getting changed. do i need to worry about ip 
+IP changes of pod if i am using service for my communication? 
+"Service will identify based on the labels/selectors"
 
 
+ReplicaSet (RS):
+----------------
+RS is the next generation of the RC. The only diff btw RS and RC is the Selector support. here will have one extra line after selector is "matchLabels and matchExpressions"
+RS suppoorts both equality and set based selector.
+RC supports only equality based selector.
+
+There are 2 types of selectors: 
+1) Equality based selectors: <key>=<value>
+
+2)Se-based selectors:
+
+key in <value1, value2>
+
+key not in <value1, value2>
 
 
+Syntax: 
+selector:
+  matchLabels:
+     <key>: <value>  # Equality Based selector
+
+selector:
+   matchExpressions:      # Set-Based selector 
+   - key: <POD Labelkey>
+     operator: in
+     values: 
+     - <value1>
+     - <value2>  
+
+Lets create a RS:
+------------------
+ubuntu@ip-172-31-33-243:~$ Vi mavenwebapprs.yml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mavenwebapprs
+spec:
+  replicas: 2
+  selector:
+    matchLabels: 
+      app: mavenwebapp
+  template:
+    metadata:
+      name: mavenwebapppod
+      labels:
+        app: mavenwebapp
+    spec:
+      containers:
+      - name: mavenwebappcontainer
+        image: dockerhandson/maven-web-app
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mavenwebappsvc
+spec:
+  type: NodePort
+  selector:
+    app: mavenwebapp
+  ports:
+  - port: 80
+    targetPort: 8080
 
 
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f mavenwebapprs.yml
+replicaset.apps/mavenwebapprs created
+service/mavenwebappsvc created
+ubuntu@ip-172-31-33-243:~$ kubectl get all
+NAME                      READY   STATUS        RESTARTS   AGE
+pod/javawebapprc-f6qr5    0/1     Pending       0          21m
+pod/javawebapprc-p2hjd    1/1     Terminating   1          7d23h
+pod/javawebapprc-r5bsp    1/1     Terminating   1          7d23h
+pod/javawebapprc-vrlbd    0/1     Pending       0          21m
+pod/mavenwebapprs-4pjtk   0/1     Pending       0          6s
+pod/mavenwebapprs-l5ncs   0/1     Pending       0          6s
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicationcontroller/javawebapprc   2         2         0       7d23h
+
+NAME                     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/javawebappsvc    NodePort   10.98.218.30    <none>        80:31140/TCP   7d23h
+service/mavenwebappsvc   NodePort   10.103.17.173   <none>        80:32421/TCP   6s
+
+NAME                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/mavenwebapprs   2         2         0       6s
 
 
-
-
-
-
-
+Now go and browse using publickey and svc port(32421)--> http://3.108.221.207:32421/maven-web-app
 
