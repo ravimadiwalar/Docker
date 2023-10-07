@@ -66,21 +66,77 @@ Deployment startegies: These strategies will not applicable when we are craeting
 1) Recreate- When i am updating my deployment using Recrete strategy, all the old pods are killed all at once and get replaced all at once with new ones.
 * here will face some downtime in deployment. why bcoz all will kill once and create once with new onec. so user will face some downtime issue.
 
+strategy:
+  type: Recreate
+
 2)Rollung update(Default)- here will will not not face zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
 down the old ones. if there is a problem , the rolling update or deployment can be aborted without bringing the whole clusterdown. in the YAML definition file for this type of
 deployment, a new image replace the old image. 
 
+strategy:
+  type: RollingUpdate
+  rollinUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+    minReadSeconds: 30
 
 
+Lets craete a recrete strategy: i have just update the required lines. 
+
+ubuntu@ip-172-31-33-243:~$ cp javawebapprc.yml javawebappdeployment.yml
+ubuntu@ip-172-31-33-243:~$ vi javawebappdeployment.yml
+ubuntu@ip-172-31-33-243:~$ cat javawebappdeployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javawebappdeployment
+spec:
+  replicas: 2     #internaly it will create RS
+  selector:
+     matchLabels:
+       app: javawebapp
+  strategy:
+    type: Recreate   #This strategy will applicable whiel updating the version
+  template:
+    metadata:
+      name: javawebapppod
+      labels:
+        app: javawebapp
+    spec:
+      containers:
+      - name: javawebappcontainer
+        image: dockerhandson/java-web-app:1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebappsvc
+spec:
+  type: NodePort
+  selector:
+    app: javawebapp
+  ports:
+  - port: 80
+    targetPort: 8080
+
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f javawebappdeployment.yml
+deployment.apps/javawebappdeployment created
+service/javawebappsvc created
 
 
+*"watch kubectl get pods" --> it will be used to see the live pods craetion and termination in worker nodes while applyig the kubectl appy command. 
+
+ubuntu@ip-172-31-33-243:~$ kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+javawebappsvc   NodePort    10.102.134.133   <none>        80:32098/TCP   12m
+kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        25m
 
 
+Now go and browse with svc nodeport. 
 
-
-
-
-
+Now lets update the version to 4 and apply the ctl and browse we may face some downtime issue. after some time will get that application. 
 
 
 
