@@ -12,8 +12,54 @@ Benifits:
 *Clean up the older RS that you dont need anymore.  
 
 
+Ex:
+consider mavenwebapprs and change the image version to 2 before it had latest. but after applying the kubectl we cant see any changes in the version (Image: dockerhandson/maven-web-app). 
 
-
+ubuntu@ip-172-31-33-243:~$ kubectl apply -f mavenwebapprs.yml
+replicaset.apps/mavenwebapprs configured
+service/mavenwebappsvc unchanged
+ubuntu@ip-172-31-33-243:~$ kubectl get pods
+NAME                  READY   STATUS        RESTARTS   AGE
+mavenwebapprs-hb6v7   0/1     Pending       0          34m
+mavenwebapprs-hcnvm   1/1     Terminating   0          10h
+mavenwebapprs-nz49f   1/1     Terminating   0          10h
+mavenwebapprs-w4sjc   0/1     Pending       0          34m
+nginxds-qpftp         1/1     Running       0          10h
+ubuntu@ip-172-31-33-243:~$ kubectl describe pod mavenwebapprs-w4sjc
+Name:           mavenwebapprs-w4sjc
+Namespace:      default
+Priority:       0
+Node:           <none>
+Labels:         app=mavenwebapp
+Annotations:    <none>
+Status:         Pending
+IP:
+IPs:            <none>
+Controlled By:  ReplicaSet/mavenwebapprs
+Containers:
+  mavenwebappcontainer:
+    Image:        dockerhandson/maven-web-app
+    Port:         8080/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-5cnpt (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False
+Volumes:
+  default-token-5cnpt:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-5cnpt
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age                   From               Message
+  ----     ------            ----                  ----               -------
+  Warning  FailedScheduling  3m20s (x31 over 34m)  default-scheduler  0/2 nodes are available: 1 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate, 1 node(s) had taint {node.kubernetes.io/unreachable: }, that the pod didn't tolerate.
 
 
 
