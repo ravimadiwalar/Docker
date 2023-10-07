@@ -1,4 +1,4 @@
-Deployment:
+  Deployment:
 ------------
 its a recommended way to deploy a pod and RS is the internally it will deploy RS. we use this bcoz in RS and RC we cant update the version of the image we have. but in Deployment 
 we can.
@@ -63,8 +63,12 @@ Events:
 
 Deployment startegies: These strategies will not applicable when we are craeting new pods. bcoz it will recrete new pods once old ones terminate/kill. 
 ------------------------
-1) Recreate- When i am updating my deployment using Recrete strategy, all the pods are killed all at once and get replaced all at once with new ones.  
-2)Rollung update(Default)-
+1) Recreate- When i am updating my deployment using Recrete strategy, all the old pods are killed all at once and get replaced all at once with new ones.
+* here will face some downtime in deployment. why bcoz all will kill once and create once with new onec. so user will face some downtime issue.
+
+2)Rollung update(Default)- here will will not not face zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
+down the old ones. if there is a problem , the rolling update or deployment can be aborted without bringing the whole clusterdown. in the YAML definition file for this type of
+deployment, a new image replace the old image. 
 
 
 
