@@ -138,23 +138,73 @@ Now go and browse with svc nodeport.
 
 Now lets update the version to 4 and apply the ctl and browse we may face some downtime issue. after some time will get that application. 
 
+ubuntu@ip-172-31-33-243:~$ kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+javawebappsvc   NodePort    10.102.134.133   <none>        80:32098/TCP   26m
+kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        39m
+ubuntu@ip-172-31-33-243:~$ kubectl get all
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/javawebappdeployment-6b6d59d84c-6fpxl   1/1     Running   0          3m56s
+pod/javawebappdeployment-6b6d59d84c-j6rjq   1/1     Running   0          3m56s
+
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/javawebappsvc   NodePort    10.102.134.133   <none>        80:32098/TCP   29m
+service/kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        42m
+
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/javawebappdeployment   2/2     2            2           29m
+
+NAME                                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/javawebappdeployment-6b6d59d84c   2         2         2       3m56s
+replicaset.apps/javawebappdeployment-7cb95f67b4   0         0         0       29m
 
 
+* here we can see 2 RS.  - NAME                                              DESIRED   CURRENT   READY   AGE
+                           replicaset.apps/javawebappdeployment-6b6d59d84c   2         2         2       3m56s
+                          replicaset.apps/javawebappdeployment-7cb95f67b4   0         0         0       29m 
 
 
+one we can see desired 2 and current 2. and other one is zero. bcoz this zero one is older version tahts why it is zero. 
+
+#using "kubectl rollout status deployment <Deploymentname>" we can find out the status . 
+
+ubuntu@ip-172-31-33-243:~$ kubectl rollout status deployment javawebappdeployment
+deployment "javawebappdeployment" successfully rolled out
+
+We can see the History also. How many revisions of the deployment ==> "kubectl rollout history deployment <Deploymentname>"
+
+ubuntu@ip-172-31-33-243:~$ kubectl rollout history deployment javawebappdeployment
+deployment.apps/javawebappdeployment
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
 
 
+To know what pod template has been used in both versions==>  kubectl rollout history deployment <deploymentName> --revision=1
+                                                             kubectl rollout history deployment <deploymentName> --revision=1
 
+ubuntu@ip-172-31-33-243:~$ kubectl rollout history deployment javawebappdeployment --revision=1
+deployment.apps/javawebappdeployment with revision #1
+Pod Template:
+  Labels:       app=javawebapp
+        pod-template-hash=7cb95f67b4
+  Containers:
+   javawebappcontainer:
+    Image:      dockerhandson/java-web-app:1
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
 
+We can see the same version in "kubectl describe pod <podname>" to just check for confirmation. 
 
+* If required we can rollback to required version. ==> "kubectl rollout undo deployment <deploymentname> --to-revision=1"
 
+ubuntu@ip-172-31-33-243:~$ kubectl rollout undo deployment javawebappdeployment --to-revision=1
+deployment.apps/javawebappdeployment rolled back
 
-
-
-
-
-
-
+above we have mentioned the version we wanted. if we dont emntion also it will consider the previous one by default. 
 
 
 
