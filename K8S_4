@@ -204,12 +204,65 @@ We can see the same version in "kubectl describe pod <podname>" to just check fo
 ubuntu@ip-172-31-33-243:~$ kubectl rollout undo deployment javawebappdeployment --to-revision=1
 deployment.apps/javawebappdeployment rolled back
 
-above we have mentioned the version we wanted. if we dont emntion also it will consider the previous one by default. 
+above we have mentioned the version we wanted. if we dont mention also it will consider the previous one by default. 
+
+==> Rolling Strategy: 
+----------------------
+ubuntu@ip-172-31-33-243:~$ cp javawebappdeployment.yml javawebappdeployment_rolling.yml
+ubuntu@ip-172-31-33-243:~$ vi javawebappdeployment_rolling.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javawebappdeployment
+spec:
+  replicas: 2     #internaly it will create RS
+  selector:
+     matchLabels:
+       app: javawebapp
+  strategy:
+    type: RollingUpdate   #This strategy will applicable whiel updating the version
+    rollingUpdate:
+      maxSurge: 1          #if we dont mention these also it will consider 1
+      maxUnavailable: 1
+  minReadySeconds: 30      #This is sibling of strategy and come in the same line of strategy
+  template:
+    metadata:
+      name: javawebapppod
+      labels:
+        app: javawebapp
+    spec:
+      containers:
+      - name: javawebappcontainer
+        image: dockerhandson/java-web-app:4
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javawebappsvc
+spec:
+  type: NodePort
+  selector:
+    app: javawebapp
+  ports:
+  - port: 80
+    targetPort: 8080
 
 
 
-
-
+Above we have updated the rolling strategy: 
+strategy:
+    type: RollingUpdate   #This strategy will applicable whiel updating the version
+    rollingUpdate:
+      maxSurge: 1          #if we dont mention these also it will consider 1
+      maxUnavailable: 1
+  minReadySeconds: 30      #This is sibling of strategy and come in the same line of strategystrategy:
+    type: RollingUpdate   #This strategy will applicable whiel updating the version
+    rollingUpdate:
+      maxSurge: 1          #if we dont mention these also it will consider 1
+      maxUnavailable: 1
+  minReadySeconds: 30      #This is sibling of strategy and come in the same line of strategy
 
 
 
