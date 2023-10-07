@@ -284,9 +284,30 @@ in CHANGE-CAUSE column we can see "kubectl apply -f javawebappdeployment_rolling
 
 Here also we can change the version and check the using watch command and we cant face any downtime issue. all othere commands we can apply here also as same as Recrete. 
 
+Blue/Green Deployment: (Red/Black deployment)
+----------------------------------------------
+in Blue/Green Deployment strategy the old version of the application (green) and new version (blue) get deployed at the same time. when both of these are deployed, user only 
+have access to the green; whereas, the blue is avaliable to your QA team for test automation on seperate service or via direct port-forwarding. 
+
+After the new version has been tested and is signed off for release., the service is switched to the blue version with the old green version being scaled down. 
+
+here will not update the object with new version. instaed will crete onle more deployment with diff labels. QA team will test that new depoyment and once they approve we have to 
+switch this with old version. to do that fisrt we need to understand that user request goes to serviec and that servoce will reroute to pods/appication using load balancer. 
+
+Now to achieve this we have to change the selectors in sevice as same as new deployment. now it has compltely swaitched to new deployment and we can delete the old deployment. 
+It will consume more memory and cpu. bcoz sometimes it runs under bith deployment. 
+
+EX: it will be used in flipkart, uber, amazon etc --> they always add new features and then deploy new one which was certified by QA team. so they dont face any downtime issue.
+   some time they use rolling Update also. but in Rolling Update we have some issues. if our application  not throughly automated tested end uses will face the issues.  
 
 
+* Deployment is the recommended way of deployment fo pods.
+* Agent software is daemon Set. if we want some softwares part of your eavery node. we use DaemonSet object. 
 
+
+EX:
+
+apiversion: apps/v1
 
 
 
