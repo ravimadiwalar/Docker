@@ -61,7 +61,10 @@ Events:
   ----     ------            ----                  ----               -------
   Warning  FailedScheduling  3m20s (x31 over 34m)  default-scheduler  0/2 nodes are available: 1 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate, 1 node(s) had taint {node.kubernetes.io/unreachable: }, that the pod didn't tolerate.
 
-
+Deployment startegies: These strategies will not applicable when we are craeting new pods. bcoz it will recrete new pods once old ones terminate/kill. 
+------------------------
+1) Recreate- When i am updating my deployment using Recrete strategy, all the pods are killed all at once and get replaced all at once with new ones.  
+2)Rollung update(Default)-
 
 
 
