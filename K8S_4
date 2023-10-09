@@ -69,7 +69,7 @@ Deployment startegies: These strategies will not applicable when we are craeting
 strategy:
   type: Recreate
 
-2)Rollung update(Default)- here will will not not face zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
+2)Rolling update(Default)- here will seex   zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
 down the old ones. if there is a problem , the rolling update or deployment can be aborted without bringing the whole clusterdown. in the YAML definition file for this type of
 deployment, a new image replace the old image. 
 
@@ -78,7 +78,7 @@ strategy:
   rollinUpdate:
     maxSurge: 1
     maxUnavailable: 1
-    minReadSeconds: 30
+    minReadySeconds: 30
 
 
 Lets craete a recrete strategy: i have just update the required lines. 
@@ -166,10 +166,10 @@ replicaset.apps/javawebappdeployment-7cb95f67b4   0         0         0       29
 
 one we can see desired 2 and current 2. and other one is zero. bcoz this zero one is older version tahts why it is zero. 
 
-#using "kubectl rollout status deployment <Deploymentname>" we can find out the status . 
+#using "kubectl rollout status deployment <Deploymentname>" we can find out the status .
 
 ubuntu@ip-172-31-33-243:~$ kubectl rollout status deployment javawebappdeployment
-deployment "javawebappdeployment" successfully rolled out
+deployment "javawebappdeployment" successfully rolled out                                # it means the updated version has been successfully updated. 
 
 We can see the History also. How many revisions of the deployment ==> "kubectl rollout history deployment <Deploymentname>"
 
@@ -253,16 +253,11 @@ spec:
 
 Above we have updated the rolling strategy: 
 strategy:
-    type: RollingUpdate   #This strategy will applicable whiel updating the version
+  type: RollingUpdate   #This strategy will applicable whiel updating the version
     rollingUpdate:
       maxSurge: 1          #if we dont mention these also it will consider 1
       maxUnavailable: 1
-  minReadySeconds: 30      #This is sibling of strategy and come in the same line of strategystrategy:
-    type: RollingUpdate   #This strategy will applicable whiel updating the version
-    rollingUpdate:
-      maxSurge: 1          #if we dont mention these also it will consider 1
-      maxUnavailable: 1
-  minReadySeconds: 30      #This is sibling of strategy and come in the same line of strategy. the new version will take 30 sec to replace with old one. until it replaces the old 
+uminReadySeconds: 30      #This is sibling of strategy and come in the same line of strategy. the new version will take 30 sec to replace with old one. until it replaces the old 
                              one will run. zero downtime reployment. 
 
 
@@ -270,7 +265,7 @@ strategy:
 * what is the diff btw kubectl apply and kubectl craete? 
 ==> kubectl create will just craete the object. but kubectl apply will create and apply if object isn't exist also. 
 
-buntu@ip-172-31-33-243:~$ ubuntu@ip-172-31-33-243:~$ kubectl rollout history deployment javawebappdeployment
+ubuntu@ip-172-31-33-243:~$ ubuntu@ip-172-31-33-243:~$ kubectl rollout history deployment javawebappdeployment
 deployment.apps/javawebappdeployment
 REVISION  CHANGE-CAUSE
 1         <none>
@@ -291,21 +286,21 @@ have access to the green; whereas, the blue is avaliable to your QA team for tes
 
 After the new version has been tested and is signed off for release., the service is switched to the blue version with the old green version being scaled down. 
 
-here will not update the object with new version. instaed will crete onle more deployment with diff labels. QA team will test that new depoyment and once they approve we have to 
+here will not update the object with new version. instaed will crete one more deployment with diff labels. QA team will test that new depoyment and once they approve we have to 
 switch this with old version. to do that fisrt we need to understand that user request goes to serviec and that servoce will reroute to pods/appication using load balancer. 
 
 Now to achieve this we have to change the selectors in sevice as same as new deployment. now it has compltely swaitched to new deployment and we can delete the old deployment. 
-It will consume more memory and cpu. bcoz sometimes it runs under bith deployment. 
+It will consume more memory and cpu. bcoz sometimes it runs under both deployment. 
 
 EX: it will be used in flipkart, uber, amazon etc --> they always add new features and then deploy new one which was certified by QA team. so they dont face any downtime issue.
    some time they use rolling Update also. but in Rolling Update we have some issues. if our application  not throughly automated tested end uses will face the issues.  
 
 
 * Deployment is the recommended way of deployment fo pods.
-* Agent software is daemon Set. if we want some softwares part of your eavery node. we use DaemonSet object. 
+* Agent software is daemon Set. if we want some softwares part of your every node. we use DaemonSet object. 
 
 
-EX:
+EX: to database add
 
 apiVersion: apps/v1
 kind: Deployment
@@ -442,7 +437,9 @@ kube-system   weave-net-flzl2                            2/2     Running        
 
 
 
-
+IMP
+-----
+* the labels will come under metadata only while creating a pod (tepmplate). but for  others labels will come under spec. 
 
 
 
