@@ -1,10 +1,10 @@
 Deployment:
 ------------
-its a recommended way to deploy a pod and RS is the internally it will deploy RS. we use this bcoz in RS and RC we cant update the version of the image we have. but in Deployment 
+its a recommended way to deploy a pod and internally it will deploy RS. we use this bcoz in RS and RC we cant update the version of the image we have. but in Deployment 
 we can.
 
 Benifits:
-* Internally set a RS. it will mange the pods.
+* Internally set a RS. it will manage the pods.
 * It will set all pod specs.
 *Roll back to older deployment version.
 *Scale up and down
