@@ -365,7 +365,23 @@ spec:
         image: mongo
         ports:
         - containerPort: 27017
-
+        env: 
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: devdb                               # This always match with springboot value
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: devdb@123                            # This always match with springboot value
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mongo      #This always match with MONGO_DB_HOSTNAME. why bcoz spring app will talk to mongo database. 
+spec: 
+  type: ClusterIP
+  selector: 
+    app: mongo 
+ports: 
+- port: 27017                   #Why not 80. the hardcode is 27017 in developer file. it will route the traffic to 27017 port.
+  targetPort: 27017
 
 
 
