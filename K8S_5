@@ -1,6 +1,19 @@
 K8s Volume: 
 -----------
-It is used to store the data what we have in the application container. 
+It is used to store the data what we have in the application container. A container file system lives as long as the container does. so wen a container terminates and restart, 
+filesystem changes are lost. Volumes in K8s are very easy to manage. its basically a directory that get mounted to a pod. after telling the container to use volumes for storing 
+evergreen information, you can safely modify the pods without ever losing your data. 
 
-Types: 
-1) 
+it supports lot of volumes
+1) EmptyDir
+2) hostpath
+3) nfs
+4) awsElasticBlockstore
+5) googlePersistantDisk
+6) azureFile
+7) azureDisk
+
+
+There are concepts: 
+1) persistentVolumes
+2) persistentVolumeClaims
