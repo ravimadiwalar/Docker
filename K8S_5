@@ -26,11 +26,92 @@ There are concepts:
 
 Example for hostPath: Now we have springapp.yml file as a stateless application. if we attache the volume it will get converted into stateful set app. 
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springappdeployment
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: springapp           # here if we dont mention also it will consider the RollingUpdate as default or if we want we can also
+  template: 
+    metadata:
+      name: springapppod
+      labels:
+        app: springapp
+    spec:
+      containers:
+      - image: dockerhandson/spring-boot-mango:1 
+        name: springappcontainer
+        ports: 
+        - containerPort: 8080
+        env: 
+        - name: MONGO_DB_HOSTNAME
+          value: mango
+        - name: MONGO_DB_USERNAME
+          value: devdb
+        - name: MONGO_DB_PASSOWRD
+          value: devdb@123
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springappsvc
+spec:
+  type: NodePort       #we can convert from cluster to nodeport but not from nodeport to cluster
+  selector:
+    app: springapp
+  ports: 
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: mongorc
+spec: 
+  selector: 
+    app: mongo
+  template:
+    metadata: 
+      name: mongopod
+      labels:
+         app: mongo
+    spec: 
+      containers:
+      - name: mongocontainer
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env: 
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: devdb                               # This always match with springboot value
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: devdb@123                            # This always match with springboot value
+        volumeMounts: 
+        - name: mongovol                          #this name always match with volume name
+          mountPath: "/data/db"    
+     volumes:                                    #volume is the sibling of container. 
+     - name: mongovol
+       hostPath:              # mention the path type
+         path: "/tmp/mongo"    #server dir where we store the data of container /data/db   
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mongo      #This always match with MONGO_DB_HOSTNAME. why bcoz spring app will talk to mongo database. 
+spec: 
+  type: ClusterIP
+  selector: 
+    app: mongo 
+  ports: 
+  - port: 27017                   #Why not 80. the hardcode is 27017 in developer file. it will route the traffic to 27017 port.
+    targetPort: 27017
 
 
 
-
-
+* if any changes happens in our RC/RS, our pods will not recreted. we need to delete and create again. 
 
 
 
