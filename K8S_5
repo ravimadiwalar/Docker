@@ -4,16 +4,42 @@ It is used to store the data what we have in the application container. A contai
 filesystem changes are lost. Volumes in K8s are very easy to manage. its basically a directory that get mounted to a pod. after telling the container to use volumes for storing 
 evergreen information, you can safely modify the pods without ever losing your data. 
 
+K8s supports many types of volumes. Pod can use many volumes to single pod.
+
 it supports lot of volumes
-1) EmptyDir
-2) hostpath
+1) EmptyDir       --> its like a tmp dir. the data exist as long as the pod exists. if pod is deleted the data also get deleted. we will not lose the data if the conatiner deletes.
+2) hostpath      --> Wherever our pod getting scheduled in that node/server we can attached server/host storage. 
 3) nfs
 4) awsElasticBlockstore
 5) googlePersistantDisk
 6) azureFile
 7) azureDisk
+8) ConfigMap
+9) GitRepo(deprecated)
+10)secret
 
 
 There are concepts: 
 1) persistentVolumes
 2) persistentVolumeClaims
+
+
+Example for hostPath: Now we have springapp.yml file as a stateless application. if we attache the volume it will get converted into stateful set app. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
