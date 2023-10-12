@@ -251,6 +251,8 @@ now my cluster is ready.
 
 ubuntu@ip-172-31-188-19:kubeadm token create --print-join-command
 
+after getting this kubeadm join command copy it all and paste it in worker and enter "--v=5" at the end and press ok. 
+
 
 to check whether cluster is ready or not. execute below command in master mc.
 
