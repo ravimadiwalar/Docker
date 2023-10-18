@@ -176,13 +176,6 @@ spec:
           value: devdb
         - name: MONGO_DB_PASSWORD
           value: dev@123
-       volumeMounts: 
-        - name: mongovol                          #this name always match with volume name
-          mountPath: "/data/db"    
-     volumes:                                    #volume is the sibling of container. 
-     - name: mongovol
-       hostPath:              # mention the path type
-         path: "/tmp/mongo"    #server dir where we store the data of container /data/db 
 
 ---
 
@@ -237,12 +230,3 @@ spec:
   ports:
   - port: 27017
     targetPort: 27017
-
-
-
-
-
-
-
-
-
