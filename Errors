@@ -1,0 +1,2 @@
+error: error parsing jenkinsapp.yml: error converting YAML to JSON: yaml: line 27: did not find expected key
+==> We missed to put similar passowrd in deployment and replication controller. 
