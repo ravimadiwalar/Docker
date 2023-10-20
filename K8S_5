@@ -111,7 +111,8 @@ spec:
 
 
 
-* if any changes happens in our RC/RS, our pods will not recreted. we need to delete and create again. Now i deleted and updated new volume and apply. 
+* if any changes happens in our RC/RS, our pods will not recreted. we need to delete and create again. Now i deleted and updated new volume and apply. we can see that database in
+"/tmp/mongo". 
 
 ubuntu@ip-172-31-33-243:~$ kubectl apply -f springapp.yml
 deployment.apps/springappdeployment created
@@ -230,3 +231,28 @@ spec:
   ports:
   - port: 27017
     targetPort: 27017
+
+
+
+
+==> Here we gave host path and if we access it first it will take one node and enter the data and it will save there and intentionally delete the pod what is it assigned that 
+access and then it will schedule to another node then if we access it will not show that old data. bcoz its host path. that data will be stored in that node only. We can see data 
+incosistency. if we want to maintain that data base constantly we use nfs volume. 
+
+
+==> NFS- Network File System
+-------------------------------
+  This nfs acts like a external storage and for this we have to create one server and mount that data base to that volume. 
+
+
+
+
+
+
+
+
+
+
+
+
+
