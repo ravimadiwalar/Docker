@@ -242,15 +242,171 @@ incosistency. if we want to maintain that data base constantly we use nfs volume
 
 ==> NFS- Network File System
 -------------------------------
-  This nfs acts like a external storage and for this we have to create one server and mount that data base to that volume. 
+  This nfs acts like a external storage and for this we have to create one server and while creating a server we have to open 2049 port (protocol-TCP) or we can choose NFS 
+directly there.  and we have to give permissions to only particular range 172.31.0.0/16 
+
+Next open that server and do some updates.
+
+sudo apt update -y
+#install nfs software
+sudo apt install nfs-kernel-server -y
+#cretae a dir
+sudo mkdir -p /mnt/nfs_share
+# change permissions and change the ownership. 
+sudo chmod 777 /mnt/nfs_share/
+sudo chown -R nobody:nogroup /mnt/nfs_share/
+# in one more file we have to give persmissions.
+sudo vi /etc/exports
+
+/mnt/nfs_share 172.31.0.0/16(rw,sync,no_subtree_check,no_root_squash)   # here we gave our vpc range
+:wq
+
+sudo exportfs -a
+sudo systemctl restart nfs-kerner-server
+sudo systemctl status nfs-kerner-server
+
+#install nfs server in master and worker nodes
+sudo apt install nfs-comman -y
+
+#in manifest file we have to keep as it is as above but change the volumes only (springboot). in masternode 
+
+ volumes:                                    
+     - name: mongovol
+       nfs:
+         server: 172.31.42.  132       # this private IP of the nfs server
+         path: "/mnt/nfs_share"
+
+kubectl apply -f springapp.yml     # now our pod is mounted wit nfs server.  
+
+kubectl describe pod mongorc-f4sjs
+
+#Now go and check in that nfs server . we can see some files. 
+ cat /mnt/nfs_share/
+
+# now go and access that server in browser and enter data and delete that pod and it wiull be sceduled to diff node but we cann still see that old data. its called data consistancy. 
+
+#if we want to do kubelet stop/start/status
+sudo service kubelet stop
+sudo service kubelet start
+sudo service kubelet status
+
+
+==> Persistenr Volumes (pv): Its the recommeneded way to use the volumes in K8s. here the K8s will maintian the volumes info. it will maintaine the volume info outside the pod life cycle.
+its a piece of storage in our cluster. even if our pod dies we can get the volume info in k8s. 
+
+We can use : hostpath, nfs etc here
+
+Persistent columes are provisioned in two ways:
+1) Static Volumes: As a K8s administator we need to manually create a persistent volume. 
+2) Dynamic Volumes:
+
+==> Persistent Volume Claims (pvc): i have volume created and i want to use that voulume in my pod. i ned to claim/mount that volume in my pod with help of persistent volume cliam. 
+    PVC is uded to mount a PV into a POD. PVC's are a way for users to claim durable storage. 
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springappdeployment
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: springapp           # here if we dont mention also it will consider the RollingUpdate as default or if we want we can also
+  template: 
+    metadata:
+      name: springapppod
+      labels:
+        app: springapp
+    spec:
+      containers:
+      - image: dockerhandson/spring-boot-mango:1 
+        name: springappcontainer
+        ports: 
+        - containerPort: 8080
+        env: 
+        - name: MONGO_DB_HOSTNAME
+          value: mango
+        - name: MONGO_DB_USERNAME
+          value: devdb
+        - name: MONGO_DB_PASSOWRD
+          value: devdb@123
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springappsvc
+spec:
+  type: NodePort       #we can convert from cluster to nodeport but not from nodeport to cluster
+  selector:
+    app: springapp
+  ports: 
+  - port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: persistentVolumeClaim
+metadata: 
+  name: mongopvc
+spec:
+  storageClassName: manual    # here i am craeting volume manaually. we didnt use dynamic volume concept here. 
+  accessModes: 
+  - ReadWriteOnce
+  resources:
+    requests: 
+      storage: 1Gi              #iGb storage
+---
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: mongorc
+spec: 
+  selector: 
+    app: mongo
+  template:
+    metadata: 
+      name: mongopod
+      labels:
+         app: mongo
+    spec: 
+      containers:
+      - name: mongocontainer
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env: 
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: devdb                               # This always match with springboot value
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: devdb@123                            # This always match with springboot value
+        volumeMounts: 
+        - name: mongovol                          #this name always match with volume name
+          mountPath: "/data/db"    
+     volumes:                                    #volume is the sibling of container. 
+     - name: mongovol
+       persistentVolumeClaim:
+         claimName: mongopvc                 # this claimname should match with our above claim name
+        
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mongo      #This always match with MONGO_DB_HOSTNAME. why bcoz spring app will talk to mongo database. 
+spec: 
+  type: ClusterIP
+  selector: 
+    app: mongo 
+  ports: 
+  - port: 27017                   #Why not 80. the hardcode is 27017 in developer file. it will route the traffic to 27017 port.
+    targetPort: 27017
 
 
 
 
-
-
-
-
+==> Access Modes:  (for more details https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+RWO- ReadWriteOnce - Only one node , one pod can read and write the data. 
+ROX- ReadOnlyMany - Pod can read the data whatever in that storage but can write. 
+RWX- ReadWriteMany - Multiple pods and multiple nodes can read and write the data. 
 
 
 
