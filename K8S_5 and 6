@@ -409,6 +409,52 @@ ROX- ReadOnlyMany - Pod can read the data whatever in that storage but can write
 RWX- ReadWriteMany - Multiple pods and multiple nodes can read and write the data. 
 
 
+Above w have created a PVC but we need to PV to bound each other. PV is mandotory to create. the PVC will show in pending status until it wil attach with one PV. 
+
+check the logs while PVC is in pending state: kubectl describe pods mongorc-f76gsh
+at the end we can see the all pods unbound with volume. 
+
+We have 2 ways to create a volumes: static and dynamic (storage class is responsible for creating a dynamic volume.)
+
+Storage Class: its ntng but one programm/ application. whenever PVC will not find the PV, if we have our storage class configured that storage class create a PV for this PVC. 
+
+Lets create a volume manually:
+
+ubuntu@ip-172-31-34-33:~$ vi nfspv.yml 
+
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: nfspv
+spec:             #here we are entering volume specifications
+  capacity: 
+    storage: 1Gi
+  accessModes: 
+  - ReadWriteMany
+  nfs:
+    server: 172.31.43.132
+     path: "/mnt/nfs_share"
+  
+
+
+
+
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: hostpathpv
+spec:             #here we are entering volume specifications
+  capacity: 
+    storage: 1Gi
+  accessModes:
+    storageClassname: manual
+  - ReadWriteOnce
+  hostPath:
+    path: "/tmp/mongo"
+
+
 
 
 
