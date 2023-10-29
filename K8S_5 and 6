@@ -351,7 +351,7 @@ metadata:
 spec:
   storageClassName: manual    # here i am craeting volume manaually. we didnt use dynamic volume concept here. 
   accessModes: 
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests: 
       storage: 1Gi              #iGb storage
@@ -436,6 +436,9 @@ spec:             #here we are entering volume specifications
      path: "/mnt/nfs_share"
   
 
+Above we have created a PV. but it will not bound with our PVC bcoz it should match with accessmode, storage and storageclassname. in this PV and PVC concept always the PV and PVC
+accessmode, storage and storageclassname will match. then only PV will get bound with PVC automatically. 
+@ one PV with one PVC. 
 
 
 
