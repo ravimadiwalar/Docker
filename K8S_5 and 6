@@ -401,6 +401,9 @@ spec:
     targetPort: 27017
 
 
+ubuntu@ip-172-31-34-33:~$ kubectl get pvc
+NAME             STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mongopvc         Pending                                      manual         33h
 
 
 ==> Access Modes:  (for more details https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
@@ -441,21 +444,101 @@ accessmode, storage and storageclassname will match. then only PV will get bound
 @ one PV with one PVC. 
 
 
+==> Lets create host path with all matches
+
+ubuntu@ip-172-31-34-33:~$ vi hostpath_pv.yml
+apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: hostpathpv
+spec:             #here we are entering volume specifications
+  storageClassname: manual
+  capacity: 
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/mongopv"
+
+ubuntu@ip-172-31-34-33:~$ kubectl apply -f hostpath_pv.yml
+persistentvolume/hostpathpv created
+ubuntu@ip-172-31-34-33:~$ kubectl get pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM              STORAGECLASS   REASON   AGE
+hostpathpv   1Gi        RWO            Retain           Bound    default/mongopvc   manual                  20s
+ubuntu@ip-172-31-34-33:~$ kubectl get pvc
+NAME             STATUS    VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mongopvc         Bound     hostpathpv   1Gi        RWO            manual         34h
 
 
+Above we can see the PVC is bounded with PV. Now my pod is running. and we can access it outside also using nodeport. as we are using hostpath if we delete one pod it will 
+assign to another node but that node data we cant see. 
+
+buntu@ip-172-31-34-33:~$ kubectl get pods
+NAME                                  READY   STATUS        RESTARTS   AGE
+jenkins-deployment-6f7959b94f-8l7q9   1/1     Terminating   0          12d
+mongorc-5tkqs                         1/1     Running       1          24h
+mongorc-z5j8h                         1/1     Terminating   0          12d
+nginxdeployment-6669bd848f-q5sc7      1/1     Running       1          23h
+
+
+ubuntu@ip-172-31-34-33:~$ kubectl get pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM              STORAGECLASS   REASON   AGE
+hostpathpv   1Gi        RWO            Retain           Bound    default/mongopvc   manual                  20s
+
+Above we can see the hostpathpv with RECALIM POLICY as a "Ratain". it means its default claim policy. if we want we can change also. we have 3 claim policies. 
+
+==>RECLAIM/CLAIM POLICY:
+------------------------
+1)Retain: When the PVC is deleted, the PV still exist and the volume is considered "released". But its not yet available  for another cliam bcoz   the previous claims data remains 
+on the volume. An administrator we can manually reclaim the volume. if we delete PVC/rc also we can see the data in PV. 
+@ This is default one. 
+2) Recycle: When the claim is deleted the volume remains but the performs a basic scrub (delete data from storage) (rm -rf/volume/*) on the volume and makes it available for a new
+            claim. 
+
+3) Delete: When the claim is deleted, it removes both the PV object from K8s, as well as the associated storage. the claim policy (associated at the PV and  not the PVC)
+ is resposible for what happens to the data on when the claim has been deleted. it wil delete both pv and pvc. not at all store any data related to that. 
+
+We have mention these policies while creating a PV
 
 apiVersion: v1
 kind: PersistentVolume
 metadata: 
   name: hostpathpv
 spec:             #here we are entering volume specifications
+  persistentVolumeReclaimPolicy: Retain
+  storageClassname: manual
   capacity: 
     storage: 1Gi
   accessModes:
-    storageClassname: manual
-  - ReadWriteOnce
+    - ReadWriteOnce
   hostPath:
-    path: "/tmp/mongo"
+    path: "/tmp/mongopv"
+
+
+==> StorageClass: 
+                  its a piece of software/application. We dont need to create a PV manually if we have Srorageclass it will create dynamically. this storage class will create 
+a PV which match with PVC that yoy create. 
+
+https://kubernetes.io/docs/concepts/storage/storage-classes/#volume-binding-mode
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: standard
+provisioner: kubernetes.io/aws-ebs    --> here we can  see the storage of aws-ebs. this is default one. 
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+mountOptions:
+  - debug
+volumeBindingMode: Immediate
+
+
+
+
+
+
 
 
 
