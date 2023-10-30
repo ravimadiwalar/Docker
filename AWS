@@ -1,0 +1,6 @@
+Cloud Modules:
+1)IAAS- infrastructure as a service- we have build our application with given infrastructure by AWS. 
+2)PAAS- playform as a service- here we will build our own application using cloud infrastructure but will put our application one platform like google app engine and let others use our built
+application. here the google is the platform fr our application.
+3)SAAS- Software as a service- here we just cosume a service which is alredy being maintianed by someone ealse. 
+EX: Gmail- will just use gmail for receive and send mails but it's scaling and all will be mainatined by google. 
