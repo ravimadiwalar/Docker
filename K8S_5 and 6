@@ -1,3 +1,5 @@
+
+
 K8s Volume: 
 -----------
 It is used to store the data what we have in the application container. A container file system lives as long as the container does. so wen a container terminates and restart, 
@@ -539,8 +541,61 @@ above we have aws-ebs and it is self managed storage class. we have to do lot of
 
 we have one more option is NFS. for NFS need to crete one server in aws and set this one as a default one. later it will create PV dynamically(automatically) after creating a PVC. 
 
-==> We have one piece of software/application to set up a nfs storage class. plz refer below link
+==> We have one piece of software/application to set up a nfs storage class. plz refer below link. This creates a PV yml file. 
 https://github.com/MithunTechnologiesDevOps/Kubernates-Manifests/blob/master/pv-pvc/nfsstorageclass.yml
+
+in above link yaml file we can see all the data like from where we are pulling that(image)- this was created by some community people and it has logic to create a volume,
+which external service we are attaching and put that private server ip address. here nfs-proviosinor we use. 
+
+then execute "kubectl apply -f <ymal file name>"
+
+later we can see that provisioner also run as a pod. then mark this as a "default" one.
+
+* Can we have multiple storage classes configured with diff diff provisioners?
+=> Yes, we can have. but out of all we have to mention one as a defalut. defalut mean while creating a PVC if we dont mention the name of storage class also it will take this
+one as a defalut one.
+
+While creating a PVC we can mention the nfs-provisioner (storage calss name) if we dont mention also its fine. it will consider the defalut one. now open that nfs server and 
+open /mnt/nfs_share/   inside we can see that pv details. 
+
+PV will be created with the same storage capacity of PVC what we have given. 
+
+@ suppose we have created a PVC with 500Mi and pv with 1Gi. then all other conditions will match, then it will attach with that only. if the capacity of pvc is less it will 
+search with nearby capacity pv and attach. 
+
+@ one PVC is only for one PV. 
+
+@ POD- one or more cotainers
+  RC, Rs, DS, Deployment- to create a POD. 
+
+==>Statefull Set:
+------------------
+Its one more k8s controller. Deployments are usually used for "stateless application". However you can save the state of deployment by attaching a PV to it and make it stateful. 
+but all the pods of a deployment will be sharing the "same volume" and data across all of them will be same. 
+
+"in deplyment suppose we have 3 replicas that all will share the same volume. if we get error in one volume it should have another volume with high availability. so we should have 
+more capacity that primary volume. to achieve that we need STATEFUL SET". 
+
+@ Stateful Set is a k8s resource used to manage stateful apllplications. it manages the deployment and scaling of a set of pods, and provides guarantee about the ordering and
+uniquness of the pods. 
+
+@ Stateful set doesn't create ReplicaSet rather itself the pods with uniqe naming   convention. 
+EX: if we create a stateful set with name mongo, it will create a pod with name mongo-0 and for multiple replicas of a stateful set. their names will increment like mongo-0, 
+   mongo-1, mongo-2. etc. if mongo-0 goes down then it will create another pod with mongo-4 with diff volume. total PVC are 3 here.  
+
+all volumes will be diff. Instead of going with stateful set we can go with RDS service in aws. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
