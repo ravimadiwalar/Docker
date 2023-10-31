@@ -1,0 +1,104 @@
+==> Headless Service: 
+          If we consider the clusterIP or Nodeport IP , they will use load balancer concept in assigning the application requests to service. but in Headless service we dont 
+have that laod balancer concept. here will reach those pods directly. 
+
+Database concepts: 
+       suppose if we have 3 replicas
+mongo-0    primary
+rs.init()
+mongo-1    secondary
+mongo-2    secondary
+
+in data base we can see the concepts of primary and secondary. hete the 
+
+All Write operations will happen in Primary
+All Read operations will from secondary
+
+if primary pod will goes down then primary only will pass that data to secondary and set that one as a write operator. if we achieve this we have to one of the server/pod 
+and initiate the "mongo init()" and that pod will become primary. 
+
+
+@@ suppose we have ceated a PVC in one namespace and PV in another. but that pv will bound with that PVC. bcoz PV is not a namespace specific. PV is a cluster specific. 
+
+
+Set up Stateful set and headless service:
+------------------------------------------
+
+plz refer https://github.com/MithunTechnologiesDevOps/Kubernates-Manifests/blob/master/monodbstatefullset.yml to get manifest file. 
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  clusterIP: None        #here we use service type with None. we usualy use type and then mention the name of the service.
+  selector:
+    role: mongo
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  selector:
+    matchLabels:
+      role: mongo
+  serviceName: "mongo"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        role: mongo
+    spec:
+      terminationGracePeriodSeconds: 10     #it will be helped while deleting the pods. they delete withing this time. 
+      containers:
+      - name: mongo
+        image: mongo
+        ports:
+          - containerPort: 27017
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: devdb
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: devdb@123
+        volumeMounts:
+          - name: mongo-persistent-storage
+            mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-persistent-storage
+      spec:
+        #storageClassName: "gp2"
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+
+
+
+Above in service manifest we can see
+
+clusterIP: None      --> Here we use service type with None. we usualy use type(clusterIP/NodeportIP) and then mention the name of the service. it means its headless service. 
+                         Here we cant get virtual IP address. 
+
+In stateFulSet also we use PV and PVC concept. volumeMounts and VolumeClauimTemplate. bcoz in stateFulSet we will have diff volume for each replicas/pods. 
+
+Here also we need storage class concept bcoz we have claim but we dont have volume to bound with. 
+
+terminationGracePeriodSeconds: 10     #it will be helped while deleting the pods. they delete withing this time. why bcoz it might have active connections. so it needs some time
+                                        to release those actions. 
+
+
+
+
+
+
+
+
+
+
+
