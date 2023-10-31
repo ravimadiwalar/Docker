@@ -585,7 +585,10 @@ EX: if we create a stateful set with name mongo, it will create a pod with name 
 
 all volumes will be diff. Instead of going with stateful set we can go with RDS service in aws. 
 
+@ What is the recommended way to deploy the stateful application in K8s? 
+==> StatefulSet
 
+We can call jenkis, MySql, Mongo, redis cash and Maria DB as a stateFulSet. 
 
 
 
