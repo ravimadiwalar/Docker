@@ -535,6 +535,16 @@ mountOptions:
 volumeBindingMode: Immediate
 
 
+above we have aws-ebs and it is self managed storage class. we have to do lot of settings before set up this ebs. 
+
+we have one more option is NFS. for NFS need to crete one server in aws and set this one as a default one. later it will create PV dynamically(automatically) after creating a PVC. 
+
+==> We have one piece of software/application to set up a nfs storage class. plz refer below link
+https://github.com/MithunTechnologiesDevOps/Kubernates-Manifests/blob/master/pv-pvc/nfsstorageclass.yml
+
+
+
+
 
 
 
