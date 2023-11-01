@@ -144,18 +144,39 @@ show how pods will create.
 
 Here the pods will craete one after the other (kubectl get pods). like mongo-0 and later mongo-1 and after some times it will create mongo-2. These are individual data bases now.
 
+if We have already applied the storage class no need to attache new volume here. so it will assig the PV to those pvc directly.
 
+kubectl get pv
+kubectl get pvc
 
+here for both we can see same names.
 
+mongo-persistent-storage-mongo-0
+mongo-persistent-storage-mongo-1
+mongo-persistent-storage-mongo-2
 
+Now execute 'kubectl get pods'. here we can observe that mongo-0, mongo-1 and mongo-2. it menas easily we can find out which pod is associated which pv and pvc. 
+Each pod will have its own storage. bcoz of this only we will achieve the high availability. 
 
+@@ Can I delete PVC in Kubernetes?
+If a user deletes a PVC in active use by a Pod, the PVC is not removed immediately. PVC removal is postponed until the PVC is no longer actively used by any Pods. Also, 
+if an admin deletes a PV that is bound to a PVC, the PV is not removed immediately. PV removal is postponed until the PV is no longer bound to a PVC.
 
+@ I want to deploy my database as a pod, which resource we use?
+--> statefulSet
+@ I dont want load balancer in my k8s service, i want interact my pods directly interact without load balancing, then how do you do?
+--> Headless Service,  below you can see the mongo with no virtual IP address. 
 
+ubuntu@ip-172-31-34-33:~$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        4h28m
+mongo        ClusterIP   None            <none>        27017/TCP      67m
+springapp    NodePort    10.99.165.168   <none>        80:30568/TCP   67m
 
-
-
-
-
+@ If we update/delete the statefulSet image/pod, which pod will update first/which order it will update?
+--> in reverse order it will update. mongo-2, mongo-1 and mongo-0. 
+    But while its creating it will create in 0,1 and 2 order. 
+     We can scale upthe statefulSet. 
 
 
 
