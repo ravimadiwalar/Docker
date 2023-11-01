@@ -93,6 +93,67 @@ terminationGracePeriodSeconds: 10     #it will be helped while deleting the pods
                                         to release those actions. 
 
 
+volumeClaimTemplates: using this info the claim will create automatically. but in Deployment we have to create one seperate api server (api version, kind, metadata, spec). 
+
+we are going to add our application with this database. so add beow lines with above data base lines and make iyt single manifest file. 
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springappdeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springapp
+  template:
+    metadata:
+      name: springapppod
+      labels:
+        app: springapp
+    spec:
+      containers:
+      - name: springappcontainer
+        image: dockerhandson/spring-boot-mongo
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_DB_USERNAME
+          value: devdb
+        - name: MONGO_DB_PASSWORD
+          value: devdb@123
+        - name: MONGO_DB_HOSTNAME
+          value: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springapp
+spec:
+  selector:
+    app: springapp
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: NodePort
+
+
+while apply to this yml file. open one more mobaxterm and with same master node ssh link and type"watch kubectl get pods". now enter apply commond. in other mobaxterm it will 
+show how pods will create.
+
+Here the pods will craete one after the other (kubectl get pods). like mongo-0 and later mongo-1 and after some times it will create mongo-2. These are individual data bases now.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
