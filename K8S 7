@@ -179,6 +179,207 @@ springapp    NodePort    10.99.165.168   <none>        80:30568/TCP   67m
      We can scale upthe statefulSet. 
 
 
+==> ConfigMap: its a K8s object, we can use this in deployment, Rs, RC or statefulSet also. 
+-----------------
+       An apps config is everything that is likely to vary btw deploy (staging, production, developer environment, etc). This includes database connections details and credentials
+or cloud credentials . 
+
+K8s allows you to provide configuration informations to our appliactions through configmap or secret resources. the main diff btw the two is the way a pod  stores the receiving 
+information and how the data stored inthe etcd data store. 
+
+Both ConfigMap and secret store data as a key value pair. the major diff is, Secrets store data in base64  format menawhile Configmaps store data in palin text. 
+
+"If we have some critical data like, keys, password, service account credentials, db connectig string, etc then you should always go for secrets rather than ConfigMap".
+
+Here we dont do any hardcode in username and password. so we use Configmap.
+
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: mongo
+          spec:
+            ports:
+              - port: 27017
+                targetPort: 27017
+            clusterIP: None        #here we use service type with None. we usualy use type and then mention the name of the service.
+            selector:
+              role: mongo
+          ---
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: mongo
+          spec:
+            selector:
+              matchLabels:
+                role: mongo
+            serviceName: "mongo"
+            replicas: 3
+            template:
+              metadata:
+                labels:
+                  role: mongo
+              spec:
+                terminationGracePeriodSeconds: 10     #it will be helped while deleting the pods. they delete withing this time. 
+                containers:
+                - name: mongo
+                  image: mongo
+                  ports:
+                    - containerPort: 27017
+                  env:
+                    - name: MONGO_INITDB_ROOT_USERNAME
+                      valueFrom:
+                        configMapKeyRef: 
+                          name: springappconfig     #we have to craete a configmap in this name. then only it will consider.
+                          key: mongodbusername
+                    - name: MONGO_INITDB_ROOT_PASSWORD
+                      valueFrom:
+                        configMapKeyRef: 
+                          name: springappconfig     #we have to craete a configmap in this name. then only it will consider.
+                          key: mongodbpassword
+                  volumeMounts:
+                    - name: mongo-persistent-storage
+                      mountPath: /data/db
+            volumeClaimTemplates:
+              - metadata:
+                  name: mongo-persistent-storage
+                spec:
+                  #storageClassName: "gp2"
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 1Gi
+          ---
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: springappdeployment
+          spec:
+            replicas: 2
+            selector:
+              matchLabels:
+                app: springapp
+            template:
+              metadata:
+                name: springapppod
+                labels:
+                  app: springapp
+              spec:
+                containers:
+                - name: springappcontainer
+                  image: dockerhandson/spring-boot-mongo
+                  ports:
+                  - containerPort: 8080
+                  env:
+                  - name: MONGO_DB_USERNAME
+                    valueFrom:
+                        configMapKeyRef: 
+                          name: springappconfig     #we have to craete a configmap in this name. then only it will consider.
+                          key: mongodbusername
+                  - name: MONGO_DB_PASSWORD
+                    valueFrom:
+                        configMapKeyRef: 
+                          name: springappconfig     #we have to craete a configmap in this name. then only it will consider.
+                          key: mongodbpassword
+                  - name: MONGO_DB_HOSTNAME
+                    value: mongo
+          ---
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: springapp
+          spec:
+            selector:
+              app: springapp
+            ports:
+            - port: 80
+              targetPort: 8080
+            type: NodePort
+
+
+
+Before executing this configmap manifest file. we have to check whether we have any configmap/secrets there. below we can see one configmao and secret. these are default ones. 
+
+
+ubuntu@ip-172-31-34-33:~$ kubectl get configmap
+NAME               DATA   AGE
+kube-root-ca.crt   1      14d
+ubuntu@ip-172-31-34-33:~$ kubectl get secrets
+NAME                  TYPE                                  DATA   AGE
+default-token-nspzr   kubernetes.io/service-account-token   3      14d
+
+
+ @@ i am deploying the pod but its not creating. how to check?
+--> using 'kubectl describe pod <podname>'
+
+
+
+Above we have manifest file with configmap. but we dont have configmap file. if we dont have manifest file it will show below error after apply kubectl
+"createConatinerCofigError" in pods creation. (kubectl get pods)
+
+ubuntu@ip-172-31-34-33:~$ kubectl get pods
+NAME                                  READY   STATUS                       RESTARTS   AGE
+jenkins-deployment-6f7959b94f-8l7q9   1/1     Terminating                  0          13d
+mongo-0                               0/1     Pending                      0          5s
+mongorc-z5j8h                         1/1     Terminating                  0          13d
+springappdeployment-d99cc466f-97glc   0/1     CreateContainerConfigError   0          5s
+springappdeployment-d99cc466f-kmx5q   0/1     CreateContainerConfigError   0          5s
+
+==> OR if we descrie that pod also we can get to know that what is the error (configmap "springappconfig" not found) it is facing to create a POD. 
+
+kubectl describe pod <podName>
+.
+.
+  Warning  Failed     11s (x4 over 44s)  kubelet            Error: configmap "springappconfig" not found
+
+--> So lets create a "springappconfig" manifest file. 
+
+apiVersion: v1
+kind: Configmap
+metadata: 
+name: springappconfig
+data:                           #in config map we dont use spec. insted we use data. 
+  mongodbusername: devdb
+  mongdbpassword: devdb@123
+
+
+ubuntu@ip-172-31-34-33:~$ kubectl get configmap
+NAME               DATA   AGE
+kube-root-ca.crt   1      14d
+springappconfig    2      45s
+
+
+ubuntu@ip-172-31-34-33:~$ kubectl get pods
+NAME                                  READY   STATUS                       RESTARTS   AGE
+jenkins-deployment-6f7959b94f-8l7q9   1/1     Terminating                  0          14d
+mongo-0                               0/1     Pending                      0          179m
+mongorc-z5j8h                         1/1     Terminating                  0          14d
+springappdeployment-d99cc466f-97glc   0/1     CreateContainerConfigError   0          179m
+springappdeployment-d99cc466f-kmx5q   0/1     CreateContainerConfigError   0          179m
+
+
+
+still we are getting the same . so delete that old one and re apply once. 
+
+ubuntu@ip-172-31-34-33:~$ kubectl delete -f mongostatefulsetcm.yml
+service "mongo" deleted
+statefulset.apps "mongo" deleted
+deployment.apps "springappdeployment" deleted
+service "springapp" deleted
+
+buntu@ip-172-31-34-33:~$ kubectl apply -f mongostatefulsetcm.yml
+service/mongo created
+statefulset.apps/mongo created
+deployment.apps/springappdeployment created
+service/springapp created
+
+
+
+
+
+
+
+
 
 
 
