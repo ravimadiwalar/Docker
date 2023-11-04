@@ -1,0 +1,22 @@
+==> Type of Autoscaling:
+1) Vartical scaling: The capacity of the server will increase. for eg. if we have 4 core 8GB. we can change that to 8 core 32 GB. 
+2) Horizontal Scaling: here we will increse the servers with same capacity. will attached these with load balanacer and it will route all the traffic equally. 
+
+In K8s we can do both Vertical and Horizontal Scaling. 
+
+=> POD Autoscaler:
+1) HPA: Horizontal POD Autoscaler
+2) VPA: Vericatl POD Autoscaler
+
+
+
+
+
+
+
+
+
+
+
+
+
