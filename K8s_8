@@ -8,7 +8,12 @@ In K8s we can do both Vertical and Horizontal Scaling.
 1) HPA: Horizontal POD Autoscaler
 2) VPA: Vericatl POD Autoscaler
 
+@ can i set limits to our pods (CPU and Memory)?
+-> Yes
 
+@ If process(application) is running out of CPU - Performance will be impacted/ process will hung. will not get quick response. 
+
+@ If process is running out of memory- process will be killed
 
 
 
