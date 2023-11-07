@@ -111,39 +111,42 @@ metadata:
   name: hpadeployment
   labels:
     name: hpadeployment
-spec: 
+spec:
   replicas: 2
-  selectors: 
-    matchLabels: 
+  selector:
+    matchLabels:
       name: hpapod
-  template: 
+  template:
     metadata:
       labels:
         name: hpapod
-  spec: 
-    containers:
-    - name: hpscontainer
-      image: k8s.gcr.io/hpa-example
-      ports: 
-      - name: http
-        containerPort: 80
-      resources:
-        requests: 
-          cpu: "100m"
-          memory: "64Mi"
-        limits: 
-          cpu: "100m"
-          memory: "256Mi"
+    spec:
+      containers:
+      - name: hpscontainer
+        image: k8s.gcr.io/hpa-example
+        ports:
+        - name: http
+          containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: hpaservice
-spec: 
+spec:
   type: NodePort
-  ports: 
+  ports:
   - port: 80
-    targetPort: 80 
+    targetPort: 80
+  selector:
+    nema: hpapod
+
 
 
 
