@@ -1,0 +1,77 @@
+==> Type of Autoscaling:
+1) Vartical scaling: The capacity of the server will increase. for eg. if we have 4 core 8GB. we can change that to 8 core 32 GB. 
+2) Horizontal Scaling: here we will increse the servers with same capacity. will attached these with load balanacer and it will route all the traffic equally. 
+
+In K8s we can do both Vertical and Horizontal Scaling. 
+
+=> POD Autoscaler:
+1) HPA: Horizontal POD Autoscaler- It automatically scales the No of pods i a RC, Deployment,RS based on observed CPU/memory utilization. This HPA is implemented as a K8S API resource
+and controller. The resource determines the behaviour of the controller. the controller periodically adjust the no of replicas in a RC or deployment to match the observed avaerage
+CPU/memory utilization to the target specified by the used. 
+
+HPA will interact with Metric Server to identify cpu/memeory utilization of POD. 
+
+2) VPA: Vericatl POD Autoscaler
+
+@ can i set limits to our pods (CPU and Memory)?
+-> Yes
+
+@ If process(application) is running out of CPU - Performance will be impacted/ process will hung. will not get quick response. 
+
+@ If process is running out of memory- process will be killed
+
+@ Can we achive POD Autoscaler in self managed k8s cluster?
+-> YES
+
+==> Kubectl top nodes OR kubectl top pods - we will get an error like "Metrics API not available"
+Metrics means the CPU and Memory utilization. we have to know this metrics then only we can do autoscaling. We dont have this in K8S by defalut. we have to donload Metrics application.
+
+@ What is heapster?
+-> In previous version of K8s we have heapster as a defalut one to find out CPU/memory utilization. 
+
+@ What is metrics Server?
+-> Instead of Heapster we have Metrics Server. 
+
+
+==> K8s Metric Server: 
+           Its an application that collects metric from objects such as PODs, nodes accordib to the state of CPU, RAM and keeps them in time. This will be installed in K8S as an addon. 
+
+Metrics Server collects resource metrics from Kubelets and exposes them in Kubernetes apiserver through Metrics API for use by Horizontal Pod Autoscaler and Vertical Pod Autoscaler.
+
+Go to browser and type "kubernetes-sigs/metrics-server"- go inside and we can see repository - Installation - copy that yml link and browse in new tab - will get yml file. then
+applu kubectl apply -f 
+
+OR
+MithunTechnologiesDevOps - metrics-server  - do the fallowing. here we have 1.8 is the latest version. so apply that. In deploy file we can see all versions. 
+
+git clone https://github.com/MithunTechnologiesDevOps/metrics-server.git 
+
+cd metric-server
+
+kubectl apply -f deploy/1.8+/   
+
+
+
+Now - kubectl get all -n kube-system  - we can see metruc server running as a pod now and we can see deployment/metric server it will manage the pod. 
+
+Now we can see those CPU/memory utilization of pods and nodes. 
+
+kubectl top nodes
+kubectl top pods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
