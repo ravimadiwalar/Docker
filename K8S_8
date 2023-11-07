@@ -26,6 +26,11 @@ HPA will interact with Metric Server to identify cpu/memeory utilization of POD.
 ==> Kubectl top nodes OR kubectl top pods - we will get an error like "Metrics API not available"
 Metrics means the CPU and Memory utilization. we have to know this metrics then only we can do autoscaling. We dont have this in K8S by defalut. we have to donload Metrics application.
 
+ubuntu@ip-172-31-34-33:~$ kubectl top pods
+error: Metrics API not available
+ubuntu@ip-172-31-34-33:~$ kubectl top nodes
+error: Metrics API not available
+
 @ What is heapster?
 -> In previous version of K8s we have heapster as a defalut one to find out CPU/memory utilization. 
 
@@ -54,14 +59,91 @@ kubectl apply -f deploy/1.8+/
 
 Now - kubectl get all -n kube-system  - we can see metruc server running as a pod now and we can see deployment/metric server it will manage the pod. 
 
+ubuntu@ip-172-31-34-33:~/metrics-server/deploy$ kubectl get all -n kube-system
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/coredns-74ff55c5b-ltltx                   1/1     Running   22         20d
+pod/coredns-74ff55c5b-v44vh                   1/1     Running   22         20d
+pod/etcd-ip-172-31-34-33                      1/1     Running   22         20d
+pod/kube-apiserver-ip-172-31-34-33            1/1     Running   22         20d
+pod/kube-controller-manager-ip-172-31-34-33   1/1     Running   22         20d
+pod/kube-proxy-7dh67                          1/1     Running   16         19d
+pod/kube-proxy-8mqqz                          1/1     Running   22         20d
+pod/kube-proxy-d6tvl                          1/1     Running   1          20d
+pod/kube-proxy-pgq84                          1/1     Running   11         15d
+pod/kube-scheduler-ip-172-31-34-33            1/1     Running   22         20d
+pod/metrics-server-766c9b8df-v4d4j            1/1     Running   0          61s
+pod/weave-net-cf2vp                           2/2     Running   2          20d
+pod/weave-net-fsjsv                           2/2     Running   22         15d
+pod/weave-net-klgkn                           2/2     Running   48         20d
+pod/weave-net-x4f8n                           2/2     Running   36         19d
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+service/kube-dns         ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP   20d
+service/metrics-server   ClusterIP   10.101.226.141   <none>        443/TCP                  62s
+
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/kube-proxy   4         4         3       4            3           kubernetes.io/os=linux   20d
+daemonset.apps/weave-net    4         4         3       4            3           <none>                   20d
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/coredns          2/2     2            2           20d
+deployment.apps/metrics-server   1/1     1            1           62s
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/coredns-74ff55c5b          2         2         2       20d
+replicaset.apps/metrics-server-766c9b8df   1         1         1       63s
+
 Now we can see those CPU/memory utilization of pods and nodes. 
 
-kubectl top nodes
-kubectl top pods
+=> kubectl top nodes
+=> kubectl top pods
 
 
+==> What is resource requests and resource limits?
+   resource limits- Max CPU the container can take and memory. it will not go beyond this. (limits should always be equal/more than requests) 
+   resource requests- Minimum gurantee of CPU and memory for our pod. 
 
+We can apply these resource requests and resource limits to all the apllications. 
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpadeployment
+  labels:
+    name: hpadeployment
+spec: 
+  replicas: 2
+  selectors: 
+    matchLabels: 
+      name: hpapod
+  template: 
+    metadata:
+      labels:
+        name: hpapod
+  spec: 
+    containers:
+    - name: hpscontainer
+      image: k8s.gcr.io/hpa-example
+      ports: 
+      - name: http
+        containerPort: 80
+      resources:
+        requests: 
+          cpu: "100m"
+          memory: "64Mi"
+        limits: 
+          cpu: "100m"
+          memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpaservice
+spec: 
+  type: NodePort
+  ports: 
+  - port: 80
+    targetPort: 80 
 
 
 
