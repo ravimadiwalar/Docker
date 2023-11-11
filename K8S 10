@@ -27,6 +27,20 @@ IAM Dashboard - Roles - create Role - AWS service- Choose a use case - EKS - EKS
 
 cloud formation - Create stack - 
 
+3) Create Cluster:           
+
+EKS - Clssters- Create Cluster - Name: EKS Demo - Kubenetes Version: 1.28 (should not use latest verison it may have some errors/defects. so we use old versions) use Default one
+- Cluster Version Role: EKS_Cluster_Role - Tags - Next - 
+
+VPC - Default one
+Security Group: Default  (If we have VPC then we have to selecet that one)
+Cluster End Point Access: 
+   1) Public
+   2) Private and Public - Selet this one
+   3) Private - In rea tie we use this. When i dot want that kubectl command executed from internet. i mean diff network servers. 
+Network Add-ons: we use Weave Network while instaling K8s in server. si like that aws has its own network. it selected by default - Next
+Configure observability- control plane logging- leave them as deselected. dont select any one bcoz chargable ones- Next and crete a cluster. 
+
 
 
 
