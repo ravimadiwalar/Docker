@@ -1,0 +1,15 @@
+==> EKS- Elastic Kubenetes Service
+--------------------------------------
+           It is managed by the aws providers so its managed K8s cluster. 
+*Controlpane (master) completely managed by AWS. 
+* EKS is the best place to run k8s applications bcoz of its security, reliability and scalability. 
+* EKS can be integrated with manay other AWS services such as ELB, Amazon CloudWatch, AutoScaling Group, IAM, VPC, Providing you a seamless experiance to monitor, laod balance your 
+application. 
+* make it easy for us to K8s on AWS without needing to install, operate and manitain your own k8s control plane. 
+
+
+
+-> Diff ways to set up EKS cluster: 
+1) AWS managed console
+2) Terraform
+3) eksctl utility provided by AWS
