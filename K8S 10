@@ -7,9 +7,28 @@
 application. 
 * make it easy for us to K8s on AWS without needing to install, operate and manitain your own k8s control plane. 
 
-
+=> Managed control plane: AWS EKS provides a scalable and high available control plane that runs across multiple AWS availability zones. Ths aws eks service automatocally manages 
+the scalability and availability of the k8s API servers and etcd persistence layer of each cluster. AWS EKS runs the k8s cotrol plane across 3 availabilirty zones in order to ensure 
+high availability and it detects  and replaces unhealthy masters. 
 
 -> Diff ways to set up EKS cluster: 
 1) AWS managed console
 2) Terraform
 3) eksctl utility provided by AWS
+
+==> Step by Step procedure using AWS console:
+    -----------------------------------------
+1) Create a IAM (Identity and access management)Role for EKS Cluster.
+       EKS-Cluster
+
+
+
+
+
+
+
+
+
+
+
+
