@@ -18,9 +18,10 @@ high availability and it detects  and replaces unhealthy masters.
 
 ==> Step by Step procedure using AWS console:
     -----------------------------------------
-1) Create a IAM (Identity and access management)Role for EKS Cluster.
+1) Create a IAM (Identity and access management)Role for EKS Cluster. - we should have admin/permissions to crete a role. 
        EKS-Cluster
 
+IAM Dashboard - Roles - 
 
 
 
