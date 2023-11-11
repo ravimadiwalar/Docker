@@ -21,7 +21,13 @@ high availability and it detects  and replaces unhealthy masters.
 1) Create a IAM (Identity and access management)Role for EKS Cluster. - we should have admin/permissions to crete a role. 
        EKS-Cluster
 
-IAM Dashboard - Roles - 
+IAM Dashboard - Roles - create Role - AWS service- Choose a use case - EKS - EKS Cluster (i am giving a permission to IAM role to manage EKS)- Name - create a Role. 
+
+2) Create a dedicated VPC for EKS Cluster. using Cloud Formation. https://amazon-eks.s3.us.west-2.amazonaws.com/cloudformation/2020-04-21/amazon-eks-vpc-private-subnets.yaml
+
+cloud formation - Create stack - 
+
+
 
 
 
