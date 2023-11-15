@@ -60,7 +60,33 @@ Now we can see in google also- Install kubectl|Kubenetes - Install and Set Up ku
 Client Version: v1.28.3
 Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 
-No we can see the version of that client. 
+No we can see the version of that client. but we cant see any kubeconfig file inside. without config file we cant connect. 
+
+[ec2-user@ip-172-31-47-63 ~]$ ls ~/.
+kubectl
+[ec2-user@ip-172-31-47-63 ~]$ ls -lar  ~/.
+total 48720
+drwx------. 2 ec2-user ec2-user       29 Nov 14 13:26 .ssh
+-rw-r--r--. 1 ec2-user ec2-user 49872896 Nov 14 13:39 kubectl
+-rw-r--r--. 1 ec2-user ec2-user      492 Nov 24  2022 .bashrc
+-rw-r--r--. 1 ec2-user ec2-user      141 Nov 24  2022 .bash_profile
+-rw-r--r--. 1 ec2-user ec2-user       18 Nov 24  2022 .bash_logout
+-rw-------. 1 ec2-user ec2-user      215 Nov 14 14:26 .bash_history
+drwxr-xr-x. 3 root     root           22 Nov 14 13:26 ..
+drwx------. 3 ec2-user ec2-user      110 Nov 14 14:26 .
+
+Now install AWS CLI- Serach in google - installation of aws cli - version 2
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo yum install unzip -y
+unzip awscliv2.zip     
+sudo ./aws/install
+
+
+We have installed cli but still need credentials connect with 
+[ec2-user@ip-172-31-47-63 ~]$ aws eks list-clusters
+
+Unable to locate credentials. You can configure credentials by running "aws configure".
 
 
 
