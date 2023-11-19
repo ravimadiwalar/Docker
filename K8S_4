@@ -69,13 +69,13 @@ Deployment startegies: These strategies will not applicable when we are craeting
 strategy:
   type: Recreate
 
-2)Rolling update(Default)- here will seex   zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
+2)Rolling update(Default)- here will see zero downtime deployment issue. whay bcoz a rolling update waits for new pods to become ready before it starts scaling 
 down the old ones. if there is a problem , the rolling update or deployment can be aborted without bringing the whole clusterdown. in the YAML definition file for this type of
 deployment, a new image replace the old image. 
 
 strategy:
   type: RollingUpdate
-  rollinUpdate:
+  rollingUpdate:
     maxSurge: 1
     maxUnavailable: 1
     minReadySeconds: 30
@@ -96,7 +96,7 @@ spec:
      matchLabels:
        app: javawebapp
   strategy:
-    type: Recreate   #This strategy will applicable whiel updating the version
+    type: Recreate   #This strategy will applicable while updating the version
   template:
     metadata:
       name: javawebapppod
@@ -164,7 +164,7 @@ replicaset.apps/javawebappdeployment-7cb95f67b4   0         0         0       29
                           replicaset.apps/javawebappdeployment-7cb95f67b4   0         0         0       29m 
 
 
-one we can see desired 2 and current 2. and other one is zero. bcoz this zero one is older version tahts why it is zero. 
+one we can see desired 2 and current 2. and other one is zero. bcoz this zero one is older version thats why it is zero. 
 
 #using "kubectl rollout status deployment <Deploymentname>" we can find out the status .
 
