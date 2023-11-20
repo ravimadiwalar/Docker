@@ -101,6 +101,33 @@ Now we have got that config file. now we want that kube config file.
 
 [ec2-user@ip-172-31-47-63 ~]$ aws eks kube-config --name eks_demo --region ap-south-1
 
+[ec2-user@ip-172-31-47-63 ~]$ cat .kube/config 
+
+Now we can see config file here. 
+
+Then we have to create worker nodes. will crete these worker nodes in EKS worker node IAM Role. 
+
+4) Create IAM role for EKS worker Nodes: Crete a new role with below policies. Select use case as EC2. 
+  a. AmazonEKSWorkerNodePolicy
+  b. AmzonEKS CNI Policy
+  c. AmazonEC2ContainerRegistryReadOnly    --> here read only bcoz here the container will just pull the image. not push any image. 
+
+Role name: EKS_worker_Role
+
+5) Create Worker Nodes group: 
+     Here we will create worker nodes group but not manaually. Node group in the background it is going to create Autoscaling group with launch configurations.
+We can choose Nexus and docker hub instead of ECR. but these are not managed by AWS. in this case we need authenticate with username and password. 
+
+Go to EKS cluster- cluster - EKS_Demo - configuration - compute- Add Node group -
+Name: EKS_Node_group
+Node IAM Role: EKS_Woker_Role  (Here we will select worker node role that we have just creted)
+ 
+Next - 
+AMI type: Amazon Linux2 (AL2_x86_64)    --> its default one. 
+Capacity type: On-Demand      --> Recommended one
+Instance Type: t2.micro   (This is the capacity of our worker nodes. in real time will select larger one)
+Disk Size: 20GiB
+
 
 
 
