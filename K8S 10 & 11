@@ -126,11 +126,35 @@ Next -
 AMI type: Amazon Linux2 (AL2_x86_64)    --> its default one. 
 Capacity type: On-Demand      --> Recommended one
 Instance Type: t2.micro   (This is the capacity of our worker nodes. in real time will select larger one)
-Disk Size: 20GiB
+Disk Size: 20GiB     
 
+Minimum size: 2   (Minimum no of nodes. always will have 2 nodes)
+Maximum size: 2   
+Desired Size: 4
 
+Node Group update configuration
 
+Maximum unavailable
+@ Number
 
+Value: 1  (While we are updating the nodegroup capacity. in that case its going to update and max unavailbel node is 1)
+
+NEXT - Allow remote access to nodes (enable this. bcoz if we disable we cant acces these nodegroup)
+
+SSH key pair- select our ssh key pair
+Allow remote access from: All
+
+NEXT- Creat
+
+Now we have creted a node group. 
+
+now go and check the Autoscaling groups- here we can see our autoscaling group. go inside and click on launch Template - we can see bootstrap-  to install many softwares. 
+
+Now got to EC2 server. there we can see 2 new nodes for that k8s cluster. 
+
+Now-  Kubectl get nodes
+
+we can see these two nodes. 
 
 
 
