@@ -24,19 +24,20 @@ high availability and it detects  and replaces unhealthy masters.
 IAM Dashboard - Roles - create Role - AWS service- Choose a use case - EKS - EKS Cluster (i am giving a permission to IAM role to manage EKS)- Name - create a Role. 
 
 2) Create a dedicated VPC for EKS Cluster. using Cloud Formation. https://amazon-eks.s3.us.west-2.amazonaws.com/cloudformation/2020-04-21/amazon-eks-vpc-private-subnets.yaml
-
+2) Now use "Default VPC"
 3) Create a Cluster:           
 
-EKS - Clssters- Create Cluster - Name: EKS Demo - Kubenetes Version: 1.28 (should not use latest verison it may have some errors/defects. so we use old versions) use Default one
+EKS - Clssters- Create Cluster - Name: EKS Demo - Kubenetes Version: 1.26 (should not use latest verison it may have some errors/defects. so we use old versions)
 - Cluster Version Role: EKS_Cluster_Role - Tags - Next - 
 
 VPC - Default one
 Security Group: Default  (If we have VPC then we have to selecet that one)
 Cluster End Point Access: 
-   1) Public
-   2) Private and Public - Selet this one
-   3) Private - In rea tie we use this. When i dot want that kubectl command executed from internet. i mean diff network servers. 
-Network Add-ons: we use Weave Network while instaling K8s in server. si like that aws has its own network. it selected by default - Next
+   1) Public- The end point is accessible from outside the k8s cluster, usually over the internet.it allaows external users or services to communicate with the end point. 
+   2) Private and Public - Selet this one (its end point can be accessible inside and ouside the cluster. it provides flexiblility for communication btw external and internal service)
+   3) Private - In rela time we use this. When i dont want that kubectl command executed from internet. i mean diff network servers. accessing an end point within thek8s 
+cluster itself. 
+Network Add-ons: we use Weave Network while instaling K8s in server. so like that aws has its own network. it selected by default - Next
 Configure observability- control plane logging- leave them as deselected. dont select any one bcoz chargable ones- Next and crete a cluster. 
 
 
@@ -86,8 +87,19 @@ sudo ./aws/install
 We have installed cli but still need credentials connect with 
 [ec2-user@ip-172-31-47-63 ~]$ aws eks list-clusters
 
-Unable to locate credentials. You can configure credentials by running "aws configure".
+Unable to locate credentials. You can configure credentials by running "aws configure".   --> It means we have to give credentials to conncet each other. 
 
+Go to AWS account- Security credentials- Crete access key- note down that access key and Secret key, region (ap-south-1). 
+
+[ec2-user@ip-172-31-47-63 ~]$ aws configure
+AWS Access key ID[None]: AKIAXB6GHYM2Q43WMDF7
+AWS Secret Access key: aksa9s73bmdjxmx6d
+Defalut region: ap-south-1
+Defalut output format: json
+
+Now we have got that config file. now we want that kube config file. 
+
+[ec2-user@ip-172-31-47-63 ~]$ aws eks kube-config --name eks_demo --region ap-south-1
 
 
 
