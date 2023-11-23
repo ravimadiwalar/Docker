@@ -154,18 +154,25 @@ metadata:
   name: hpadeploymentautoscaler
 spec: 
   scaleTargetRef: 
-    apiVersion: app/v1
+    apiVersion: apps/v1
     kind: Deployment
-    name: hpadeployment
+    name: hpadeployment                #using this name (deployment and HPS should same) only HPA will identify and scale up the pods for our application. 
 minReplicas: 2
 maxReplicas: 5
 metrics: 
   - resources: 
       name: cpu
-      targetAverageUtilization: 80
+      targetAverageUtilization: 80     #if the average of 2 pods utilization reaches 80% it will create new pod. 
     type: Resource
 
 Lets do - kubectl apply -f hpsdemo.yml
+
+If we want we can add this to memory also. 
+  - resources: 
+      name: cpu
+      targetAverageUtilization: 80     #if the average of 2 pods utilization reaches 80% it will create new pod. 
+    type: Resource
+
 
 @ To check the performance of the application before going to production testers use some softwares: here will check our application will sustain if we put this much laod. 
 will find out the max load that can suatsin.
@@ -182,7 +189,7 @@ for temporary pod creation: "kubectl run -it --rm loadrunner --image=busybox /bi
 
 here rm means Remove. the pod wil be removed once we come out. 
 
-
+@ This HPA deployment is based on the client requirement. not a mandatory one. 
 
 
 
