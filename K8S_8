@@ -147,10 +147,40 @@ spec:
     targetPort: 80
   selector:
     name: hpapod
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata: 
+  name: hpadeploymentautoscaler
+spec: 
+  scaleTargetRef: 
+    apiVersion: app/v1
+    kind: Deployment
+    name: hpadeployment
+minReplicas: 2
+maxReplicas: 5
+metrics: 
+  - resources: 
+      name: cpu
+      targetAverageUtilization: 80
+    type: Resource
 
 Lets do - kubectl apply -f hpsdemo.yml
 
+@ To check the performance of the application before going to production testers use some softwares: here will check our application will sustain if we put this much laod. 
+will find out the max load that can suatsin.
 
+-> Apache JMeter, LoadRunner, Apache Bench, Locust, k6 etc
+
+Here we can see two type of requirements: 
+1) Functional Requirements
+2) Non Functional Requirements(NFR): How much we are expected on that application. client would say this application would get 10k requests per min, then we check the 
+  sustanability. Unless performace Test and regression testing we cant push that to production. 
+
+Now lets put some temporary load with temporary pod creation. 
+for temporary pod creation: "kubectl run -it --rm loadrunner --image=busybox /bin/sh"
+
+here rm means Remove. the pod wil be removed once we come out. 
 
 
 
