@@ -100,6 +100,7 @@ Now we can see those CPU/memory utilization of pods and nodes.
 
 
 ==> What is resource requests and resource limits?
+Resources means CPU and Memory. How much CPU and Memory we are allocatiing to that container. and come under Contianer.  
    resource limits- Max CPU the container can take and memory. it will not go beyond this. (limits should always be equal/more than requests) 
    resource requests- Minimum gurantee of CPU and memory for our pod. 
 
@@ -145,8 +146,9 @@ spec:
   - port: 80
     targetPort: 80
   selector:
-    nama: hpapod
+    name: hpapod
 
+Lets do - kubectl apply -f hpsdemo.yml
 
 
 
