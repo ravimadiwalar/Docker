@@ -99,7 +99,9 @@ Defalut output format: json
 
 Now we have got that config file. now we want that kube config file. 
 
-[ec2-user@ip-172-31-47-63 ~]$ aws eks kube-config --name eks_demo --region ap-south-1
+aws eks update-kubeconfig --name <clustername> --region ap-south-1
+
+[ec2-user@ip-172-31-47-63 ~]$ aws eks update-kubeconfig --name EKS --region ap-south-1
 
 [ec2-user@ip-172-31-47-63 ~]$ cat .kube/config 
 
