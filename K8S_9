@@ -1,0 +1,3 @@
+1) Liveness Probe: 
+        using this we can  restart the container if it fails. this is a kind of health check. the process is running but the application is not accessed by the end user. that time
+ will do the health check and here the readiness probe will stop the traffic to move to that pod. and liveness probe will restart the container/application. 
