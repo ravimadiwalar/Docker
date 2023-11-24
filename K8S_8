@@ -157,13 +157,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: hpadeployment                #using this name (deployment and HPS should same) only HPA will identify and scale up the pods for our application. 
-minReplicas: 2
-maxReplicas: 5
-metrics: 
-  - resources: 
-      name: cpu
-      targetAverageUtilization: 80     #if the average of 2 pods utilization reaches 80% it will create new pod. 
-    type: Resource
+  minReplicas: 2
+  maxReplicas: 5
+  metrics: 
+    - resources: 
+        name: cpu
+        targetAverageUtilization: 80     #if the average of 2 pods utilization reaches 80% it will create new pod. 
+      type: Resource
 
 Lets do - kubectl apply -f hpsdemo.yml
 
@@ -191,11 +191,19 @@ here rm means Remove. the pod wil be removed once we come out.
 
 @ This HPA deployment is based on the client requirement. not a mandatory one. 
 
+Here we have given reqests and limits. it means these are for each container/pod not for sum of all replicas. 
 
+==> Liveness Probe and Readiness probe: 
+The k8s will check the process of the application by default not health check of application. 
 
+1) Liveness prove: 
+  - suppose tha a POD is running our application inside the container, but due to some reason lets say memory leak, cpu usage,application deadlock etc the application is not 
+responding to our requests, and stuck in error state.
+- Liveness probe checks the container health as we tell it to do. and if for some reason the liveness probe fails, it restarts the container. then it might fix the issue. 
 
-
-
+2) Readiness Probe:
+ - This probe is used to detect if the container is ready to accept traffic. you can use this probe to manage which pods are used as backends for load balancing services. 
+if a pod is not ready, it can then be removed from the list of load balancer. it means the pod will remove and traffic will not go to that removed pod. 
 
 
 
