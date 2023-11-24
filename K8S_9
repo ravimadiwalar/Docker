@@ -1,3 +1,33 @@
-1) Liveness Probe: 
+==> Liveness Probes: 
+----------------------
         using this we can  restart the container if it fails. this is a kind of health check. the process is running but the application is not accessed by the end user. that time
  will do the health check and here the readiness probe will stop the traffic to move to that pod. and liveness probe will restart the container/application. 
+
+Rediness Probe will going to remove the end point from the load balancer to that service. will not get that end point unless and until we get the rediness probe successeful. if its 
+added the service will not send the traffic to that pods. 
+
+=> Types of Liveness probes: (serach in document)
+ 1)httpGet: if our applicatipn is executed succesfully means will get 200 code. if not will get different code. 
+      EX:  httpGet:
+             path: /healthz
+             port: 8080
+
+2) Command: if the command executes successfully the process of liveness probe is successful. 
+     EX:      command:
+                - cat
+                - /tmp/healthy
+3) tcpSocket: here it will check the given port is accessible or not. 
+     EX:     tcpSocket:
+                port: 8080     
+
+Now lets execute javwebapp server. 
+
+
+
+
+
+
+
+
+
+
