@@ -136,9 +136,9 @@ spec:
           httpGet:
             path: /java-web-app
             port: 8080
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-          periodSeconds: 15
+          initialDelaySeconds: 5       #the moment pod is created it will take 5 sec
+          timeoutSeconds: 1           #application time out. if it crosses 1 sec. its considered as failed. 
+          periodSeconds: 15          #how frequently it performs the readiness probe
         livenessProbe:
           httpGet:
             path: /java-web-app           #this context should be correct always. 
@@ -160,4 +160,131 @@ spec:
     targetPort: 8080
 
 
-above we have added liveness probe and readiness probe. 
+above we have added liveness probe and readiness probe. lets apply the kubectl again. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-6f975459b4-5cbxs   0/1     Running   0          39s
+javawebappdeployment-6f975459b4-qr4hm   0/1     Pending   0          39s
+
+above pod is running but 0/1 we see. it means the readiness probe is not successful yet. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe svc javawebappsvc
+Name:                     javawebappsvc
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=javawebapp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.100.46.232
+IPs:                      10.100.46.232
+Port:                     <unset>  80/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30929/TCP
+Endpoints:                
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+
+here we cant see any Endpoints. why bcoz we cant get any end point until will get the readiness probe successful. after some time will get pod and the end point also. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe pod javawebappdeployment-6f975459b4-5cbxs
+
+here we can get the details of that pod creation. initialy it got failed and later it got created. it means our Rediness probe has got executed successfully. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe svc javawebappsvc
+Name:                     javawebappsvc
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=javawebapp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.100.46.232
+IPs:                      10.100.46.232
+Port:                     <unset>  80/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30929/TCP
+Endpoints:                172.31.43.138:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+Now we can see the end point in serveice. it will redirect the request to application now. browse this will get the tomcat server. 
+
+Intentionally will remove the war file. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-6f975459b4-5cbxs   1/1     Running   0          19m
+javawebappdeployment-6f975459b4-qr4hm   0/1     Pending   0          19m
+ubuntu@ip-172-31-6-100:~$ kubectl exec javawebappdeployment-6f975459b4-5cbxs rm webapps/java-web-app.war
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+
+
+Now describe the svc. if we have two end points we will get only one end point here. it means the Readiness probe has removed that end point bcoz its not healthy. 
+
+In deployment we have mentioned the Liveness probe also. Liveness intial delay sec we have mentioned is 15 sec. if application fails it will restart the conatiner/applaication.
+this thing we can see in RESTART below. its 0 bcoz it hasn't restarted yet. it will restart after 15 sec. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-697f8d7b9f-bd8hw   0/1     Pending   0          19m
+javawebappdeployment-697f8d7b9f-nhp2q   1/1     Running   0          19m
+
+execute it one more time. below we can see RESTART - 1 . here after restarting the yml file it will pull that image again and create a war file.
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS        AGE
+javawebappdeployment-6f975459b4-5cbxs   1/1     Running   1 (4m13s ago)   24m
+javawebappdeployment-6f975459b4-qr4hm   0/1     Pending   0               24m
+
+
+==> Scheduling: 
+----------------
+       We have lot of pods and how pods are scheduling? who is deciding which node pod gets scheduled? it will decide based on the resources available in my cluster. whatever node
+has enough CPU and Memory. based on this it will schedule the pod. 
+
+-> Will i abale to control the pod should schedule in particulr node? 
+   yes, we can do this. using below ones
+NodeSelector, Nodeaffinity,taints and Tolerations. 
+
+EX: Add resources requests and limits in our java yml file. 
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "1Gi"
+  limits:
+    cpu: "100m"
+    memory: "2Gi"
+
+after adding and applying the kubectl apply. will get pods pending.
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-5cddfb799f-cjfjk   0/1     Pending   0          96s
+javawebappdeployment-5cddfb799f-cr2vg   0/1     Pending   0          95s
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe pod javawebappdeployment-5cddfb799f-cjfjk
+
+ Type     Reason            Age    From               Message
+  ----     ------            ----   ----               -------
+  Warning  FailedScheduling  2m45s  default-scheduler  0/2 nodes are available: 1 Too many pods, 2 Insufficient memory. preemption: 0/2 nodes are available: 2 No preemption victims found for incoming pod..
+
+
+when we describe the pod will get the answer. 0/2 nodes are available but 2 Insufficient memory (3 nodes doesn't have sufficient memory) some times will get 1 nide had taint. 
+
+
+
+
+
+
+
+
+
+
