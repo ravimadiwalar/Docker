@@ -206,4 +206,11 @@ responding to our requests, and stuck in error state.
 if a pod is not ready, it can then be removed from the list of load balancer. it means the pod will remove and traffic will not go to that removed pod. 
 
 
+==>
+We can do HPA by using command also
 
+-> kubectl autoscale deployment <deployment name> --cpu-percent=50 --min=1 --max=10
+
+-> kubectl autoscale deployment hpadeployment --cpu-percent=50 --min=1 --max=10
+
+If we wnat to see the yml file of that above command  - kubectl edit hpa hpadeployment
