@@ -277,12 +277,20 @@ ubuntu@ip-172-31-6-100:~$ kubectl describe pod javawebappdeployment-5cddfb799f-c
   Warning  FailedScheduling  2m45s  default-scheduler  0/2 nodes are available: 1 Too many pods, 2 Insufficient memory. preemption: 0/2 nodes are available: 2 No preemption victims found for incoming pod..
 
 
-when we describe the pod will get the answer. 0/2 nodes are available but 2 Insufficient memory (3 nodes doesn't have sufficient memory) some times will get 1 nide had taint. 
+when we describe the pod will get the answer. 0/2 nodes are available but 2 Insufficient memory (3 nodes doesn't have sufficient memory) some times will get 1 node had taint. 
+bcoz scheduler will not consider master nodes. 
 
+lets change the yml file 
 
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "100m"
+    memory: "2Gi"
 
-
-
+Now apply and will get running pods. bcoz the requests memory has been reduced. before it was more. so not scheduled. 
 
 
 
