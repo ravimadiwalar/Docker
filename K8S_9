@@ -447,4 +447,36 @@ EX:  affinity:
 
 Above one is related to POD Anti Affinity. it means if any pods with the app: nginx they should not scheduel in same node. 
 
+@ How pods are by defalut scheduled/ on which basis they schedule?   
+=> based on the CPU and memory available/ based on the resource request. 
+
+==> Taints: 
+    -------
+        Node affinity is a propetry of pods that attracts them to a set of nodes. taints are opposite , they allow a node to repel (Reject) a set of pods. somtime i dont want set of 
+ pods to be run on some set of nodes so in that case we use Taints. 
+
+@ Why my pods are not scheduling in masternode? 
+=> kubectl get nodes
+  here will see all nodes including master node. 
+kubectl describe node ip-172-31-14-131
+
+Taints: node-role.kubenetes.io/master:NoSchedule
+
+if we tolerate this one we can schedule a pod in master node also. 
+
+Syntax:  kubectl taint nodes <nodename><key>=<value>:<effect>
+
+we can give any key, any value and any effect(out of 3). 
+
+3 effects: 
+1) NoSchedule- Doesnt schedule a pod without matching toleration. 
+2) PreferNoSchedule- Prefers that the pod without matching toleration be not scheduled on the node. it is a softer version of NoSchedule effect. 
+3) NoExecute- Evicts the pods that dont have matching tolerations. 
+
+
+
+
+
+
+
 
