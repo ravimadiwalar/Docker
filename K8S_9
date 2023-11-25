@@ -292,7 +292,13 @@ resources:
 
 Now apply and will get running pods. bcoz the requests memory has been reduced. before it was more. so not scheduled. 
 
+=> There are some scenarios when you want your pods to end up on specific nodes.
+For Ex: 
 
+- you want your pods to end up on a machine with the SSD attached to it.
+- you want to co-locate pods on a particular machine(s) from the same availablility zone.
+- you want to co-locate a Pod from one service with a pod from another service on the same node bcoz these services strongly depend on each other. EX: you may want to place
+a web server on the same node as the in- memory cache store like Memchached.      
 
 
 
