@@ -410,7 +410,25 @@ Here we dont need to match with node key value with k8s any node. above we have 
 schedule the pod. we see running pods here. 
 
 
+==> POD Affinity and POD Anti Affinity:
+----------------------------------------
+        Here i want POD 1 and POD 2 should run on same node. then the key and value of the pod should be same and what we have in node. then we can acheive this. this is called
+"POD Affinity". 
+2nd scenario is like the POD1 and POD2 should not run of same node eventhough they have the same key and the value. so that time we use "POD Anti Affinity"
+These two scenarios are appicable to pods which are already running on the node and based on the labels of the pods. 
 
+- Similarly here also we have "requiredDuringSchedulingIgnoreDuringExecution" and "preferredDuringSchedulingIgnoreDuringExecution". 
+
+EX:  affinity: 
+       podAffinity: 
+         requiredDuringSchedulingIgnoreDuringExecution
+         - labelSelector: 
+             matchExpressions: 
+             - key: app
+               operator: In
+               values: 
+               - nginx
+          topologyKey: "kubernetes.io/hostname"
 
 
 
