@@ -301,4 +301,30 @@ For Ex:
 a web server on the same node as the in- memory cache store like Memchached.      
 
 
+1) NodeSelector:
+    This is simple pod scheduling feature that allows scheduling a pod onto a node whose labesl match the nodeSelector labels specified by the user. 
+
+check existing labels: kubectl get nodes --show-lables
+
+will get some labels here. it was added by defalut. but we want our own(custoem) labels here. so 
+
+kubectl label nodes <nodename> <labelKey>=<labelValue>
+
+kubectl label nodes ip-172-31-14-131 name=nodeOne
+
+Now we can see this custome node in kubectl get nodes --show-lables for that IP address. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
