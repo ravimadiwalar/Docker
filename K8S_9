@@ -247,7 +247,7 @@ javawebappdeployment-6f975459b4-qr4hm   0/1     Pending   0               24m
 ==> Scheduling: 
 ----------------
        We have lot of pods and how pods are scheduling? who is deciding which node pod gets scheduled? it will decide based on the resources available in my cluster. whatever node
-has enough CPU and Memory. based on this it will schedule the pod. 
+has enough CPU and Memory. based on this it will schedule the pod. This is no mandatory to do. it will be based on requirements. 
 
 -> Will i abale to control the pod should schedule in particulr node? 
    yes, we can do this. using below ones
@@ -390,10 +390,10 @@ once its scheduled if we remove labels also pods will continue to run.
                 values:
                 - nodeOne
 
+Here the name of the value should match. the  only schedulerwith will schedule the pod. 
 
-
-
-
+=> SoftRule:
+-------------
     spec:
       affinity:
         nodeAffinity:
@@ -406,7 +406,8 @@ once its scheduled if we remove labels also pods will continue to run.
                 values:
                 - workone
 
-
+Here we dont need to match with node key value with k8s any node. above we have diff value. but ours is name=nodeOne. but here it is name=workone. but still it will 
+schedule the pod. we see running pods here. 
 
 
 
