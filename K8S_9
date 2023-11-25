@@ -306,13 +306,85 @@ a web server on the same node as the in- memory cache store like Memchached.
 
 check existing labels: kubectl get nodes --show-lables
 
+here will get IP address of nodes. 
 will get some labels here. it was added by defalut. but we want our own(custoem) labels here. so 
 
 kubectl label nodes <nodename> <labelKey>=<labelValue>
 
-kubectl label nodes ip-172-31-14-131 name=nodeOne
+kubectl label nodes ip-172-31-1-193.ap-south-1.compute.internal name=nodeOne
 
 Now we can see this custome node in kubectl get nodes --show-lables for that IP address. 
+
+Then add this nodeSelector under pod spec
+
+spec: 
+  nodeSelector:
+    name: nodeOne
+
+{IMP: if we have deleted the node group and EKS cluster. but now we want it again. so will go and create an EKA and node group. then we have to connect that client server in
+mobaxterm/terminal and then we have execute "aws eks update-kubeconfig --name <clusterName> --region ap-south-1". then it will create kubeconfig file and connect.  
+
+ubuntu@ip-172-31-6-100:~$ kubectl get nodes
+E1125 09:22:23.791648    1096 memcache.go:265] couldn't get current server API group list: Get "https://A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com/api?timeout=32s": dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+E1125 09:22:23.794703    1096 memcache.go:265] couldn't get current server API group list: Get "https://A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com/api?timeout=32s": dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+E1125 09:22:23.797667    1096 memcache.go:265] couldn't get current server API group list: Get "https://A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com/api?timeout=32s": dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+E1125 09:22:23.800557    1096 memcache.go:265] couldn't get current server API group list: Get "https://A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com/api?timeout=32s": dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+E1125 09:22:23.803357    1096 memcache.go:265] couldn't get current server API group list: Get "https://A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com/api?timeout=32s": dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+Unable to connect to the server: dial tcp: lookup A35AF3DE87BFE5BB6D491D5413441586.gr7.ap-south-1.eks.amazonaws.com on 127.0.0.53:53: no such host
+ubuntu@ip-172-31-6-100:~$ aws eks update-kubeconfig --name EKS --region ap-south-1
+Updated context arn:aws:eks:ap-south-1:485210178357:cluster/EKS in /home/ubuntu/.kube/config
+ubuntu@ip-172-31-6-100:~$ kubectl get nodes
+NAME                                           STATUS   ROLES    AGE     VERSION
+ip-172-31-1-193.ap-south-1.compute.internal    Ready    <none>   4m29s   v1.26.10-eks-e71965b
+ip-172-31-37-189.ap-south-1.compute.internal   Ready    <none>   4m27s   v1.26.10-eks-e71965b}
+
+
+
+=>NodeSelector:   
+
+ubuntu@ip-172-31-6-100:~$ kubectl apply -f javadeployment.yml
+deployment.apps/javawebappdeployment created
+service/javawebappsvc unchanged
+ubuntu@ip-172-31-6-100:~$ kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-5545dcff9c-bw9bz   0/1     Pending   0          16s
+javawebappdeployment-5545dcff9c-g4m98   0/1     Pending   0          16s
+
+do you know why pods are pending? why bcoz we have mentioned wrong nodeselector name. its case sensitive. so we should mention as it is. 
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe pod javawebappdeployment-5545dcff9c-bw9bz
+
+Node-Selectors:              name=nodeone
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  2m5s  default-scheduler  0/2 nodes are available: 2 node(s) didn't match Pod's node affinity/selector. preemption: 0/2 nodes are available: 2 Preemption is not helpful for scheduling..
+
+
+Above we have described the pod. and we can see the node label is wrong. it should be "name=nodeOne" thats why we are getting "2 node(s) didn't match Pod's node affinity/selector". so correct
+it and will get running pods.
+
+NAME                                    READY   STATUS    RESTARTS   AGE
+javawebappdeployment-674568bcf6-xtmsr   0/1     Running   0          22s
+javawebappdeployment-674568bcf6-xzhjd   0/1     Running   0          22s
+
+
+==> Node Affiity: Node selector is the simplest Pod scheduling constarint in k8s. the affinity greatly expands the nodeselector functionally introducing the fallowing improvemnts
+1) Affinity launguage is more expressive. we can use more conditions. this affinity is based on node labels only. 
+2) a)Soft Rule (prefered Rules)- Here eventhough we dont have the node with the mentioned label also it will schedule the pods. 
+      -preferDuringSchedulingIgnoredDuringexecution
+
+   b) Hard Rule (Required Rules)- but here the label mentioned the node should match in our yml file. then only it will schedule the pod. 
+       -requiredDuringSchedulingRequiredDuringexecution: the node should match while scheduling but not during execution
+       -requiredDuringSchedulingIgnoredDuringexecution: here labels should match in scheduling and execution as well. 
+
+
+
+
+
+
+
+
 
 
 
