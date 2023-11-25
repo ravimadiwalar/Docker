@@ -376,14 +376,35 @@ javawebappdeployment-674568bcf6-xzhjd   0/1     Running   0          22s
 
    b) Hard Rule (Required Rules)- but here the label mentioned the node should match in our yml file. then only it will schedule the pod. 
        -requiredDuringSchedulingRequiredDuringexecution: the node should match while scheduling but not during execution
-       -requiredDuringSchedulingIgnoredDuringexecution: here labels should match in scheduling and execution as well. 
+       -requiredDuringSchedulingIgnoredDuringexecution: here labels should match in scheduling and execution as well. once its scheduled it should have that label, but 
+once its scheduled if we remove labels also pods will continue to run. 
+
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoreDuringExecution:
+            nodeSelectorterms:
+            - matchExpressions: 
+              - key: "name"
+                operator: In
+                values:
+                - nodeOne
 
 
 
 
 
-
-
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoreDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: name
+                operator: In
+                values:
+                - workone
 
 
 
