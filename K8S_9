@@ -430,13 +430,21 @@ EX:  affinity:
                - nginx
           topologyKey: "kubernetes.io/hostname"
 
+Above the pods have the app: nginx they will be availbel in nodes as well then only it will schedule that all same labeled pods in one node node.
 
 
+EX:  affinity: 
+       podAntiAffinity: 
+         requiredDuringSchedulingIgnoreDuringExecution
+         - labelSelector: 
+             matchExpressions: 
+             - key: app
+               operator: In
+               values: 
+               - nginx
+          topologyKey: "kubernetes.io/hostname"
 
 
-
-
-
-
+Above one is related to POD Anti Affinity. it means if any pods with the app: nginx they should not scheduel in same node. 
 
 
