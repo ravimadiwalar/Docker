@@ -470,8 +470,64 @@ we can give any key, any value and any effect(out of 3).
 
 3 effects: 
 1) NoSchedule- Doesnt schedule a pod without matching toleration. 
+-The Taint in opposite to nodesekector and node affinity. why bocz if we create a Taint to one node. that node will not schedule any pods in it. unless until we tolerate this 
+taint it will not schedue any pods in it. If already some pods are running in that node. then if we add NoSchedule the existing pod will run but not new ones. 
+
 2) PreferNoSchedule- Prefers that the pod without matching toleration be not scheduled on the node. it is a softer version of NoSchedule effect. 
+
 3) NoExecute- Evicts the pods that dont have matching tolerations. 
+- If already some pods are running in that node. then if we add NoExecute it will terminate all pods.
+
+ EX: ubuntu@ip-172-31-6-100:~$ kubectl get pods -o wide
+NAME                                    READY   STATUS              RESTARTS   AGE   IP       NODE                                           NOMINATED NODE   READINESS GATES
+javawebappdeployment-7476df7889-qj4vb   0/1     Pending             0          9s    <none>   <none>                                         <none>           <none>
+javawebappdeployment-7476df7889-qj5c2   0/1     ContainerCreating   0          9s    <none>   ip-172-31-33-148.ap-south-1.compute.internal   <none>           <none>
+ubuntu@ip-172-31-6-100:~$ kubectl taint nodes ip-172-31-33-148.ap-south-1.compute.internal node=HatesPods:NoSchedule
+node/ip-172-31-33-148.ap-south-1.compute.internal tainted
+
+ubuntu@ip-172-31-6-100:~$ kubectl describe node ip-172-31-33-148.ap-south-1.compute.internal
+
+Taints:             node=HatesPods:NoSchedule
+
+Above we can see the nde has been tainted. the check the pods again, we can see that node ip-172-31-33-148 again. bcoz its existing one.
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods -o wide
+NAME                                    READY   STATUS    RESTARTS      AGE    IP              NODE                                           NOMINATED NODE   READINESS GATES
+javawebappdeployment-7476df7889-qj4vb   0/1     Pending   0             4m8s   <none>          <none>                                         <none>           <none>
+javawebappdeployment-7476df7889-qj5c2   0/1     Running   3 (51s ago)   4m8s   172.31.45.220   ip-172-31-33-148.ap-south-1.compute.internal   <none>   
+
+
+Now will delete that deployment and check 
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods -o wide
+NAME                                    READY   STATUS             RESTARTS        AGE   IP              NODE                                           NOMINATED NODE   READINESS GATES
+javawebappdeployment-7476df7889-qj4vb   0/1     Pending            0               16m   <none>          <none>                                         <none>           <none>
+javawebappdeployment-7476df7889-qj5c2   0/1     CrashLoopBackOff   7 (3m52s ago)   16m   172.31.45.220   ip-172-31-33-148.ap-south-1.compute.internal   <none>           <none>
+
+ubuntu@ip-172-31-6-100:~$ kubectl get deployment javawebappdeployment
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+javawebappdeployment   0/2     2            0           17m
+
+ubuntu@ip-172-31-6-100:~$ kubectl apply -f javadeployment.yml
+deployment.apps/javawebappdeployment unchanged
+service/javawebappsvc unchanged
+
+ubuntu@ip-172-31-6-100:~$ kubectl get pods -o wide
+NAME                                    READY   STATUS    RESTARTS        AGE   IP              NODE                                           NOMINATED NODE   READINESS GATES
+javawebappdeployment-7476df7889-qj4vb   0/1     Pending   0               17m   <none>          <none>                                         <none>           <none>
+javawebappdeployment-7476df7889-qj5c2   0/1     Running   8 (5m34s ago)   17m   172.31.45.220   ip-172-31-33-149.ap-south-1.compute.internal   <none>           <none>
+
+
+Here will get different nodes now. 
+
+==> Toleration:
+      using this we can schedule a pod in taint node as well. we have to write in manifest file. 
+
+ubuntu@ip-172-31-6-100:~$ vi javadeployment.yml 
+
+spec: 
+  
+
 
 
 
