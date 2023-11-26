@@ -558,8 +558,18 @@ Uncordon: once we done the uncordon again it will schedulable.
 3) kubectl uncordon ip-172-31-34-139 - here it will remove that SchedulingDisabled for that node. now its ready to schedule to any pods. 
 
 
+Disadvantages of Selfmanaged k8s cluster: 
+1) if my master m/c goes down or api server face down time
+2) we dont get hih availability
+3) if any worker goes down we will not get another worker automatically. 
+4) we will not get another node automatically when the CPU and Memory goes down. 
 
 
+==> LoadBalancer: 
+   ---------------
+       its one more k8s service type. in the Real time all our k8s servers will run in private server. end user cannot access using internet. we have to use "External loadbalancer"
+
+this External LoadBalancer is outside of our k8s. its not a part of the cluster. this load balancer will route the traffic to severs using NodeIP:NodePort internally. 
 
 
 
