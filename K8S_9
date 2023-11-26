@@ -526,7 +526,38 @@ Here will get different nodes now.
 ubuntu@ip-172-31-6-100:~$ vi javadeployment.yml 
 
 spec: 
+  tolerations: 
+  - key: "node"
+    operator: "Equal"
+    value: "HatesPod"
+    effect: "NoSchedule"
+
+
+Here we can observe that we have tainted with node:HatesPod:NoSchedule. but now we are tolerating that taint in yml file. so now the pod will be scheduled in this node also. 
   
+apply kubectl to yml file and then check the pods "kubectl get pods -o wide" there we can see the tainted node IP. 
+
+==> I want remove the taint. similar comand but just add - at the end 
+
+ubuntu@ip-172-31-6-100:~$"kubectl taint nodes ip-172-31-33-148.ap-south-1.compute.internal node=HatesPods:NoSchedule-"
+node ip-172-31-33-148.ap-south-1.compute.interna untainted
+
+@ is it possible to make one node unschedulable? yes 
+
+=> Drain- if we drain some node, whatever pods which is already running in that node, those pods will be moved to another node. 
+
+==> Will i able to do OS Patches, software version upgrades without impacting? yes , we can but as per the best practice dont directly Drain. first make "cordon"
+
+cordon: It will make node as unschedulable. the exsting pod will stay there. no new pod will unschedule. once we done corndon. then we have to do Drain. then pods will be moved 
+to other nodes. 
+
+Uncordon: once we done the uncordon again it will schedulable. 
+
+
+
+
+
+
 
 
 
