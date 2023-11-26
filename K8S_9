@@ -548,12 +548,14 @@ node ip-172-31-33-148.ap-south-1.compute.interna untainted
 
 ==> Will i able to do OS Patches, software version upgrades without impacting? yes , we can but as per the best practice dont directly Drain. first make "cordon"
 
-cordon: It will make node as unschedulable. the exsting pod will stay there. no new pod will unschedule. once we done corndon. then we have to do Drain. then pods will be moved 
+=> cordon: It will make node as unschedulable. the exsting pod will stay there. no new pod will unschedule. once we done corndon. then we have to do Drain. then pods will be moved 
 to other nodes. 
 
 Uncordon: once we done the uncordon again it will schedulable. 
 
-
+1) kubectl cordon ip-172-31-34-139  - here we can see ip-172-31-34-139 Ready but SchedulingDisabled. 
+2) kubectl drain ip-172-31-34-139   - here it will move all existing pods to other nodes. 
+3) kubectl uncordon ip-172-31-34-139 - here it will remove that SchedulingDisabled for that node. now its ready to schedule to any pods. 
 
 
 
