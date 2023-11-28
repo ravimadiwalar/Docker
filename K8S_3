@@ -479,6 +479,11 @@ replicaset.apps/mavenwebapprs   2         2         2       14m
 * Above we can see daemonset.apps/nginxds and have one pod pod/nginxds-qpftp. it means i have only one worker node now. so it has craeted one daemonset pod. if its two worker 
 nodes (two nodes) it will create 2 daemon sets. 
 
+Some typical uses of a DaemonSet are:
 
+1) running a cluster storage daemon on every node
+2) running a logs collection daemon on every node
+3) running a node monitoring daemon on every node
 
- 
+ As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods
+it created.
