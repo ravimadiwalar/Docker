@@ -14,6 +14,7 @@ Benifits:
 
 Ex:
 consider mavenwebapprs and change the image version to 2 before it had latest. but after applying the kubectl we cant see any changes in the version (Image: dockerhandson/maven-web-app). 
+and we can see the old pods. we cant see any new pods(check the AGE of the pod creation).
 
 ubuntu@ip-172-31-33-243:~$ kubectl apply -f mavenwebapprs.yml
 replicaset.apps/mavenwebapprs configured
@@ -61,7 +62,7 @@ Events:
   ----     ------            ----                  ----               -------
   Warning  FailedScheduling  3m20s (x31 over 34m)  default-scheduler  0/2 nodes are available: 1 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate, 1 node(s) had taint {node.kubernetes.io/unreachable: }, that the pod didn't tolerate.
 
-Deployment startegies: These strategies will not applicable when we are craeting new pods. bcoz it will recrete new pods once old ones terminate/kill. 
+Deployment startegies: These strategies will not applicable when we are craeting new pods. these will be applicable once we are updating the version of the image. 
 ------------------------
 1) Recreate- When i am updating my deployment using Recrete strategy, all the old pods are killed all at once and get replaced all at once with new ones.
 * here will face some downtime in deployment. why bcoz all will kill once and create once with new onec. so user will face some downtime issue.
@@ -179,9 +180,11 @@ REVISION  CHANGE-CAUSE
 1         <none>
 2         <none>
 
-
+here we can see that now we have update only 2 version. version 1 and 2. if we have 4 it will show 4. 
 To know what pod template has been used in both versions==>  kubectl rollout history deployment <deploymentName> --revision=1
-                                                             kubectl rollout history deployment <deploymentName> --revision=1
+                                                             kubectl rollout history deployment <deploymentName> --revision=2
+
+here will see the version of the image that we used. 
 
 ubuntu@ip-172-31-33-243:~$ kubectl rollout history deployment javawebappdeployment --revision=1
 deployment.apps/javawebappdeployment with revision #1
@@ -204,7 +207,7 @@ We can see the same version in "kubectl describe pod <podname>" to just check fo
 ubuntu@ip-172-31-33-243:~$ kubectl rollout undo deployment javawebappdeployment --to-revision=1
 deployment.apps/javawebappdeployment rolled back
 
-above we have mentioned the version we wanted. if we dont mention also it will consider the previous one by default. 
+above we have mentioned the version we wanted. if we dont mention also it will consider the previous one by default -  "kubectl rollout undo deployment <deploymentname>"
 
 ==> Rolling Strategy: 
 ----------------------
