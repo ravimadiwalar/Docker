@@ -2,7 +2,9 @@ error: No preemption victims found
 It means the enough resources (CPU, Memory and disk) not found. we need to increse the resources (instace types).
 
 
-
+error: resource mapping not found for name: "mongopvc" namespace: "" from "deploymentpvc.yml": no matches for kind "persistentVolumeClaim" in version "v1"
+ensure CRDs are installed first
+==> we should check the names (capaital or small letter). here i had persistentVolumeClaim instead of "PersistentVolumeClaim"
 
 
 
