@@ -158,7 +158,8 @@ Now-  Kubectl get nodes
 
 we can see these two nodes. 
 
-Kubectl get storageclass   - We can see storage class here the defalut one.
+Kubectl get storageclass   - We can see storage class here the defalut one. it means we dont need to create a volume manually after creating a volume claim. 
+ here we wil get "VOLUMEBINDINGMODE" as a "wait for First consumer". bcoz we need to install the CSI drive. 
 
 
 
