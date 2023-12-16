@@ -23,14 +23,22 @@ This Cluster auto scaler will act as a bridge btw EKS cluser and AWS austoscaing
 
 This clusterAutoscaler is one application. this will talk to API server and get the details of the nodes. and it will make "AWS API calls" to adjust autoscalig group desired numbers.
 
+First we have to create a clyster autoscaler yaml file and apply. then go to AWS and create one policy and name that to "clusterautoscaler" and attach that to node groups. then 
+we will get nodes while increase the load and decrese when load is less automatically. 
+
+Cluster Autoscaler typically runs as a Deployment in your cluster.
+
+If we want to check the logs of the pods : kubectl logs <podName> -n kube-system
 
 
+==> Ingress: 
+-------------
+      if we deploy any application with load balancer service we will get diff loda balancer IP's. Load Blancer port: 80 and 443. here we will create a single load balancer that
+can have multiple applications/micro services. once we enter the port ingress will route that to entered application. 
 
+Note: if we rae using custome k8s cluster (using minikube, kubeadm). in this case there is no Loadbalancer integarted. with this defalut set up you can only use NodePort.  
 
-
-
-
-
+"K8s ingress is a resource to add rules for trafiic from external sources to the service in the k8s cluster ". 
 
 
 
