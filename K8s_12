@@ -12,9 +12,14 @@ kubectl get pods -o wide
 
 but aws will create one new node bcoz desired nodes mentioned is 2. when our servers are running out of resources then it will create one more node.
 
-Now we have 2 nodes with 8 gb each. in application yml file we have mentioned resource as 1 gb. it means we can create 13-14 pods. 
+Now we have 2 nodes with 8 gb each. in application yml file we have mentioned resource as 1 gb. it means we can create 10-12 pods. 
 
-lets do 
+lets do kubectl scale deployment <deployment name> --replicas 14
+
+will get 10 pods running and 2 pods pending. pending bcoz each pod has reserved its 1 gb capacity and we have 16 gb max. so we dont have enough resources to give to new pod.
+here we have to do either increse the capacity of servers or increase the nodes. we do scaling of nodes by ClusterAutscaler. 
+
+This Cluster auto scaler will act as a mediator btw 
 
 
 
