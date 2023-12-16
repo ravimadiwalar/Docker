@@ -1,0 +1,5 @@
+In Real Time nobody wikl remember that load balancer IP. so we have to create a domain for that load balancer. 
+
+we can do this domain in Route 53 in AWS. 53 is its port. here we have to mention our load balancer external IP. user can acccess it from that domain name directly. here we can 
+access the data of the private subnet also via load balancer extrtnal IP.
+
