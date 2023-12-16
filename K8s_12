@@ -19,7 +19,10 @@ lets do kubectl scale deployment <deployment name> --replicas 14
 will get 10 pods running and 2 pods pending. pending bcoz each pod has reserved its 1 gb capacity and we have 16 gb max. so we dont have enough resources to give to new pod.
 here we have to do either increse the capacity of servers or increase the nodes. we do scaling of nodes by ClusterAutscaler. 
 
-This Cluster auto scaler will act as a mediator btw 
+This Cluster auto scaler will act as a bridge btw EKS cluser and AWS austoscaing group. 
+
+This clusterAutoscaler is one application. this will talk to API server and get the details of the nodes. and it will make "AWS API calls" to adjust autoscalig group desired numbers.
+
 
 
 
