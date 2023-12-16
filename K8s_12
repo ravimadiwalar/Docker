@@ -40,10 +40,25 @@ Note: if we rae using custome k8s cluster (using minikube, kubeadm). in this cas
 
 "K8s ingress is a resource to add rules for trafiic from external sources to the service in the k8s cluster ". 
 
+==> K8s ingress: 
+-----------------
+  Its a native resource where you can have rules to route traffic from an external source to service end points residing inside the cluster. it requires an ingress controller 
+for routing the rules specified in the ingress object. 
 
+Ingress has 2 components: 
+1) Ingress controler: (proxy service (web server)): All the external traffice will go to here first.
 
+  Nginx ingress controllers
+  haproxy
+  Terafic
+  consul
+  istio -> its Service mesh. it has lot more features than other controllers.  
+2) Ingress (Rules): it supports 
+   a) Host based routing: 
+   b) path based routing: 
+These two routings are "layer 7"
 
-
+external Load balancer -> Ingress controler -> Ingress (Rules)
 
 
 
