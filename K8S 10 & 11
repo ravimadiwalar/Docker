@@ -184,6 +184,13 @@ spec:
         image: dockerhandson/java-web-app:1
         ports:
         - containerPort: 8080
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 1Gi
+        limits: 
+          cpu: 100m
+          memory: 1Gi
         readinessProbe:
           httpGet:
             path: /java-web-app
@@ -204,7 +211,7 @@ kind: Service
 metadata:
   name: javawebappsvc
 spec:
-  type: LoadBalancer
+  type: LoadBalancer    
   selector:
     app: javawebapp
   ports:
@@ -212,8 +219,16 @@ spec:
     targetPort: 8080
 
 
+Lets apply this
 
+kubectl get all
 
+here will get service with some EXTERNAL-IP . this is our LoadBalancer with external port. here the load will receive at 80 port and route to those 2 servers. Load balancer is 
+not a part of our cluster. 
+
+We can acccess the application using the load balancer external IP. Oue end user cant use this IP. so we need to do DNS and purchase a domain and attache this external IP with 
+domain. then he can easily use that EX: javaapplication.com
+ 
 
 
 
