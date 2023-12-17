@@ -60,6 +60,23 @@ These two routings are "layer 7"
 
 external Load balancer -> Ingress controler -> Ingress (Rules)
 
+Lets take one example from mithu git gub where we have all yaml files. so it would be easy to understand the process so. (Refer my github - kubernetes ingress- step step process)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
