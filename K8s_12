@@ -62,6 +62,7 @@ external Load balancer -> Ingress controler -> Ingress (Rules)
 
 Lets take one example from mithu git gub where we have all yaml files. so it would be easy to understand the process so. (Refer my github - kubernetes ingress- step step process)
 
+Here we can deploy ingress as a daemonset or deployment. any one is fine. 
 
 
 
