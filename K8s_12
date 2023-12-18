@@ -65,11 +65,13 @@ Lets take one example from mithu git gub where we have all yaml files. so it wou
 Here we can deploy ingress as a daemonset or deployment. any one is fine. 
 
 
-procedure: 
+=> procedure: 
 
-First we will create a nginx ingress controller and then apply. then create ingress resource and here we will mention the domain of the java web app and maven web app and then
-we will create a load balancer for the ingress controller and attach this load balancer to the java and maven domains. and we have to mention the host name in ingress host and path 
-also in ingress resource. 
+-First we will create a nginx ingress controller and then apply. 
+-then create ingress resource and here we will mention the domain of the java web app and maven web app and service names that will connect to particular service while brwosing.
+-we will create a load balancer for the ingress controller and attach this load balancer to the java and maven domains. and we have to mention the host name in ingress host and path 
+  also in ingress resource as a path and service names. 
+- if we browse from outside we will get the required oen. 
 
 
 
