@@ -1,0 +1,59 @@
+==> HTTPS: 
+     we use this for data encryption. if we rae usning HTTP the data will be tranftert to the end user system to actula server in a plane text format, in this case the middle man
+attacks. if we dont want to attack we have to use SSL and TLS concepts. 
+
+SSL - Secured Sokcets Layer
+TLS -   Transport Layer Security - its an advanced version of SSL. 
+
+If we configure our SSL/TLS certificates in the Load balancer level the SSL termination will happen at the load balancer.If we configure our SSL/TLS certificates in the ingress
+level the SSL termination will happen at the ingress.
+
+SSL and TLS need to purchased and chargabel. 
+
+Add tls lines in our igress Rule yaml file.
+
+spec: 
+  tls: 
+  - hosts: 
+    - mithundevops.co.in      #this is our domain name
+    secretName: mithin-ingress-tls   # we have to create a secret name.
+
+
+Now if we browse the mithundevops.co.in it will display "your connection is not private". it means its redircting to HTTPS. i need to trust and visit that site. then only 
+it will show the data that we are fetching.
+
+=> How your end user will reach the kubernetes pod?
+  If user is browsing mithundevops.co.in - first request will go to DNS lookup, here we will get the IP of that domain - nect request will route to Loda balancer (ELB) - nodes 
+using (NODEIP:NODEPORT)  here we have ingress pod attached so request goes to ingress pods - ingress pod will use the rules and route the traffic to service. then that service 
+will route the traffic to respective pods. 
+
+
+==> RBAC: Role Based Access Control
+   ---------------------------------
+
+Its a way to define which user can do what within a k8s cluster.
+
+We are using the cluster but i dont want to give that access to everyone to do everything in my cluster like delete, update deployment etc. i just want to give read only access.
+in particuler namespace also we need to give an access to required users/developers only. 
+
+In AWS i dont want to give access to the aws resources so for that we use IAM concept. 
+
+When a request is sent to API Server, it first needs to be authenticated(to make sure the requestor is known by the system) before its authorized (to make sure the requestor is 
+allowed to perform the action requested). 
+
+Broadly, there are 3 kind of users that need access to a k8s cluster:
+
+1) Developers/Admins: 
+    these users are responsible to do administartive or developmental tasks on the cluster. so we need to give an access to them. they do tasks like upgarding the custer, creating
+resource/workloads (PODS,DEPLOYMENT, PV, PVC..etc) on the cluster. 
+
+2) End Users: 
+     The end users are who rae accessing the application deployed on our k8s cluster. they just access the app. 
+
+
+
+
+
+
+
+
