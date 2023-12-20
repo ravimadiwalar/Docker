@@ -59,10 +59,27 @@ using service accounts. EX: we have installed metric server and ingress those ne
 2) API Resources: These are the objects available on the cluster. They are the PODS, services, nodes, PV, PVC etc.
 3) Subjects: These are the objects (Users, Groups, processes(Service account)) allowed access to the API, based on Verbs and Resources. 
 
+Here we have concepts like 
+1) Role and RoleBinding
+2) ClusterRole and ClusterRole Binding
 
+A Role always sets permissions within a particular namespace; when you create a Role, you have to specify the namespace it belongs in. its applicable only for that namespaces.
 
+ClusterRole, by contrast, is a non-namespaced resource. its applicable to nodes irrespective of namespaces. The resources have different names (Role and ClusterRole) because a 
+Kubernetes object always has to be either namespaced or not namespaced; it can't be both.
 
+=> ClusterRoles have several uses. You can use a ClusterRole to:
 
+1) define permissions on namespaced resources and be granted access within individual namespace(s)
+2) define permissions on namespaced resources and be granted access across all namespaces
+3) define permissions on cluster-scoped resources
+
+This is all autharization concept. 
+
+=> Authentication: 
+    K8s supports diff type of authentication. 
+1) Certificate Based authentication
+2) IAM Based Authentication- ( in EKS ) here the k8s will intigrated with external componets for managing the user. 
 
 
 
