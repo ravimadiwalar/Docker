@@ -50,6 +50,24 @@ resource/workloads (PODS,DEPLOYMENT, PV, PVC..etc) on the cluster.
 2) End Users: 
      The end users are who rae accessing the application deployed on our k8s cluster. they just access the app. 
 
+3) Applications/Bots: 
+      There is a possibility that other applications need to kubernetes cluster or API, typically to talk to resources or workloads inside the cluster. k8s facilitates this by 
+using service accounts. EX: we have installed metric server and ingress those need k8s access. 
+
+=> RBAC in k8s is based on 3 concepts: 
+1) Verbs: These are the action that we will do in our API resources. There are many verbs but they are all Create, Read, update or Delete (also know as CRUD). 
+2) API Resources: These are the objects available on the cluster. They are the PODS, services, nodes, PV, PVC etc.
+3) Subjects: These are the objects (Users, Groups, processes(Service account)) allowed access to the API, based on Verbs and Resources. 
+
+
+
+
+
+
+
+
+
+
 
 
 
