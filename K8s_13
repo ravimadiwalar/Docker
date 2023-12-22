@@ -81,6 +81,25 @@ This is all autharization concept.
 1) Certificate Based authentication
 2) IAM Based Authentication- ( in EKS ) here the k8s will intigrated with external componets for managing the user. 
 
+==> How do you manage access to the k8s control?
+   Using RBAC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
