@@ -84,9 +84,44 @@ This is all autharization concept.
 ==> How do you manage access to the k8s control?
    Using RBAC
 
+Create a user in AWS and attach the devops and EKS access polieies to that user and got to terminal and execute "aws eks update-kubeconfig --name <clustername> --region ap-south-1"
+- then "kubectl get configmap -n kube-system" - here will get all configmap files- "kubectl edit configmap aws-auth -n kube-system"
 
+data: 
+  mapUsers: 
+    - userarn:       #update the aws user arn
+      username:      #Update user name
+ :wq
 
+if we execute any kubectl commands it will display Forbidden. it means here we did authentication and we have to do autherization. then we dont get the Forbideen error. 
 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: readonly
+rules:
+- apiGroups: [""] # "" indicates the core API group- if any resource have V1 version. then we leave this blank. 
+  resources: ["pods"]
+  verbs: ["get", "create", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "readonly" in that namespace.
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+# You can specify more than one "subject"
+- kind: User
+  name: balaji # "name" is case sensitive- its aws user name
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: Role #this must be Role or ClusterRole
+  name: readonly # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
 
 
 
