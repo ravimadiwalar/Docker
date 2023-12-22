@@ -6,6 +6,9 @@ HELM let you fetch, deploy and manage the lifecycle of applications, both 3rd pa
 
 => HELM introduces several familiar concepts such as: 
  1) HELm Charts: Charts which are HELM packages (liek deb/rpm).
+  Here we can see two components templates and values- Templates are nothing but k8s manifests. 
+These tepmlate and values go through a template rendering engine, producing a manifest that is easily understand by k8s. 
+
  2) HELM repositories:  whcih holds charts (similar to package repos)
  3) HELM CLI: A CLI with install/upgarde/remove commands the charts/packages. 
 
@@ -15,7 +18,11 @@ HELM let you fetch, deploy and manage the lifecycle of applications, both 3rd pa
 Helm greatly simplifies the process of creating , managing and deploying applications usning HELM charts. In addition to that Helm also maintain a versioned history of every chart
 (application) installation. if something goes wrong , you can simply call "helm rollback". 
 
+Similarly, if you need to upgrade a chart, you can simply call "helm upgrade". 
 
+HELM uses charts to pack all the required K8S componets (Manifest) for an application to deploy, run and scale. 
+Charts are very similar to RPM and DEB packages for Linux, making it easy for developers to distribute and consume/install applicatoons via diff repos. if we share the HELM charts
+with anyone after setting up the HRELM chart and they can upgarde that application also. 
 
 
 
