@@ -124,22 +124,44 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 
+apply this and now the Balaji user will execute all the kubectl commands in defalut name space.
+above we just gave an access to pods not for svc, deployment etc. so balaji user cant access svc, deployment and all other than pod details. and he cant do any actions rather 
+than get, create and list. and cant work on other namespaces also. 
 
 
+- apigroup: [""]
+resources: ["pods","service"]
 
+above we have added one more the resource is service and the core api for service also V1. so api group is [""]. Now balaji user can execute kubectl get svc command. 
+and get list and create also will access. 
 
+If we want we can add one more resource also 
 
+rules:
+- apiGroups: [""] # "" indicates the core API group- if any resource have V1 version. then we leave this blank. 
+  resources: ["pods","service" ]
+  verbs: ["get", "create", "list"]
+- apiGroups: ["apps"] # deployment and daemon set are apps/v1 so.  
+  resources: ["deployment","daemonset"]   #we can mention all which are come under apps/v1 group
+  verbs: ["get", "create", "list"]
 
+if we donnt want same verbs for deployment and daemonset. that time we can do idividual. 
 
+rules:
+- apiGroups: ["*"] # "" indicates the core API group- if any resource have V1 version. then we leave this blank. 
+  resources: ["*"]
+  verbs: ["*"]
 
+it means balaji user has got all accesss for that namespace. 
 
+To delete role - kubectl delete role <rolename>
+kubectl get rolebinding
+kubectl delete rolebinding <roleBindingname>
 
+To delete yml apply- kubectl delete -f <yml File name>
 
-
-
-
-
-
+==> ClusterRole and ClusterRole binding: 
+            here the concept is same as role and role binding. just change kind to ClsterRole and ClusterRoleBinding. 
 
 
 
