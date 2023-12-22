@@ -22,8 +22,24 @@ Similarly, if you need to upgrade a chart, you can simply call "helm upgrade".
 
 HELM uses charts to pack all the required K8S componets (Manifest) for an application to deploy, run and scale. 
 Charts are very similar to RPM and DEB packages for Linux, making it easy for developers to distribute and consume/install applicatoons via diff repos. if we share the HELM charts
-with anyone after setting up the HRELM chart and they can upgarde that application also. 
+with anyone after setting up the HRELM chart and they can upgarde that application also. will maintain that HELM charts in repos to access everyone. 
 
+HELM Packges rae called as a Charts. 
+
+basic Directory staructure: 
+
+javawebapp
+|
+| ---- Charts.yaml #Meta data info about chart
+|------charts #Define dependent helm chart names. 
+|------templates # will maintain K8s manifest files which is required for our application. 
+|   |--deployment.yaml
+|   |-- hpa.yaml
+|   |-- ingress.yaml
+|   |-- service.yaml
+|   |-- serviecaccount.yaml
+|
+|------Values.yaml # will define default values which will be reffred in templates. 
 
 
 
