@@ -37,9 +37,30 @@ javawebapp
 |   |-- hpa.yaml
 |   |-- ingress.yaml
 |   |-- service.yaml
-|   |-- serviecaccount.yaml
+|   |-- serviecaccount.yaml.... etc
 |
 |------Values.yaml # will define default values which will be reffred in templates. 
+
+
+=> Helm Repository: 
+           Repo is where helm charts are held  and maintain. in these are a set of templates and configuration values stored as code (sometimes packed as a tar, gz file). 
+
+We can see HELM 2 (previous version) and HELM 3.x Architecture: 
+
+In HELM Chart Repo we will maintain our all packages - --> Developer m/c, jenkins m/c. here we have HELM CLI installed- using this HELM CLI we can deploy our application in our 
+K8S cluster. 
+
+helm repo add <helmRepoURL>    # add our package to repo. Git, Nexus, Jfrog are use as arepository. 
+
+helm install <RepoName>/<ChartName>
+
+
+
+
+
+
+
+
 
 
 
