@@ -1,0 +1,28 @@
+HELM: 
+------
+     Helm is a package manager for k8s application. it allows you to install/deploy/remove/update applications on your k8s clusterin a similar manner to yum/apt for linux. 
+
+HELM let you fetch, deploy and manage the lifecycle of applications, both 3rd party products (metric server, nginx ingress- which are not developed by us)and your own. 
+
+=> HELM introduces several familiar concepts such as: 
+ 1) HELm Charts: Charts which are HELM packages (liek deb/rpm).
+ 2) HELM repositories:  whcih holds charts (similar to package repos)
+ 3) HELM CLI: A CLI with install/upgarde/remove commands the charts/packages. 
+
+-> Why we use HELM? 
+ K8s can be difficult to manage with all the objects you need to maintain (Configmap,/Secrets, pods, services etc) HELM manages all of this for you.  
+
+Helm greatly simplifies the process of creating , managing and deploying applications usning HELM charts. In addition to that Helm also maintain a versioned history of every chart
+(application) installation. if something goes wrong , you can simply call "helm rollback". 
+
+
+
+
+
+
+
+
+
+
+
+
