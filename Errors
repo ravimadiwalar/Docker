@@ -7,7 +7,16 @@ ensure CRDs are installed first
 ==> we should check the names (capaital or small letter). here i had persistentVolumeClaim instead of "PersistentVolumeClaim"
 
 
+=> Diff btw web and apllication server: 
+   Web Server: static data it will provide
+   Application Server: Dynamic data i will provide
 
+@ Software remote location server tools? 
+=> SSH , RDP(Remote Desktop Protocol) and AnyDesk. 
+
+df -h -> HardDisk
+
+top -> CPU memory info
 
 
 
