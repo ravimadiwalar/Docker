@@ -45,7 +45,7 @@ javawebapp
 => Helm Repository: 
            Repo is where helm charts are held  and maintain. in these are a set of templates and configuration values stored as code (sometimes packed as a tar, gz file). 
 
-We can see HELM 2 (previous version) and HELM 3.x Architecture: 
+We can see HELM 3 (previous version) and HELM 3.x Architecture: 
 
 In HELM Chart Repo we will maintain our all packages - --> Developer m/c, jenkins m/c. here we have HELM CLI installed- using this HELM CLI we can deploy our application in our 
 K8S cluster. 
@@ -55,8 +55,16 @@ helm repo add <helmRepoURL>    # add our package to repo. Git, Nexus, Jfrog are 
 helm install <RepoName>/<ChartName>
 
 
+HELM CLI will be used to conncet to k8s directly.the HELM CLI will use KubeConfig file to connect to the cluster. 
 
+in HELM 2 architecture there is a helm component called "tiller" which will be deployed in the k8s kube-system namespace. Tiller component is removed in helm 3 version. 
 
+Tiller is an helm application and helm should connect with Tiller and that tiller will help to conncet to k8s cluster using RBAc. we need to deploy that tiller application. 
+tiller will run as a pod in k8s. 
+
+Installing HELM 3: 
+          The workstation that you are running should have the kubectl contect set to the cluster you want to manage with HELM. HELM works inside k8s and uses by defalut 
+kubeconfig file (./kube/config). 
 
 
 
