@@ -1,0 +1,35 @@
+Now we have created java-web-app chart and want to add that to repository in guthub, we can add that too in nexus and jfrog also. 
+
+first we need to validate that chart is validate or not. to check that we use 
+ubuntu@ip-172-31-11-34:~$ helm lint java-web-app/
+==> Linting java-web-app/
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+it means the tempates are proper. nothing has failed. 
+Now we have to craete a package. -> helm package java-web-app
+It will create a tar file. (java-web-app-0.1.0.tgz)
+
+ubuntu@ip-172-31-11-34:~$ helm package java-web-app
+Successfully packaged chart and saved it to: /home/ubuntu/java-web-app-0.1.0.tgz
+
+ubuntu@ip-172-31-11-34:~$ ls
+aws  awscliv2.zip  get_helm.sh  java-web-app  java-web-app-0.1.0.tgz  kubectl  kubernetes-ingress
+
+If we want to maintain this one has a source code in github, we should do some setting in repository. 
+Git- create a repo- go inside that repo- setting- GitHub pages - click it out here- choose mainbarnch as a Source and save. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
