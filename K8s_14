@@ -135,11 +135,58 @@ metricserver    default         1               2023-12-25 06:27:23.05376251 +00
 If we want to delete- helm uninstall <name (metrcserver)> 
 We can upgrade also. 
 
+==> If we want we can create our won helm chart alos. EX: Java-web-app
+
+We have helm CLI installed. so create a javawebapp- helm create java-web-app 
+
+ubuntu@ip-172-31-11-34:~$ helm create java-web-app
+Creating java-web-app
+ubuntu@ip-172-31-11-34:~$ ls
+aws  awscliv2.zip  get_helm.sh  java-web-app  kubectl  kubernetes-ingress
+ubuntu@ip-172-31-11-34:~$ ls java-web-app/
+Chart.yaml  charts  templates  values.yaml
+
+inside we can see values file and chart etc... so we need to modify the files as per our requirements. lets show in tree model. 
+
+ubuntu@ip-172-31-11-34:~$ apt install tree -y
 
 
+ubuntu@ip-172-31-11-34:~$ tree java-web-app/
+java-web-app/
+├── Chart.yaml
+├── charts
+├── templates
+│   ├── NOTES.txt
+│   ├── _helpers.tpl
+│   ├── deployment.yaml
+│   ├── hpa.yaml
+│   ├── ingress.yaml
+│   ├── service.yaml
+│   ├── serviceaccount.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml
+
+3 directories, 10 files
 
 
+Inside we can see yaml files. This is the directory structure of our java-web-app. 
 
+ubuntu@ip-172-31-11-34:~$ cat java-web-app/templates/deployment.yaml
+
+above we can see amny flower brockets. This is Go language.  means we need to fill the values in values.yaml file. then it will refect here. 
+
+If we execute "helm template java-web-app"
+ it will show what are all manifest will be rendered and what are all obejects will be deployed. in javawebapp we have HPA.yaml also but we cant see this in template. why bcoz
+when we enable the autoscaling then only it will apply and already in values.yaml we have autoscaling (shown below). now its false. if we make it true we can enable the autoscaling
+and render the HPA also. in run time also i can change it usning "helm template java-web-app --set autoscaling.enabled=true"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 
 
