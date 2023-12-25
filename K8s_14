@@ -189,9 +189,19 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 
+if we are modifying the values.yaml file and useed our won container and images version and path. and most imporatntly we have to create "secrete" in our repository. bocz we rae usning
+private image from private container. and that secrete name we have to mention in values.yaml file. if we want how to set up secret refer mithun trchnologies video in youtube (how 
+to use private repositories)
 
+Now we have modified all data and have to install the java-web-app. => helm install  javawebapp java-web-app --set replicaCount=2 --set image.tag=2
 
+in runtime also we can change the version and replicas --set replicaCount=2 --set image.tag=2
 
+if we want we can upgarde also -> helm upgarde javawebapp java-web-app --set replicaCount=3 --set image.tag=3
 
+we can come back to previous version also-> helm rollback javawebapp 
 
+to delete helm -> helm uninstall javawebapp
+
+Now we have created a chart but its in local repo. sio we need to maintain in our github as a source code. 
 
