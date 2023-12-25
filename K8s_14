@@ -66,6 +66,76 @@ Installing HELM 3:
           The workstation that you are running should have the kubectl contect set to the cluster you want to manage with HELM. HELM works inside k8s and uses by defalut 
 kubeconfig file (./kube/config). 
 
+Serach in google and will get many ways, chosse anyone. 
+
+$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
+
+to check the version- helm version
+
+We have already known that many 3rd party application are already stored in helm chart. and they rae maintaining in some public helm repository. that helm chart have already
+set by all manifest files.
+
+We can check the "Artifacthub.io" --> inside will get all 3rd party applications. 
+
+EX: search for nginx ingres and go inside and will get 
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx --> using this will get all nginx ingres depployment, role, role binding and all related to nginx. 
+we have to fallow the step sgiven there. 
+
+If we want we can create our won helm repo.
+
+==> install metric server using helm: 
+
+helm repo add <RepoName> <URL>
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+ubuntu@ip-172-31-11-34:~$ helm repo ls
+NAME            URL
+bitnami         https://charts.bitnami.com/bitnami
+
+Now will get many charts available in that bitnami repo. here we can see jenkins also. if we instalk that jenkins then will get all required components for that jenkins. 
+
+herw we can metric server also. we can search using grep command also. 
+
+ubuntu@ip-172-31-11-34:~$ helm search repo | grep "metric"
+bitnami/grafana                                 9.6.5           10.2.2          Grafana is an open source metric analytics and ...
+bitnami/kube-state-metrics                      3.8.6           2.10.1          kube-state-metrics is a simple service that lis...
+bitnami/metrics-server                          6.6.5           0.6.4           Metrics Server aggregates resource usage data, ...
+bitnami/node-exporter                           3.9.6           1.7.0           Prometheus exporter for hardware and OS metrics...
+bitnami/thanos                                  12.20.1         0.33.0          Thanos is a highly available metrics system tha...
+metrics-server/metrics-server                   3.11.0          0.6.4           Metrics Server is a scalable, efficient source ...
+
+
+Now install it - helm install <releaseName> <ChartName> 
+if we want we can install in required namespace also  - helm install <releaseName> <ChartName>  -n kibe-system
+
+ubuntu@ip-172-31-11-34:~$ helm install metricserver bitnami/metrics-server
+
+ubuntu@ip-172-31-11-34:~$ kubectl get all
+NAME                                               READY   STATUS    RESTARTS   AGE
+pod/metricserver-metrics-server-78c646f5cf-pdhf4   1/1     Running   0          2m18s
+
+NAME                                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes                    ClusterIP   10.100.0.1       <none>        443/TCP   38m
+service/metricserver-metrics-server   ClusterIP   10.100.242.113   <none>        443/TCP   2m18s
+
+NAME                                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/metricserver-metrics-server   1/1     1            1           2m18s
+
+NAME                                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/metricserver-metrics-server-78c646f5cf   1         1         1       2m18s
+
+ubuntu@ip-172-31-11-34:~$ helm ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+metricserver    default         1               2023-12-25 06:27:23.05376251 +0000 UTC  deployed        metrics-server-6.6.5    0.6.4
+
+If we want to delete- helm uninstall <name (metrcserver)> 
+We can upgrade also. 
+
+
 
 
 
