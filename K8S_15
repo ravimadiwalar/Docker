@@ -93,7 +93,9 @@ Prometheus
 
 => Prometheus: Its an open source system that collects and manages server and application metrics(data). it can also be  configure to notify your team when an issue arises. 
 
-
+What is Grafana?
+-> its an open source tool that allows you to easily visualize information(it will provide the prometheus data in nice dashboard format). 
+Grafana Dashboard take info from server monitoring tool like prometheus to display that info in nice format.   
 
 
 
