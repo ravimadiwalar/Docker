@@ -18,14 +18,44 @@ ubuntu@ip-172-31-11-34:~$ ls
 aws  awscliv2.zip  get_helm.sh  java-web-app  java-web-app-0.1.0.tgz  kubectl  kubernetes-ingress
 
 If we want to maintain this one has a source code in github, we should do some setting in repository. 
-Git- create a repo- go inside that repo- setting- GitHub pages - click it out here- choose mainbarnch as a Source and save. 
+Git- create a repo- go inside that repo- setting- GitHub pages - click it out here- choose mainbarnch as a Source and save. Then we will get one URL. that is github page URL(copy that)
 
+i have to push that tar file to github. 
 
+To clone take the https code form newly created repo-> git clone <HTTPS URL>
 
+ls MithuntechHelm -> Now we dont have anything
 
+lets move that tar fiel to here -> mv ava-web-app-0.1.0.tgz MithuntechHelm
 
+need to generate helm index file. will get index.yaml file -> helm repo index <GitHubPage URL> 
 
+ls MithuntechHelm -> Now we can see 2 added files here. 
+check what that file has. it contains chartname and its url -> cat index.yaml
 
+cd MithuntechHelm
+git add .
+git comit -m 'Helm Chart Files commited"
+git push
+
+cd ..
+
+Now add that githib page url to helm client --> helm repo add <randomRepoName> <GitHubPageURL> 
+                                                helm repo add mithun <GitHubPageURL> 
+helm repo ls -> here we can see that newly added repo. 
+helm ls -> it will check already deployed charts. list realease. 
+helm search repo -> hetre will see this newly added repo. 
+helm search repo <mithun>
+
+helm template mithun/java-web-app -> now wwe can see java-web-app chart inside our mithun. 
+
+helm show values mithun/java-web-app -> all values of that chart. 
+
+we can modify as we required-> firsrt do append and edit that values file. 
+
+helm show values mithun/java-web-app >> javawebappvalues.yaml
+vi javawebappvalues.yaml
+helm install <anyName> mithun/java-web-app -f javawebappvalues.yaml -> our javawebappvalues.yaml file will pass edited data to new chart. 
 
 
 
