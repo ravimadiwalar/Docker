@@ -98,6 +98,56 @@ What is Grafana?
 Grafana Dashboard take info from server monitoring tool like prometheus to display that info in nice format.   
 
 
+=> Architecture: 
+
+imagine we have servers/k8s clusters/applications. Now prometheus will pull metrics from prometheus target ( servers/k8s clusters/applications) using exporters (agent). for server
+we have Node Exporter and for K8s cluster Kubestate metrics agent(This exporter will contact API server and gather all data and send it to prometheus). we have diff agents for diff
+things to export data. 
+
+It will use some file bcoz how does it know what server to be monitored and what cluster to be monitored. so fo that it will use some settings file. we have prometheus.yml file. in that 
+file we need to define what targets to be monitored. 
+
+We have aother component is "AlertManager". in prometheus we set some rules like cpu utilization and etc. and that proemtheus will push the alert to Alertmanager. and alert manaher 
+will send that alert via email, sms etc..
+
+one more component is Grafana.
+
+How can we configure this prometheus
+-> we can run/install in server directly or if we are using docker, we can run as a container and that exporters also as a container. if we are using k8s cluster we can run as a pod. 
+
+Alert Manager- it takes care of dedupication, grouping, and routing them to the correct receiver itegration such as email, PagerDuty, OpsGenie. it also take care of silencing and
+inhabitation of alerts. 
+
+Node Exporter- It will exposes wide variety of hardware and kernel related metics. That will periodically gather all the metrics of your system. it will monitor your filesystem,
+disks, CPU, memory etc. we run this as a Daemon set. 
+
+Kube State Metrics- gather node, pods deployments etc details. 
+
+search Prometheus Exporters and will get all types. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
