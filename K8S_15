@@ -58,6 +58,46 @@ vi javawebappvalues.yaml
 helm install <anyName> mithun/java-web-app -f javawebappvalues.yaml -> our javawebappvalues.yaml file will pass edited data to new chart. 
 
 
+==> MONITORING: 
+    -----------
+         We use this to know the status of the servers. if we get anything wrong it will alert us to fix it. 
+
+=> Prometheus: its an open source Monitoring and Alerting Tool Kit. This will Decrease the DownTime and Optimise the resources. We acn implement server monitoring/application 
+monitoring using Prometheus. 
+
+What is Server monitoring? 
+-> its a way to look into what servers are doing in real time. It can provide you with some actionable data and its often used for troubleshooting and capacity planning.
+Its typlically done at 3 levels
+
+1) Network (traffic, bandwidth,latency etc)
+2) machine (CPU and memory utilization, storage)
+3) Application (rate of user command, locks, large syncs, commits.submits. etc)
+
+Why Monitor our servers? 
+-> Server monitoring has lot of benefits. The biggest benefit is avoiding reactive panics(We respond alraedy something went wrong). here its proactive. bcoz will get notified before
+our server get impacted. it will alert us that we have 80% load and memory utilization. so we can take actions befre it goes wrong. 
+* increase the uptime
+* Improve hardware and software performance
+* Plan for the future by making the best use of your resources. 
+
+Implementing Monitor can give you an almost immidiate return on investament. you can observe trends(at what time my apllication is having a load
+), spikes,and anomiles that may indicate a problems. and then you can drill down to discover the root cauuse of the issue. 
+
+=>Monitoring Tools: 
+NewRelic
+nagios
+Datadog
+AppDynamics  -> Enterprise app
+Dynatrace
+Prometheus
+
+=> Prometheus: Its an open source system that collects and manages server and application metrics(data). it can also be  configure to notify your team when an issue arises. 
+
+
+
+
+
+
 
 
 
