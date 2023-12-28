@@ -107,6 +107,8 @@ replicaset.apps/coredns-74ff55c5b   2         2         2       7d21h
 
 Apiversion: each and every k8s will have its own Apiversion. 
 
+jubect api-resources
+
 Kind          apiversion
 Pod             v1
 rc              v1
@@ -183,7 +185,7 @@ NAME            READY   STATUS    RESTARTS   AGE   IP              NODE         
 javawebapppod   0/1     Pending   0          11m   10.47.0.1   ip-172-31-44-167   <none>           <none>
 
 
-for aboce one will get more details about that pod. additional columns. that IP is pod IP. using this pod IP we can access inside the cluster.
+above we can see more details about pods like IP address and which node it is running. using this pod IP we can access inside the cluster.
 ubuntu@ip-172-31-33-243:~$ curl 10.47.0.1:8080
 
 we are getting the response from this POD IP. but in real time we will have multiple pods for one image. 
@@ -250,7 +252,7 @@ spec:
   - port: 80 
     targetPort: 8080
 
-if any request comes to Kube-proxy through 80 port. it will redirect that to 8080 conatiner port. 
+if any request comes to Kube-proxy through 80 port. it will redirect that to 8080 conatiner port. (container port No= target port No)
 
 lets craete a service now. in existing yml file we can add this also. but both should be divided by --- (3 hypens) this is yml standard. we can craete new yml file for service also fine. 
 
@@ -293,9 +295,9 @@ NAME                TYPE        CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGE
 javawebappsvc      ClusterIP    10.106.146.40    <none>       80/TCP    46S
 kubernetes         ClusterIP     10.96.0.1       <none>       443/TCP    23h
 
-above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. we have to mention the selectors. the only will get end points. 
+above we can see our service name. kubernetes service is default one. CLUSTER IP is our virtual IP address. we have to mention the selectors. then only will get end points. 
 
-if we want to see all details about service. decribe it.  => kubectl describe svc <serviceName>
+if we want to see all details about service and end point. describe it.  => kubectl describe svc <serviceName>
 
 ubuntu@ip-172-31-33-243:~$ kubectl describe svc javawebappsvc
 .
