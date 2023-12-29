@@ -7,6 +7,8 @@ ensure CRDs are installed first
 ==> we should check the names (capaital or small letter). here i had persistentVolumeClaim instead of "PersistentVolumeClaim"
 
 
+line 11: mapping values are not allowed in this context  => it means the indentataion of 11th line is not correct.
+
 => Diff btw web and apllication server: 
    Web Server: static data it will provide
    Application Server: Dynamic data i will provide
