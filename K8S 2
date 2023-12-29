@@ -14,8 +14,9 @@ ubuntu@ip-172-31-33-243:~$ sudo service kubelet status
 
 NOTE: diff btw kind and kubeadm? 
 ==> kind is one software using which we can set up a cluster in our windows mc. but here our nodes will be running as a container. 
+Kind is a toll that allows you to run the k8s cluster using docker container. 
 ==> Kube-spray is also a software. another way of installing the cluster. kube-sparay and kubeadm are ways of installing the cluster. kube-spray use ansible playbook in the background. 
-
+Kubeadm is a command line tool. it helps you to set up the control plane and join worker nodes to the cluster. 
 
 
 --> Name Space: We can islolate K8s clusters using namespaces. Name space is like a virtual cluster within the cluster. 
