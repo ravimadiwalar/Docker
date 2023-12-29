@@ -97,7 +97,8 @@ replicaset.apps/coredns-74ff55c5b   2         2         2       7d21h
 *inside a pod, you can have one or more conatiners. Thoss containers all share a unique(same) network IP, Storage, Network and any other specificationapplied to the Pod. 
  * each and every pod will have IP address in cluster. these will be mainatianed by k8s CNI(containe networking interface). Weave new we installed. that will control IP's.  
 * Pod is  group of one or more containers which will be running on some nodes. but we cant set two conatiners with same port #. 
-* if the two conatiners in same POD they communicate with each other isung localhost<container port>. 
+* if the two conatiners in same POD they communicate with each other using ==>  localhost:<container port>.
+and pod to pod communication happend using Service object. 
 * any data saved inside the pod will disappear without peding.
 
 ==>Two ways to execute kubectl:
