@@ -114,7 +114,7 @@ metadata:
     <key>: <value>        ---> its optinal. 
 spec:
   replicas: <numberofReplicas>       ---> If i dont mention this line. it will craete one replica by default. if we mention more. it will create that much. 
-  selectors:  
+  selector:  
     <key>: <value>  #POD labels      ---> RC will manage and idetify the pods based on labels and selectors. 
   template: # POD template
     metadata:                         --> This meatadata is for our pod.
@@ -139,7 +139,7 @@ metadata:
   namespace: flipkartns   --> i just mentioned one random name now. but in rea time its should be related.
 spec:
   replicas: 2     --> 2 pods will create.
-  selectors: 
+  selector: 
     app: javawebapp
 template:                 --> under template we are filling pod details. RC will be used to create a pod only. thats why we dont mention apiversion and kind under template again. 
   metadata: 
@@ -213,7 +213,7 @@ kube-node-lease   Active   16d
 kube-public       Active   16d
 kube-system       Active   16d
 
-Under manifest file we have alaredy mantioned the namespace.
+Under manifest file we have already mentioned the namespace.
 
 To check any resources in flipkart namespace: 
 ubuntu@ip-172-31-33-243:~$kubectl get all -n flipkartns
@@ -240,7 +240,7 @@ ubuntu@ip-172-31-33-243:~$ kubectl get rc -n flipkartns
 NAME           DESIRED   CURRENT   READY   AGE
 javawebapprc   2         2         0       71s
 
-now we cann see our replication controller with 2 pods. if we observe the pod names. both are unique. here we cann service port as well which was assigned by k8s.
+now we can see our replication controller with 2 pods. if we observe the pod names. both are unique. here we can service port as well which was assigned by k8s.
 
 To know the Nodeport:
 ubuntu@ip-172-31-33-243:~$ kubectl get svc -n flipkartns
@@ -313,7 +313,7 @@ here we see 3 endpoints with 8080 port. Kubeproxy will route the user request to
 Now to delete thr RC --> kubectl delete rc <RCName>
                        " kubectl delete rc javawebapprc "
 
-Now we have deleted the RC but i didnt delete the service. suppose our pods are getting deleted, recreted, ou pod IP's are are getting changed. do i need to worry about ip 
+Now we have deleted the RC but i didnt delete the service. suppose our pods are getting deleted, recreted, our pod IP's are are getting changed. do i need to worry about ip 
 IP changes of pod if i am using service for my communication? 
 "Service will identify based on the labels/selectors"
 
