@@ -40,6 +40,44 @@ awk 'NF==0 {print NR}' file_name
 How to check no. of lines in the file?
 awk 'END {print NR}' file_name
 
+
+==> awk:
+
+ubuntu@ip-172-31-42-16:~$ cat first.sh
+name hs salary country
+
+ga ha 10000 india
+js ja 20000 US
+ja ja 30000 UK
+ja jj 60000 india
+
+ubuntu@ip-172-31-42-16:~$ awk '/india/ {print $0}' first.sh  --> here i wanted the details of the file which has india name. 
+ga ha 10000 india
+ja jj 60000 india
+
+ubuntu@ip-172-31-42-16:~$ awk 'NR=="3" {print $0}' first.sh   --> here i want 3rd line with its details
+ga ha 10000 india
+
+ubuntu@ip-172-31-42-16:~$ awk 'NR=="3", NR=="5" {print $0}' first.sh--> wanted to print the file which are fall from 3 to 5 line. 
+ga ha 10000 india
+js ja 20000 US
+ja ja 30000 UK
+
+-> I want to check the line number of empty.
+ubuntu@ip-172-31-42-16:~$ cat first.sh
+name hs salary country
+
+ga ha 10000 india
+js ja 20000 US
+ja ja 30000 UK
+ja jj 60000 india
+ubuntu@ip-172-31-42-16:~$ awk 'NF==0 {print NR}' first.sh
+2
+
+-> To find the number of lines
+ubuntu@ip-172-31-42-16:~$ awk 'END {print NR}' first.sh
+6
+
 How to use for loop in AWK command?
 awk 'BEGIN {for(i=0;i<=10;i++) print i;}'
 
