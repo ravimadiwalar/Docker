@@ -1,3 +1,50 @@
 https://github.com/somik123/server-resource-monitor/tree/main
 
 
+==>To find out the length of the given word/name:
+
+#!/bin/bash
+
+# Assign a value to a variable
+myValue="Hello, World!"
+
+# Use ${#variable} to find the length of the value
+length=${#myValue}
+
+# Print the length
+echo "Length of the value: $length"
+
+2) Using expr command
+#!/bin/bash
+
+# Assign a value to a variable
+myValue="Hello, World!"
+
+# Use expr to find the length of the value
+length=$(expr length "$myValue")
+
+# Print the length
+echo "Length of the value: $length"
+
+3) Using read command:
+#!/bin/bash
+
+echo "please enter name you want"
+read name
+
+length=${#name}
+
+# Print the length
+echo "Length of the value: $length"
+
+
+
+
+
+
+
+
+
+
+
+
