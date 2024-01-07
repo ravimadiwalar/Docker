@@ -37,7 +37,19 @@ length=${#name}
 # Print the length
 echo "Length of the value: $length"
 
+==> Reverse the words:
 
+#!/bin/bash
+
+# Input string
+inputString="This is a sample string"
+
+# Reverse the order of words using rev and tr
+reversedString=$(echo "$inputString" | rev | tr ' ' '\n' | rev | tr '\n' ' ')
+
+# Print the result
+echo "Original string: $inputString"
+echo "Reversed string: $reversedString"
 
 
 
