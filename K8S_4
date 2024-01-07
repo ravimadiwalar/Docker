@@ -11,6 +11,9 @@ Benifits:
 *pause and resuem the deployment
 *Clean up the older RS that you dont need anymore.  
 
+==> Doff btw pod and Deployemnt?
+Deployment has AutoHealing and Auto Scaling behaviour. but POD dosen't. will get Zero downtime issue. what deloyment will do that end of the process will create a POD only 
+using ReplicaSet (controller of pods). but K8s recommended one to deploya pod is Deployment. 
 
 Ex:
 consider mavenwebapprs and change the image version to 2 before it had latest. but after applying the kubectl we cant see any changes in the version (Image: dockerhandson/maven-web-app). 
@@ -443,6 +446,15 @@ kube-system   weave-net-flzl2                            2/2     Running        
 IMP
 -----
 * the labels will come under metadata only while creating a pod (tepmplate). but for  others labels will come under spec. 
+
+* How do you list out all the resources that are availbel in particular namespaces?
+kubectl get all
+kubectl get all -A  --> it will display eveything with all namespaces.
+
+
+
+
+
 
 
 
