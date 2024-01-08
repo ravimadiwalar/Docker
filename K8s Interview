@@ -55,6 +55,8 @@ Various operating system utilities and libraries are required to support the exe
 8)Pods:
 Pods are the smallest deployable units in Kubernetes. They contain one or more containers and share a common network namespace. Containers within the same Pod can communicate with each other using localhost.
 
+11) Is there any way to make a pod automatically come up when the host restarts?
+--> Yes, using replication controller but it may reschedule to another host if you have multiple nodes in the cluster.
 
 
 
