@@ -1,0 +1,68 @@
+1) Can we use many claim out of persistent volume?
+-> The mapping between persistentVolume and persistentVolumeClaim is always one to one. Even When you delete the claim, PersistentVolume still remains as we set 
+persistentVolumeReclaimPolicy is set to Retain and It will not be reused by any other claims. 
+
+2) Diff btw pod and a job?
+-> A Pod always ensure that a container is running whereas the Job ensures that the pods run to its completion.
+3) How do you deploy a feature with zero downtime?
+-> will use deployment with "RollingUpdate" strategy. 
+4) How to monitor the POD is running?
+--> Using Liveness probe. A liveness probe always checks if an application in a pod is running,  if this check fails the container gets restarted. 
+
+5) Diff btw RS and RC?
+-> RS have selector under matchLabels but RC have only selector. 
+
+6) How do you tie service to a pod?
+--> with help of selector and lables. 
+
+7) Having a POd with 2 cotainers, can i ping each other?
+-> Containers on same pod act as if they are on the same machine. You can ping them using localhost:port itself. Every container in a pod shares the same IP.
+You can `ping localhost` inside a pod.
+
+8) Does the rolling update with stateful set replica=1 make sense?
+-> No, because there is only 1 replica, any changes to state full set would result in an outage. So rolling update of a StatefulSet would need to tear down one (or more)
+old pods before replacing them. In case 2 replicas, a rolling update will create the second pod, which it will not be succeeded, the PD is locked by first (old) running pod, 
+the rolling update is not deleting the first pod in time to release the lock on the PDisk in time for the second pod to use it.
+
+9) Diff ways to provide the API-security on k8s?
+-> Use the correct auth mode with API server authorization-mode=Node,RBAC Ensure all traffic is protected by TLS Use API authentication.
+
+10) what runs inside the woker nodes in kubernetes?
+-> a)Container Runtime:
+This is the software responsible for running containers. Docker and containerd are popular container runtimes used in Kubernetes. They manage the execution of containers,
+handling processes isolation, and resource allocation.
+
+2)Kubelet:
+Kubelet is an agent that runs on each worker node. It communicates with the Kubernetes master node and ensures that containers are running in a Pod. It starts and stops containers
+based on the instructions from the control plane (master node).
+
+3)Kube Proxy:
+Kube Proxy is responsible for maintaining network rules on the host and performing connection forwarding. It helps in exposing services to the external world and routing 
+traffic to the appropriate containers.
+
+4)Container Storage Interface (CSI) Drivers:
+CSI drivers are responsible for managing storage volumes used by containers. They allow different storage providers to integrate with Kubernetes for persistent storage.
+
+5)Node Problem Detector:
+This component is responsible for detecting and reporting node-level problems. It helps the system to make decisions about the health of the node.
+
+6)CAdvisor (Container Advisor):
+CAdvisor collects, aggregates, processes, and exports information about running containers on a node. This information is used by the Kubernetes control plane for monitoring and resource usage analysis.
+
+7)Operating System Utilities:
+Various operating system utilities and libraries are required to support the execution and management of containers.
+
+8)Pods:
+Pods are the smallest deployable units in Kubernetes. They contain one or more containers and share a common network namespace. Containers within the same Pod can communicate with each other using localhost.
+
+
+
+
+
+
+
+
+
+
+
+
