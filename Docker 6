@@ -457,6 +457,38 @@ Now create the container using external driver:
 Yes, while creating the container just add :ro . here container will read the data whatever we have that in the storage dont write anything. 
 but just now what we have craeted they have both read and write access to the data. 
 
+
+
+Docker File:
+--------------
+
+For node js application- pacakge.json carries all dependencies.
+
+FROM node:<any>  - check with developer
+
+RUN npm install   - it will download all dependencies. 
+
+CMD ["node","app.js"]    - app.js is nodejs main script and it will run while creating a container. 
+ 
+==>For maven application- Pom.xml carries all dependencies. and will see .war file is the package. 
+
+
+==> Ruby application
+
+FROM ruby:2.6.0
+
+
+
+
+
+
+
+
+
+
+
+
+
 docker run -d --name mongo -e MONGO_INITDB_ROOT_USERNAME=devdb -e MONGO_INITDB_ROOT_PASSOWRD=devdb@123 --network springappnetwork -v mongodbebs:/data/db:ro  mongo
 
 
