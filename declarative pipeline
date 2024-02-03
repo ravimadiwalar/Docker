@@ -1,0 +1,42 @@
+
+This below path for creating a credentials for docker login: 
+Dashboard -> Manage Jenkins -> Credentials -> System -> Global credentials (unrestricted)- > username and password-> give ur container username and passowrd and ID. 
+  remember that ID name. 
+  EX: dockerHub
+
+
+    pipeline{
+    agent any
+    
+    stages {
+        stage('code'){
+            steps{
+              echo "clone the code"  
+              git url: "https://github.com/LondheShubham153/django-notes-app.git" , branch: "main"
+            }
+        }
+        stage("build"){
+            steps{
+                echo "build an image"
+                sh "docker build -t my-note-app ."
+            }
+        }
+        stage("push to docker"){
+            steps{
+              echo "pushing an image to docker hub"
+              withCredentials([usernamePassword(credentialsId:'dockerHub', usernameVariable:'DOCKER_USERNAME', passwordVariable:'DOCKER_PASSWORD')]){
+                  sh 'docker tag my-note-app $DOCKER_USERNAME/my-note-app:1'
+                  sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                  sh 'docker push $DOCKER_USERNAME/my-note-app:1'
+              }
+            }
+        }
+        stage("deploy"){
+            steps{
+               echo "deploying an image to container" 
+               sh 'docker run -d -p 8000:8000 containerregistry/my-note-app:1'
+            }
+        }
+        
+    }
+}
