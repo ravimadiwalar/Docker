@@ -1,0 +1,30 @@
+Terraform  is an Open source, Infrastructure as Code (IaC) tool. created by Hasicorp and it is written by "Go progarming language"
+
+IaC is the process of managing the infrastructure in a file or files, rathen than manaually configuring resources in a user interface(UI). To automate our infrastructure. resources
+are nothing but EC2 instaces(virtual mc), Elastruc IP, Security grp, network interface. 
+
+Extention of terraform is ".tf"
+
+Terraform supporting to many cloud providers- AWS, AZURE, GCP, digital ocean, Openstack, etc.  
+
+           TERRAFORM                                    CLOUD FORMATION
+1) Terraform is developed by Hashicorp.           1) Clod formation is developed by AWS
+2) It will work for many clod providers           2) it will support only AWS
+like AWS, AZURE, GCP, ETC
+3) Terraform uses Hasicorp Configuration language  3) AWS Cloud formation utilizes either JSON or YAML . 
+(HCL) , and its fully compatible with JSON.           It has a limit of 51000 bytes for the template body itself. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
