@@ -13,10 +13,16 @@ Terraform supporting to many cloud providers- AWS, AZURE, GCP, digital ocean, Op
 like AWS, AZURE, GCP, ETC
 3) Terraform uses Hasicorp Configuration language  3) AWS Cloud formation utilizes either JSON or YAML . 
 (HCL) , and its fully compatible with JSON.           It has a limit of 51000 bytes for the template body itself. 
+* Terraform supports HCL and Json format. 
 
 
+         TERRAFORM                                                  ANSIBLE
 
-
+1) Open source and use HCL and provided by Hashicorp      1) ansible also an open source Tool. 
+2) Terraform is an Infracture as Code, which means         2) Ansible is a Configuration Managemnt Tool. Which means they are designed to install and 
+they are designed to provision the servers themselves.        manage software of existing servers. 
+3) Terraform is ideal for creating, managing and           3) Ansible is ideal for software provisioning, apllication deployment and configuartion management. 
+improving infrastucture. 
 
 
 
